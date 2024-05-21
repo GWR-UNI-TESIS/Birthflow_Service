@@ -10,6 +10,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Birthflow_Service.Application", "Birthflow_Service.Application\Birthflow_Service.Application.csproj", "{852A77E6-00D0-4C17-A5C2-89A779203F33}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Birthflow_Service.Infraestructure", "Birthflow_Service.Infraestructure\Birthflow_Service.Infraestructure.csproj", "{AA6DB9D6-3DAC-4B6C-BD8F-0C588DEB8A9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Birthflow_Service.Domain", "Birthflow_Service.Domain\Birthflow_Service.Domain.csproj", "{759B51C4-67A6-46CC-88C7-4737DC11ADD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +26,18 @@ Global
 		{1622D955-BF14-4EE7-8740-19183DBDD3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1622D955-BF14-4EE7-8740-19183DBDD3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1622D955-BF14-4EE7-8740-19183DBDD3BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{852A77E6-00D0-4C17-A5C2-89A779203F33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{852A77E6-00D0-4C17-A5C2-89A779203F33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{852A77E6-00D0-4C17-A5C2-89A779203F33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{852A77E6-00D0-4C17-A5C2-89A779203F33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA6DB9D6-3DAC-4B6C-BD8F-0C588DEB8A9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA6DB9D6-3DAC-4B6C-BD8F-0C588DEB8A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA6DB9D6-3DAC-4B6C-BD8F-0C588DEB8A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA6DB9D6-3DAC-4B6C-BD8F-0C588DEB8A9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{759B51C4-67A6-46CC-88C7-4737DC11ADD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{759B51C4-67A6-46CC-88C7-4737DC11ADD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{759B51C4-67A6-46CC-88C7-4737DC11ADD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{759B51C4-67A6-46CC-88C7-4737DC11ADD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
