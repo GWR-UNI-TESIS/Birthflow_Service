@@ -11,4 +11,12 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Birthflow_Service.Domain\Birthflow_Service.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

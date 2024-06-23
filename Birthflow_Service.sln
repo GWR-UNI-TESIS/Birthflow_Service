@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Birthflow_Service.Service", "Birthflow_Service.Service\Birthflow_Service.Service.csproj", "{1622D955-BF14-4EE7-8740-19183DBDD3BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Birthflow_Service", "Birthflow_Service.Service\Birthflow_Service.csproj", "{1622D955-BF14-4EE7-8740-19183DBDD3BA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{59903DF5-4060-4F30-A574-DE3E060F0C67}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Birthflow_Service.Applicati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Birthflow_Service.Infraestructure", "Birthflow_Service.Infraestructure\Birthflow_Service.Infraestructure.csproj", "{AA6DB9D6-3DAC-4B6C-BD8F-0C588DEB8A9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Birthflow_Service.Domain", "Birthflow_Service.Domain\Birthflow_Service.Domain.csproj", "{759B51C4-67A6-46CC-88C7-4737DC11ADD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Birthflow_Service.Domain", "Birthflow_Service.Domain\Birthflow_Service.Domain.csproj", "{759B51C4-67A6-46CC-88C7-4737DC11ADD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
