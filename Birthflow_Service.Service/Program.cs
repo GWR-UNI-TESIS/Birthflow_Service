@@ -1,4 +1,22 @@
+using Birthflow_Application;
+using Birthflow_Infraestructure;
+using Birthflow_Service.Infraestructure.DbContexts;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+var BirthContext = builder.Configuration.GetConnectionString("localDB");
+
+builder.Services.AddDbContext<BirthflowDbContext>(x => x.UseSqlServer(BirthContext));
+
+builder.Services.AddHttpContextAccessor();
+
+// Add services
+builder.Services.AddServices();
+
+// Add Repositories
+builder.Services.AddRepositories();
 
 // Add services to the container.
 

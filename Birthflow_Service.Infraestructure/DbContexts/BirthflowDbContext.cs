@@ -1,4 +1,5 @@
 ﻿using Birthflow_Service.Domain.Models;
+using BirthflowMicroServices.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,12 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         {
 
         }
+
+        // AUTH
+        public virtual DbSet<UsuarioEntity> Usuarios { get; set; }
+        public virtual DbSet<PasswordEntity> Passwords { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
