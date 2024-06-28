@@ -17,6 +17,8 @@ public class UsuarioEntity
 
     public string? NombreUsuario { get; set; }
 
+    public string PasswordHash { get; set; } = string.Empty;
+
     public string? Email { get; set; }
 
     public decimal? PhoneNumber { get; set; }
