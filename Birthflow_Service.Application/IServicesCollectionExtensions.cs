@@ -1,4 +1,6 @@
 ﻿using Birthflow_Application.Services;
+using Birthflow_Domain.Interface;
+using Birthflow_Infraestructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,8 @@ namespace Birthflow_Application
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IAuthService, AuthServices>();
+            services.AddTransient<IAuthServices, AuthServices>();
+            //services.AddTransient<IAuthServices, AuthRepository>();
 
             return services;
         }

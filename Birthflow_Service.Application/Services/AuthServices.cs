@@ -1,5 +1,6 @@
 ﻿using Birthflow_Application.DTOs.Auth;
 using Birthflow_Application.Utils;
+using Birthflow_Domain.Interface;
 using Birthflow_Infraestructure.Repositories;
 using Birthflow_Service.Infraestructure.DbContexts;
 using BirthflowMicroServices.Domain.Models;
@@ -14,23 +15,7 @@ using System.Threading.Tasks;
 
 namespace Birthflow_Application.Services
 {
-    public interface IAuthService
-    {
-        string CreateToken(UsuarioEntity user);
-        UsuarioEntity EncryptedPassword(UserDto request);
-        UsuarioEntity SaveUser(UsuarioEntityDto user);
-        UsuarioEntity? GetById(int userId);
-        UsuarioEntity? GetByUserName(string userName);
-        UsuarioEntity? GetByEmail(string email);
-        string ChangePassword(UsuarioEntity user, string newPassword);
-        bool VefiryPassword(string password, string passwordHash);
-        string UpdateUser(UsuarioEntityDto user, UsuarioEntity currentUser);
-        UsersSummary GetUsersSummary();
-        string RestartPassword(UsuarioEntity user, string newPassword);
-        List<UsuarioEntity> GetUsers(FindExpression findExpression);
-
-    }
-    public class AuthServices : IAuthService
+    public class AuthServices : IAuthServices
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthServices> _logger;
@@ -72,10 +57,10 @@ namespace Birthflow_Application.Services
             throw new NotImplementedException();
         }
 
-        public List<UsuarioEntity> GetUsers(FindExpression findExpression)
-        {
-            throw new NotImplementedException();
-        }
+        //public List<UsuarioEntity> GetUsers(FindExpression findExpression)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public UsersSummary GetUsersSummary()
         {
@@ -89,6 +74,15 @@ namespace Birthflow_Application.Services
 
         public UsuarioEntity SaveUser(UsuarioEntityDto user)
         {
+            try
+            {
+                var existEmail = GetByEmail(user.Email);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
             throw new NotImplementedException();
         }
 

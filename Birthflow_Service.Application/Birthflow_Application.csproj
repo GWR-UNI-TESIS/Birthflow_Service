@@ -8,11 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Birthflow_Service.Domain\Birthflow_Domain.csproj" />
     <ProjectReference Include="..\Birthflow_Service.Infraestructure\Birthflow_Infraestructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\Auth\" />
   </ItemGroup>
 
 </Project>
