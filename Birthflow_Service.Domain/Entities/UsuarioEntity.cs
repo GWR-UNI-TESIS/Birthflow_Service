@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Update.Internal;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,16 +24,19 @@ public class UsuarioEntity
 
     public decimal? PhoneNumber { get; set; }
 
-    public int? RolId { get; set; }
-
     public bool IsDelete { get; set; }
 
     public DateTime CreatedAt { get; set; }
-    public DateTime CreatedBy { get; set; }
+
+    public int CreatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
 
+    public int? UpdatedBy { get; set; }
+
     public DateTime? DeletedAt { get; set; }
+
+    public int? DeletedBy { get; set; }
 
     public virtual List<PasswordEntity> Passwords { get; set; } = new List<PasswordEntity>();
 }
