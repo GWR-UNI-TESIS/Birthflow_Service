@@ -1,7 +1,9 @@
-﻿using Birthflow_Application.DTOs.Auth;
+﻿using Birthflow_Application.DTOs;
+using Birthflow_Application.DTOs.Auth;
 using Birthflow_Domain.Interface;
 using Birthflow_Service.Infraestructure.DbContexts;
 using BirthflowMicroServices.Domain.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,24 +32,27 @@ namespace Birthflow_Infraestructure.Repositories
             throw new NotImplementedException();
         }
 
-        public UsuarioEntity EncryptedPassword(UserDto request)
+        public string EncryptedPassword(UserDto request)
         {
-            throw new NotImplementedException();
+            UsuarioEntity user = new UsuarioEntity();
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+            return passwordHash;
         }
 
         public UsuarioEntity? GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            return _context.Usuarios.FirstOrDefault(u => u.Email == email);
         }
 
         public UsuarioEntity? GetById(int userId)
         {
-            throw new NotImplementedException();
+            return _context.Usuarios.FirstOrDefault(u => u.Id == userId);
         }
 
         public UsuarioEntity? GetByUserName(string userName)
         {
-            throw new NotImplementedException();
+            return _context.Usuarios.FirstOrDefault(u => u.NombreUsuario == userName);
         }
 
         public UsersSummary GetUsersSummary()
@@ -55,40 +60,140 @@ namespace Birthflow_Infraestructure.Repositories
             throw new NotImplementedException();
         }
 
-        public string RestartPassword(UsuarioEntity user, string newPassword)
+        public BaseResponse<string> RestartPassword(UsuarioEntity user, string newPassword)
         {
             throw new NotImplementedException();
         }
 
-        public UsuarioEntity SaveUser(UsuarioEntityDto user)
+        public BaseResponse<UsuarioEntity> SaveUser(UsuarioEntityDto user)
         {
-            var isExistedUser = _context.Users.FirstOrDefault(u => u.UserName == user.NombreUsuario
-                                                              || u.Email == user.Email
-                                                              || u.UserName == user.NombreUsuario);
-            
-            if (isExistedUser != null)
+            try
             {
-                var newUserEntity = new UsuarioEntity() {
+                var isExistedEmail = GetByEmail(user.Email);
+
+                if (isExistedEmail is not null)
+                {
+                    return new BaseResponse<UsuarioEntity>
+                    {
+                        Message = "Este correo ya existe",
+                        Response = null,
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+
+                var isExistedUserName = GetByUserName(user.Email);
+
+                if (isExistedEmail is not null)
+                {
+                    return new BaseResponse<UsuarioEntity>
+                    {
+                        Message = "Este username ya existe",
+                        Response = null,
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+
+                var encrypted = EncryptedPassword(new UserDto { Email = user.NombreUsuario, Password = user.PasswordHash });
+
+                var newUserEntity = new UsuarioEntity()
+                {
                     Nombres = user.Nombres,
                     Apellidos = user.Apellidos,
                     NombreUsuario = user.NombreUsuario,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
-                    RolId = user.RolId,
-                    IsDelete = user.IsDelete,
+                    PasswordHash = encrypted,
+                    IsDelete = false,
                     CreatedAt = DateTime.Now,
-                    //CreatedBy = 1,
+                    CreatedBy = 1,
                     UpdatedAt = null,
+                    UpdatedBy = null,
+                    DeletedAt = null,
+                    DeletedBy = null
+                };
+
+                _context.Entry(newUserEntity).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+
+                _context.Add<UsuarioEntity>(newUserEntity);
+
+                _context.SaveChanges();
 
 
+                return new BaseResponse<UsuarioEntity>
+                {
+                    Response = newUserEntity,
+                    Message = "El usuario a sido creado correctamente",
+                    StatusCode = StatusCodes.Status200OK,
                 };
             }
-            throw new NotImplementedException();
+            catch (Exception ex)
+            {
+                return new BaseResponse<UsuarioEntity>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }            
         }
 
-        public string UpdateUser(UsuarioEntityDto user, UsuarioEntity currentUser)
+        public BaseResponse<string> UpdateUser(UsuarioEntityDto user, UsuarioEntity currentUser)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var existEmail = GetByEmail(user.Email);
+                if (existEmail is not null && user.Email != currentUser.Email)
+                    return new BaseResponse<string>
+                    {
+                        Response = user.Email,
+                        Message = "mail already exist",
+                        StatusCode = StatusCodes.Status400BadRequest,
+                    };
+
+                var existUsername = GetByUserName(user.NombreUsuario);
+                if (existUsername is not null && user.NombreUsuario != currentUser.NombreUsuario)
+                    return new BaseResponse<string>
+                    {
+                        Response = user.NombreUsuario,
+                        Message = "user already exist",
+                        StatusCode = StatusCodes.Status400BadRequest,
+                    };
+
+                //var encrypted = EncryptedPassword(new UserDto { UserName = user.UserName, Password = user.PasswordHash });
+
+                //user.PasswordHash = encrypted.PasswordHash
+
+                // asignando valores 
+                currentUser.Nombres = user.Nombres;
+                currentUser.Apellidos = user.Apellidos;
+                currentUser.NombreUsuario = user.NombreUsuario;
+                currentUser.Email = user.Email;
+                currentUser.PhoneNumber = user.PhoneNumber;
+                currentUser.UpdatedBy = 77;
+                currentUser.UpdatedAt = DateTime.Now;
+
+                _context.Entry(currentUser).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+                _context.Update<UsuarioEntity>(currentUser);
+
+                _context.SaveChanges();
+
+                return new BaseResponse<string>
+                {
+                    Response = "Actualizado correctamente",
+                    Message = "User was created",
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<string>
+                {
+                    Response = default,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
         }
 
         public bool VefiryPassword(string password, string passwordHash)

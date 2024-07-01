@@ -14,15 +14,15 @@ namespace Birthflow_Domain.Interface
     public interface IAuthServices
     {
         string CreateToken(UsuarioEntity user);
-        UsuarioEntity EncryptedPassword(UsuarioEntityDto.UserDto request);
-        UsuarioEntity SaveUser(UsuarioEntityDto user);
+        string EncryptedPassword(UsuarioEntityDto.UserDto request);
+        BaseResponse<UsuarioEntity> SaveUser(UsuarioEntityDto user);
         UsuarioEntity? GetById(int userId);
         UsuarioEntity? GetByUserName(string userName);
         UsuarioEntity? GetByEmail(string email);
         string ChangePassword(UsuarioEntity user, string newPassword);
         bool VefiryPassword(string password, string passwordHash);
-        string UpdateUser(UsuarioEntityDto user, UsuarioEntity currentUser);
-        string RestartPassword(UsuarioEntity user, string newPassword);
+        BaseResponse<string> UpdateUser(UsuarioEntityDto user, UsuarioEntity currentUser);
+        BaseResponse<string> RestartPassword(UsuarioEntity user, string newPassword);
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BirthflowMicroServices.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,10 +23,6 @@ namespace Birthflow_Application.DTOs.Auth
 
         public string PasswordHash { get; set; }
 
-        public int? RolId { get; set; }
-
-        public bool IsDelete { get; set; }
-
         public class UsersSummary
         {
             public int AllUser { get; set; }
@@ -38,6 +35,12 @@ namespace Birthflow_Application.DTOs.Auth
         {
             public string Email { get; set; }
             public string Password { get; set; }
+        }
+
+        public class UserLoginDto
+        {
+            public string Token { get; set; }
+            public UsuarioEntity User { get; set; }
         }
     }
 }
