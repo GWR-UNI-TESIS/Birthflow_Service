@@ -40,10 +40,10 @@ namespace Birthflow_Application.Services
         {
             List<Claim> claims = new List<Claim>()
             {
-                new Claim("Nombres", user.Nombres),
-                new Claim("Apellidos", user.Apellidos),
-                new Claim("NombreUsuario", user.NombreUsuario),
-                new Claim("Email", user.Email),
+                new Claim("Nombres", user.Nombres!),
+                new Claim("Apellidos", user.Apellidos!),
+                new Claim("NombreUsuario", user.NombreUsuario!),
+                new Claim("Email", user.Email!),
                 new Claim("Id", user.Id.ToString())
             };
 
@@ -75,7 +75,7 @@ namespace Birthflow_Application.Services
             return result;
         }
 
-        public UsuarioEntity? GetById(int userId)
+        public UsuarioEntity? GetById(Guid userId)
         {
             var result = _authRepo.GetById(userId);
 

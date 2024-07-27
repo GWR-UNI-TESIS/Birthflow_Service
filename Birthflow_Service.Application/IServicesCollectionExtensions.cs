@@ -16,6 +16,7 @@ namespace Birthflow_Application
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<IAuthServices, AuthServices>();
+            services.AddTransient<IPartographServices, PartographServices>();
             //services.AddTransient<IAuthServices, AuthRepository>();
 
             return services;

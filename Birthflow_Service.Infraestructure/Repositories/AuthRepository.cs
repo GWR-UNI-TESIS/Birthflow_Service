@@ -45,7 +45,7 @@ namespace Birthflow_Infraestructure.Repositories
             return _context.Usuarios.FirstOrDefault(u => u.Email == email);
         }
 
-        public UsuarioEntity? GetById(int userId)
+        public UsuarioEntity? GetById(Guid userId)
         {
             return _context.Usuarios.FirstOrDefault(u => u.Id == userId);
         }
@@ -69,7 +69,7 @@ namespace Birthflow_Infraestructure.Repositories
         {
             try
             {
-                var isExistedEmail = GetByEmail(user.Email);
+                var isExistedEmail = GetByEmail(user.Email!);
 
                 if (isExistedEmail is not null)
                 {
@@ -189,7 +189,7 @@ namespace Birthflow_Infraestructure.Repositories
             {
                 return new BaseResponse<string>
                 {
-                    Response = default,
+                    Response = default!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };

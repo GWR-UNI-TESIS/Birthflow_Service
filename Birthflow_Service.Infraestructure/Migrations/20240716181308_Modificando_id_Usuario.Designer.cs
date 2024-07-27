@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240716181308_Modificando_id_Usuario")]
+    partial class Modificando_id_Usuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,53 +101,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuario", "Auth");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.PartographEntity", b =>
-                {
-                    b.Property<Guid>("PartographId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Observation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecordName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WorkTime")
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
-                    b.HasKey("PartographId");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.ToTable("Partographs", "Partograph");
                 });
 
             modelBuilder.Entity("Birthflow_Service.Domain.Models.ApplicationUser", b =>
@@ -287,15 +243,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Birthflow_Domain.Entities.PartographEntity", b =>
-                {
-                    b.HasOne("BirthflowMicroServices.Domain.Models.UsuarioEntity", "UsuarioEntity")
-                        .WithMany("Partographs")
-                        .HasForeignKey("CreatedBy");
-
-                    b.Navigation("UsuarioEntity");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("Birthflow_Service.Domain.Models.ApplicationUser", null)
@@ -325,8 +272,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
             modelBuilder.Entity("BirthflowMicroServices.Domain.Models.UsuarioEntity", b =>
                 {
-                    b.Navigation("Partographs");
-
                     b.Navigation("Passwords");
                 });
 #pragma warning restore 612, 618

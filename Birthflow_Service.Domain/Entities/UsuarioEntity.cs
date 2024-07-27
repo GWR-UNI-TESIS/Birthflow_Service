@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Update.Internal;
+﻿using Birthflow_Domain.Entities;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ namespace BirthflowMicroServices.Domain.Models;
 public class UsuarioEntity
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string? Nombres { get; set; }
 
@@ -22,6 +23,7 @@ public class UsuarioEntity
 
     public string? Email { get; set; }
 
+    [Column(TypeName = "decimal(8,0)")]
     public decimal? PhoneNumber { get; set; }
 
     public bool IsDelete { get; set; }
@@ -39,4 +41,6 @@ public class UsuarioEntity
     public int? DeletedBy { get; set; }
 
     public virtual List<PasswordEntity> Passwords { get; set; } = new List<PasswordEntity>();
+
+    public virtual List<PartographEntity> Partographs { get; set; } = new List<PartographEntity>();
 }

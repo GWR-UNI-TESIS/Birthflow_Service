@@ -16,7 +16,7 @@ namespace Birthflow_Domain.Interface
         string CreateToken(UsuarioEntity user);
         string EncryptedPassword(UsuarioEntityDto.UserDto request);
         BaseResponse<UsuarioEntity> SaveUser(UsuarioEntityDto user);
-        UsuarioEntity? GetById(int userId);
+        UsuarioEntity? GetById(Guid userId);
         UsuarioEntity? GetByUserName(string userName);
         UsuarioEntity? GetByEmail(string email);
         string ChangePassword(UsuarioEntity user, string newPassword);

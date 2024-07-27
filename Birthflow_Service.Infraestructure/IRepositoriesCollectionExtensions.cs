@@ -14,7 +14,7 @@ namespace Birthflow_Infraestructure
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<AuthRepository>();
-
+            services.AddScoped<PartographRepository>();
             return services;
         }
     }

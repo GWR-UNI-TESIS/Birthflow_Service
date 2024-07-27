@@ -8,7 +8,7 @@ public class PasswordEntity
 {
     public int Id { get; set; }
     [ForeignKey("UsuarioEntity")]
-    public int? UsuarioId { get; set; }
+    public Guid? UsuarioId { get; set; }
 
     public string? PasswordHash { get; set; }
 
