@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240729213232_Agregando_Entidad_Frecuencia_Cardiaca_Fetal")]
+    partial class Agregando_Entidad_Frecuencia_Cardiaca_Fetal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,9 +131,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
                     b.Property<Guid>("PartographId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("RemOrRam")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime2");

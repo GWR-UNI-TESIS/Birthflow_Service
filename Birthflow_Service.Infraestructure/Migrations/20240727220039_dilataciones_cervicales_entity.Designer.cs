@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240727220039_dilataciones_cervicales_entity")]
+    partial class dilataciones_cervicales_entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,9 +132,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.Property<Guid>("PartographId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("RemOrRam")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime2");
 
@@ -139,261 +139,13 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Value")
-                        .HasColumnType("decimal(12,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PartographId");
 
                     b.ToTable("CervicalDilations", "Partograph");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.ChildbirthNoteEntity", b =>
-                {
-                    b.Property<Guid>("PartographId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Alumbramiento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Apgar")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Caputto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Circular")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Expulsivo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Hour")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HuellaPlantar")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Lamniotico")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Meconio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Miccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Pa")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Placenta")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sex")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Temperature")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("PartographId");
-
-                    b.ToTable("ChildbirthNote", "Partograph");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.ContractionFrequencyEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PartographId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PartographId");
-
-                    b.ToTable("ContractionFrequency", "Partograph");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.FetalHeartRateEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeleteBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PartographId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PartographId");
-
-                    b.ToTable("FetalHeartRate", "Partograph");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.MedicalSurveillanceTableEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("ArterialPressure")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContractionsDuration")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("FetalHeartRate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FrequencyContractions")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MaternalPosition")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaternalPulse")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Pain")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PartographId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PartographId");
-
-                    b.ToTable("MedicalSurveillancesTable", "Partograph");
                 });
 
             modelBuilder.Entity("Birthflow_Domain.Entities.PartographEntity", b =>
@@ -441,56 +193,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.ToTable("Partographs", "Partograph");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.PresentationPositionVarietyEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("DeletedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("HodgePlane")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PartographId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UpdateBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PartographId");
-
-                    b.ToTable("PresentationPositionVariety", "Partograph");
                 });
 
             modelBuilder.Entity("Birthflow_Service.Domain.Models.ApplicationUser", b =>
@@ -644,50 +346,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.Navigation("Partograph");
                 });
 
-            modelBuilder.Entity("Birthflow_Domain.Entities.ChildbirthNoteEntity", b =>
-                {
-                    b.HasOne("Birthflow_Domain.Entities.PartographEntity", "Partograph")
-                        .WithMany()
-                        .HasForeignKey("PartographId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Partograph");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.ContractionFrequencyEntity", b =>
-                {
-                    b.HasOne("Birthflow_Domain.Entities.PartographEntity", "Partograph")
-                        .WithMany()
-                        .HasForeignKey("PartographId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Partograph");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.FetalHeartRateEntity", b =>
-                {
-                    b.HasOne("Birthflow_Domain.Entities.PartographEntity", "Partograph")
-                        .WithMany()
-                        .HasForeignKey("PartographId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Partograph");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.MedicalSurveillanceTableEntity", b =>
-                {
-                    b.HasOne("Birthflow_Domain.Entities.PartographEntity", "Partograph")
-                        .WithMany()
-                        .HasForeignKey("PartographId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Partograph");
-                });
-
             modelBuilder.Entity("Birthflow_Domain.Entities.PartographEntity", b =>
                 {
                     b.HasOne("BirthflowMicroServices.Domain.Models.UsuarioEntity", "UsuarioEntity")
@@ -695,17 +353,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         .HasForeignKey("CreatedBy");
 
                     b.Navigation("UsuarioEntity");
-                });
-
-            modelBuilder.Entity("Birthflow_Domain.Entities.PresentationPositionVarietyEntity", b =>
-                {
-                    b.HasOne("Birthflow_Domain.Entities.PartographEntity", "Partograph")
-                        .WithMany()
-                        .HasForeignKey("PartographId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Partograph");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>

@@ -24,8 +24,12 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         public virtual DbSet<UsuarioEntity> Usuarios { get; set; }
         public virtual DbSet<PasswordEntity> Passwords { get; set; }
         public virtual DbSet<PartographEntity> Partographs { get; set; }
-
-
+        public virtual DbSet<CervicalDilationEntity> CervicalDilations { get; set; }
+        public virtual DbSet<MedicalSurveillanceTableEntity> MedicalSurveillanceTables { get; set; }
+        public virtual DbSet<PresentationPositionVarietyEntity> PresentationPositionVarietyEntities { get; set; }
+        public virtual DbSet<ChildbirthNoteEntity> ChildbirthNotes { get; set; }
+        public virtual DbSet<ContractionFrequencyEntity> ContractionFrequencyEntities { get; set; }
+        public virtual DbSet<FetalHeartRateEntity> FetalHeartRateEntities { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
