@@ -10,8 +10,8 @@ namespace Birthflow_Application.DTOs
     public class BaseResponse<T> where T : class
     {
         public int StatusCode { get; set; }
-        public string Message { get; set; }
-        public T Response { get; set; }
+        public string? Message { get; set; }
+        public T? Response { get; set; }
         public BaseResponse() { }
 
         public BaseResponse(int statusCode, string message, T data = default)

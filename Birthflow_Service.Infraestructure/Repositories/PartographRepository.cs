@@ -89,6 +89,156 @@ namespace Birthflow_Infraestructure.Repositories
             }
         }
 
+        public BaseResponse<CervicalDilationEntity> CreateCervicalDilation(CervicalDilationDto cervicalDilationDto)
+        {
+            try
+            {
+                var cervicalDilationEntity = new CervicalDilationEntity { 
+                    PartographId = cervicalDilationDto.PartographId, 
+                    Hour = cervicalDilationDto.Hour,
+                    RemOrRam = cervicalDilationDto.RemOrRam, 
+                    Value = cervicalDilationDto.Value,
+                    IsDelete = false,
+                    CreateAt = DateTime.Now,
+                    CreatedBy = cervicalDilationDto.UserId,
+                    UpdateAt = null, 
+                    UpdateBy = null, 
+                    DeleteAt = null, 
+                    DeleteBy = null,
+                };
+                _context.CervicalDilations.Add(cervicalDilationEntity);
 
+                _context.SaveChanges();
+                return new BaseResponse<CervicalDilationEntity>
+                {
+                    Response = cervicalDilationEntity,
+                    Message = "Dilatacion cervical guardada correctamente",
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<CervicalDilationEntity>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public BaseResponse<CervicalDilationEntity> DeleteCervicalDilation(int? id, Guid? userId)
+        {
+            try
+            {
+                var cerivicalDilation = _context.CervicalDilations.Find(id);
+                if (cerivicalDilation == null)
+                {
+                    return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = {},
+                        Message = "Dilatacion cervical no fueron encontradas",
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+                }
+                else
+                {
+                    cerivicalDilation.IsDelete = true;
+                    cerivicalDilation.DeleteBy = userId;
+                    cerivicalDilation.DeleteAt = DateTime.Now;
+                    _context.SaveChanges();
+
+                    return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = cerivicalDilation,
+                        Message = "Dilatacion cervical eliminada correctamente",
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<CervicalDilationEntity>
+                {
+                    Response = {},
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public BaseResponse<IEnumerable<CervicalDilationEntity>> GetCervicalDilations(Guid partographId)
+        {
+            try
+            {
+                var result = _context.CervicalDilations.Where((e) => e.PartographId == partographId).ToList();
+
+                if (result.Count == 0)
+                    return new BaseResponse<IEnumerable<CervicalDilationEntity>>
+                    {
+                        Response = null,
+                        Message = "No existen dilataciones cervicales",
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+                else
+                    return new BaseResponse<IEnumerable<CervicalDilationEntity>>
+                    {
+                        Response = result,
+                        Message = "Dilataciones cervicales encontradas",
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<CervicalDilationEntity>>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public BaseResponse<CervicalDilationEntity> UpdateCervicalDilation(CervicalDilationDto cervicalDilationDto)
+        {
+            try
+            {
+                var cerivicalDilation = _context.CervicalDilations.Find(cervicalDilationDto.Id);
+                if (cerivicalDilation == null)
+                {
+                    return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = { },
+                        Message = "Dilatacion cervical no fue encontrada",
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+                }
+                else
+                {
+                    cerivicalDilation.Hour = cerivicalDilation.Hour;
+                    cerivicalDilation.Value = cervicalDilationDto.Value;
+                    cerivicalDilation.RemOrRam = cerivicalDilation.RemOrRam;
+                    cerivicalDilation.UpdateBy = cervicalDilationDto.UserId;
+                    cerivicalDilation.UpdateAt = DateTime.Now;
+                    _context.SaveChanges();
+
+                    return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = cerivicalDilation,
+                        Message = "Dilatacion cervical eliminada correctamente",
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<CervicalDilationEntity>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
     }
 }

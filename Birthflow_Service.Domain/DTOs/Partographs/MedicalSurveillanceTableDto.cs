@@ -18,5 +18,7 @@ namespace Birthflow_Domain.DTOs.Partographs
         public string FrequencyContractions { get; set; } = null!;
         public string Pain { get; set; } = null!;
         public DateTime Time { get; set; }
+
+        public Guid? UserId { get; set; }
     }
 }

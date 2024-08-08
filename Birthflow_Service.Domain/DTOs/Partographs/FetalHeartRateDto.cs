@@ -13,5 +13,7 @@ namespace Birthflow_Domain.DTOs.Partographs
         public Guid PartographId { get; set; }
         public string Value { get; set; } = null!;
         public DateTime Time { get; set; }
+
+        public Guid? UserId { get; set; }
     }
 }

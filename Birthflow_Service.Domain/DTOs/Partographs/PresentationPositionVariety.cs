@@ -15,5 +15,6 @@ namespace Birthflow_Domain.DTOs.Partographs
         public string HodgePlane { get; set; } = null!;
         public string Position { get; set; } = null!;
         public DateTime Time { get; set; }
+        public Guid? UserId { get; set; }
     }
 }

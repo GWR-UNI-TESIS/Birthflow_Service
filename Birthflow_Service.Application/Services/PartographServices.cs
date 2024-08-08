@@ -26,7 +26,6 @@ namespace Birthflow_Application.Services
             this._partographRepo = _partographRepo;
         }
 
-
         public BaseResponse<PartographEntity> CreatePartograph(PartographDto partographDto)
         {
             try
@@ -53,6 +52,75 @@ namespace Birthflow_Application.Services
             catch (Exception ex)
             {
                 return new BaseResponse<IEnumerable<PartographEntity>>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public BaseResponse<CervicalDilationEntity> CreateCervicalDilation(CervicalDilationDto cervicalDilationDto)
+        {
+            try
+            {
+                return _partographRepo.CreateCervicalDilation(cervicalDilationDto);
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<CervicalDilationEntity>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+
+        public BaseResponse<CervicalDilationEntity> DeleteCervicalDilation(int? id, Guid? userId)
+        {
+            try
+            {
+                return _partographRepo.DeleteCervicalDilation(id, userId);
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<CervicalDilationEntity>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public BaseResponse<IEnumerable<CervicalDilationEntity>> GetCervicalDilations(Guid partographId)
+        {
+            try
+            {
+                return _partographRepo.GetCervicalDilations(partographId);
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<CervicalDilationEntity>>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public BaseResponse<CervicalDilationEntity> UpdateCervicalDilation(CervicalDilationDto cervicalDilationDto)
+        {
+            try
+            {
+                return _partographRepo.UpdateCervicalDilation(cervicalDilationDto);
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<CervicalDilationEntity>
                 {
                     Response = null,
                     Message = ex.Message,
