@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Birthflow_Service.Application\Birthflow_Application.csproj" />
-    <ProjectReference Include="..\Birthflow_Service.Domain\Birthflow_Domain.csproj" />
-    <ProjectReference Include="..\Birthflow_Service.Infraestructure\Birthflow_Infraestructure.csproj" />
+    <ProjectReference Include="..\Birthflow_Service.Application\BirthflowService.Application.csproj" />
+    <ProjectReference Include="..\Birthflow_Service.Domain\BirthflowService.Domain.csproj" />
+    <ProjectReference Include="..\Birthflow_Service.Infraestructure\BirthflowService.Infraestructure.csproj" />
   </ItemGroup>
 
 </Project>

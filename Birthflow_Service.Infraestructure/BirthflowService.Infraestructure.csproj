@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Birthflow_Service.Domain\Birthflow_Domain.csproj" />
+    <ProjectReference Include="..\Birthflow_Service.Domain\BirthflowService.Domain.csproj" />
   </ItemGroup>
 
 </Project>
