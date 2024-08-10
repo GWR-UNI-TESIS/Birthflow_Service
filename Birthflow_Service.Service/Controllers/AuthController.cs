@@ -89,9 +89,20 @@ namespace Birthflow_Service.Controllers
 
             string token = _authServices.CreateToken(user);
 
+
+            UsuarioEntityDto userDto = new UsuarioEntityDto()
+            {
+                Id = user.Id,
+                NombreUsuario = user.NombreUsuario,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Nombres = user.Nombres,
+                Apellidos = user.Apellidos,
+
+            };
             return Ok(new BaseResponse<UserLoginDto>
             {
-                Response = new UserLoginDto { Token = token, User = user },
+                Response = new UserLoginDto { Token = token, User = userDto },
                 Message = "Generate Token.",
                 StatusCode = StatusCodes.Status200OK,
             });

@@ -21,7 +21,7 @@ namespace Birthflow_Application.DTOs.Auth
 
         public decimal? PhoneNumber { get; set; }
 
-        public string PasswordHash { get; set; }
+        public string? PasswordHash { get; set; }
 
         public class UsersSummary
         {
@@ -40,7 +40,7 @@ namespace Birthflow_Application.DTOs.Auth
         public class UserLoginDto
         {
             public string Token { get; set; }
-            public UsuarioEntity User { get; set; }
+            public UsuarioEntityDto User { get; set; }
         }
     }
 }

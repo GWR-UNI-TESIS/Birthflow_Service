@@ -65,7 +65,7 @@ namespace Birthflow_Infraestructure.Repositories
             throw new NotImplementedException();
         }
 
-        public BaseResponse<UsuarioEntity> SaveUser(UsuarioEntityDto user)
+        public BaseResponse<UsuarioEntityDto> SaveUser(UsuarioEntityDto user)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace Birthflow_Infraestructure.Repositories
 
                 if (isExistedEmail is not null)
                 {
-                    return new BaseResponse<UsuarioEntity>
+                    return new BaseResponse<UsuarioEntityDto>
                     {
                         Message = "Este correo ya existe",
                         Response = null,
@@ -85,7 +85,7 @@ namespace Birthflow_Infraestructure.Repositories
 
                 if (isExistedEmail is not null)
                 {
-                    return new BaseResponse<UsuarioEntity>
+                    return new BaseResponse<UsuarioEntityDto>
                     {
                         Message = "Este username ya existe",
                         Response = null,
@@ -118,17 +118,27 @@ namespace Birthflow_Infraestructure.Repositories
 
                 _context.SaveChanges();
 
-
-                return new BaseResponse<UsuarioEntity>
+                var dto = new UsuarioEntityDto()
                 {
-                    Response = newUserEntity,
+                    Id = user.Id,
+                    Nombres = newUserEntity.Nombres,
+                    Apellidos = newUserEntity.Apellidos,
+                    NombreUsuario = newUserEntity.NombreUsuario,
+                    Email = newUserEntity.Email,
+                    PhoneNumber = newUserEntity.PhoneNumber,
+                    PasswordHash = null,
+                };
+
+                return new BaseResponse<UsuarioEntityDto>
+                {
+                    Response = dto,
                     Message = "El usuario a sido creado correctamente",
                     StatusCode = StatusCodes.Status200OK,
                 };
             }
             catch (Exception ex)
             {
-                return new BaseResponse<UsuarioEntity>
+                return new BaseResponse<UsuarioEntityDto>
                 {
                     Response = null,
                     Message = ex.Message,

@@ -99,7 +99,7 @@ namespace Birthflow_Application.Services
             throw new NotImplementedException();
         }
 
-        public BaseResponse<UsuarioEntity> SaveUser(UsuarioEntityDto user)
+        public BaseResponse<UsuarioEntityDto> SaveUser(UsuarioEntityDto user)
         {
             var result =  _authRepo.SaveUser(user);
 
