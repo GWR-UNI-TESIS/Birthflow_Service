@@ -61,7 +61,7 @@ namespace Birthflow_Service.Controllers
                 });
 
             if (user.IsDelete)
-                return NotFound(new BaseResponse<UserLoginDto>
+                return Ok(new BaseResponse<UserLoginDto>
                 {
                     Response = new UserLoginDto(),
                     Message = "User not valid.",
@@ -70,7 +70,7 @@ namespace Birthflow_Service.Controllers
 
             if (user.NombreUsuario != request.Email && user.Email != request.Email)
             {
-                return NotFound(new BaseResponse<UserLoginDto>
+                return Ok(new BaseResponse<UserLoginDto>
                 {
                     Response = new UserLoginDto(),
                     Message = "User not found.",
@@ -79,7 +79,7 @@ namespace Birthflow_Service.Controllers
             }
             if (!_authServices.VefiryPassword(request.Password, user.PasswordHash))
             {
-                return NotFound(new BaseResponse<UserLoginDto>
+                return Ok(new BaseResponse<UserLoginDto>
                 {
                     Response = new UserLoginDto(),
                     Message = "Invalid Credential.",
@@ -99,9 +99,9 @@ namespace Birthflow_Service.Controllers
 
         [HttpGet("Get/User/{userId}")]
         [Authorize]
-        public IActionResult GetUser([FromRoute] int userId)
+        public IActionResult GetUser([FromRoute] Guid userId)
         {
-            if (userId == 0)
+            if (userId == Guid.Empty)
                 return Ok(new BaseResponse<UsuarioEntity>
                 {
                     Response = default,

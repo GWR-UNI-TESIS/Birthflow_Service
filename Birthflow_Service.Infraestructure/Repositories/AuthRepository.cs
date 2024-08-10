@@ -45,7 +45,7 @@ namespace Birthflow_Infraestructure.Repositories
             return _context.Usuarios.FirstOrDefault(u => u.Email == email);
         }
 
-        public UsuarioEntity? GetById(int userId)
+        public UsuarioEntity? GetById(Guid userId)
         {
             return _context.Usuarios.FirstOrDefault(u => u.Id == userId);
         }

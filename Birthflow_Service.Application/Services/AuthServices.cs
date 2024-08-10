@@ -75,7 +75,7 @@ namespace Birthflow_Application.Services
             return result;
         }
 
-        public UsuarioEntity? GetById(int userId)
+        public UsuarioEntity? GetById(Guid userId)
         {
             var result = _authRepo.GetById(userId);
 

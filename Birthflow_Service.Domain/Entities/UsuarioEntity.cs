@@ -10,7 +10,7 @@ namespace BirthflowMicroServices.Domain.Models;
 public class UsuarioEntity
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string? Nombres { get; set; }
 
@@ -21,7 +21,7 @@ public class UsuarioEntity
     public string PasswordHash { get; set; } = string.Empty;
 
     public string? Email { get; set; }
-
+    [Column(TypeName = "decimal(8,0)")]
     public decimal? PhoneNumber { get; set; }
 
     public bool IsDelete { get; set; }
