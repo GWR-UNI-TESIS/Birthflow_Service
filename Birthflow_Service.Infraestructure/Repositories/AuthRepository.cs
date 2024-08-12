@@ -4,11 +4,7 @@ using Birthflow_Domain.Interface;
 using Birthflow_Service.Infraestructure.DbContexts;
 using BirthflowMicroServices.Domain.Models;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using static Birthflow_Application.DTOs.Auth.UsuarioEntityDto;
 
 namespace Birthflow_Infraestructure.Repositories

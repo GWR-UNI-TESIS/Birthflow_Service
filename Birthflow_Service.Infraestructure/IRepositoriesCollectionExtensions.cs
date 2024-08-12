@@ -1,4 +1,5 @@
 ﻿using Birthflow_Infraestructure.Repositories;
+using BirthflowService.Infraestructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Birthflow_Infraestructure
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<AuthRepository>();
-
+            services.AddScoped<PartographRepository>();
             return services;
         }
     }
