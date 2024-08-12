@@ -150,7 +150,7 @@ namespace Birthflow_Service.Controllers
                     StatusCode = StatusCodes.Status404NotFound,
                 });
 
-            var getUser = _authServices.GetById(user.Id);
+            var getUser = _authServices.GetById((Guid)user.Id);
 
             if (getUser is null)
                 return Ok(new BaseResponse<UsuarioEntity>

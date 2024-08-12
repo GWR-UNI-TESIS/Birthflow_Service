@@ -9,7 +9,7 @@ namespace Birthflow_Application.DTOs.Auth
 {
     public class UsuarioEntityDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         public string? Nombres { get; set; }
 
