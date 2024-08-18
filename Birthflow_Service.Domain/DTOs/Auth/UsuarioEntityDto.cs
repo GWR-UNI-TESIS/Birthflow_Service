@@ -1,11 +1,4 @@
-﻿using BirthflowMicroServices.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Birthflow_Application.DTOs.Auth
+﻿namespace Birthflow_Application.DTOs.Auth
 {
     public class UsuarioEntityDto
     {

@@ -18,8 +18,8 @@ namespace BirthflowService.Domain.Entities
         public required string RecordName { get; set; }
         public required DateTime Date { get; set; }
         public required string Observation { get; set; }
-        [MaxLength(3)]
-        public string? WorkTime { get; set; }
+        [MaxLength(3), ForeignKey("WorkTimeEntity")]
+        public required string WorkTime { get; set; }
         public bool IsDelete { get; set; }
         public DateTime CreatedAt { get; set; }
         [ForeignKey("UsuarioEntity")]
@@ -29,6 +29,7 @@ namespace BirthflowService.Domain.Entities
         public DateTime? DeletedAt { get; set; }
         public Guid? DeletedBy { get; set; }
         public UsuarioEntity? UsuarioEntity { get; set; }
+        public virtual WorkTimeEntity? WorkTimeEntity { get; set; }
         public virtual ChildbirthNoteEntity? BirthNote { get; set; }
         public virtual ICollection<CervicalDilationEntity> CervicalDilationEntities { get; set; } = new List<CervicalDilationEntity>();
         public virtual ICollection<ContractionFrequencyEntity> ContractionFrequencyEntities { get; set; } = new List<ContractionFrequencyEntity>();

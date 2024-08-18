@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240818052851_Creando_nuevos_catalogos_de_altura_de_presentacion")]
+    partial class Creando_nuevos_catalogos_de_altura_de_presentacion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -516,15 +519,12 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("WorkTime")
-                        .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("nvarchar(3)");
 
                     b.HasKey("PartographId");
 
                     b.HasIndex("CreatedBy");
-
-                    b.HasIndex("WorkTime");
 
                     b.ToTable("Partographs", "Partograph");
                 });
@@ -626,66 +626,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.HasIndex("Position");
 
                     b.ToTable("PresentationPositionVariety", "Partograph");
-                });
-
-            modelBuilder.Entity("BirthflowService.Domain.Entities.WorkTimeEntity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
-                    b.Property<string>("Membrana")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Paridad")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Posicion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WorkTime", "Partograph");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "VTI",
-                            Membrana = "Integras",
-                            Paridad = "Todas",
-                            Posicion = "Vertical"
-                        },
-                        new
-                        {
-                            Id = "HMI",
-                            Membrana = "Integras",
-                            Paridad = "Multiparas",
-                            Posicion = "Horizontal"
-                        },
-                        new
-                        {
-                            Id = "HMR",
-                            Membrana = "Rotas",
-                            Paridad = "Multiparas",
-                            Posicion = "Horizontal"
-                        },
-                        new
-                        {
-                            Id = "HNI",
-                            Membrana = "Integras",
-                            Paridad = "Nuliparas",
-                            Posicion = "Horizontal"
-                        },
-                        new
-                        {
-                            Id = "HNR",
-                            Membrana = "Rotas",
-                            Paridad = "Nuliparas",
-                            Posicion = "Horizontal"
-                        });
                 });
 
             modelBuilder.Entity("Birthflow_Service.Domain.Models.ApplicationUser", b =>
@@ -891,15 +831,7 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
-                    b.HasOne("BirthflowService.Domain.Entities.WorkTimeEntity", "WorkTimeEntity")
-                        .WithMany()
-                        .HasForeignKey("WorkTime")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("UsuarioEntity");
-
-                    b.Navigation("WorkTimeEntity");
                 });
 
             modelBuilder.Entity("BirthflowService.Domain.Entities.PresentationPositionVarietyEntity", b =>

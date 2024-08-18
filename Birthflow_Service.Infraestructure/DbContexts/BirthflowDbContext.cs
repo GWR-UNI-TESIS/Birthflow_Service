@@ -1,6 +1,7 @@
 ﻿using Birthflow_Service.Domain.Models;
 using BirthflowMicroServices.Domain.Models;
 using BirthflowService.Domain.Entities;
+using BirthflowService.Infraestructure.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -31,9 +32,16 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         public virtual DbSet<ChildbirthNoteEntity> ChildbirthNotes { get; set; }
         public virtual DbSet<ContractionFrequencyEntity> ContractionFrequencyEntities { get; set; }
         public virtual DbSet<FetalHeartRateEntity> FetalHeartRateEntities { get; set; }
-
+        public virtual DbSet<PositionEntity> PositionEntities { get; set; }
+        public virtual DbSet<HodgePlanesEntity> HodgePlanesEntities { get; set; }
+        public virtual DbSet<WorkTimeEntity> WorkTimeEntities { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            builder.ApplyConfiguration(new HodgePlanesSeed());
+            builder.ApplyConfiguration(new PositionsSeed());
+            builder.ApplyConfiguration(new WorkTimeSeed());
+
             base.OnModelCreating(builder);
 
             builder.Ignore<IdentityRole>();
