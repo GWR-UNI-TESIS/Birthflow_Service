@@ -9,7 +9,7 @@ using static Birthflow_Application.DTOs.Auth.UsuarioEntityDto;
 
 namespace Birthflow_Infraestructure.Repositories
 {
-    public class AuthRepository : IAuthServices
+    public class AuthRepository : IAuthRepository
     {
         private readonly BirthflowDbContext _context;
 
@@ -152,7 +152,7 @@ namespace Birthflow_Infraestructure.Repositories
                     return new BaseResponse<string>
                     {
                         Response = user.Email,
-                        Message = "mail already exist",
+                        Message = "Email already exist",
                         StatusCode = StatusCodes.Status400BadRequest,
                     };
 

@@ -11,7 +11,7 @@ using static Birthflow_Application.DTOs.Auth.UsuarioEntityDto;
 
 namespace Birthflow_Domain.Interface
 {
-    public interface IAuthServices
+    public interface IAuthRepository
     {
         string CreateToken(UsuarioEntity user);
         string EncryptedPassword(UsuarioEntityDto.UserDto request);

@@ -1,10 +1,9 @@
-﻿using Birthflow_Application.DTOs.Auth;
-using Birthflow_Application.DTOs;
+﻿using Birthflow_Application.DTOs;
+using Birthflow_Application.DTOs.Auth;
+using BirthflowService.Application.Interfaces;
 using BirthflowService.Domain.DTOs.Partograph;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BirthflowService.Application.Interfaces;
-using BirthflowService.Application.Services;
 
 namespace BirthflowService.API.Controllers
 {
@@ -13,50 +12,38 @@ namespace BirthflowService.API.Controllers
     [Authorize]
     public class PartographController : Controller
     {
-
         private readonly IPartographService _partographServices;
-        public PartographController(PartographService _partographServices)
+
+        public PartographController(IPartographService _partographServices)
         {
             this._partographServices = _partographServices;
         }
 
-        [HttpPost("Create/partograph")]
+        [HttpPost("create/partograph")]
         public IActionResult CreatePartograph([FromBody] PartographDto partograph)
         {
-            if (partograph is null)
-            {
-                return BadRequest(new BaseResponse<UsuarioEntityDto>
-                {
-                    Response = null,
-                    Message = "El modelo es requerido",
-                    StatusCode = StatusCodes.Status404NotFound,
-                });
-            }
+            var result = _partographServices.CreatePartograph(partograph);
 
-            var response = _partographServices.CreatePartograph(partograph);
-
-            return Ok(response);
+            return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("Get/partograph/{userId}")]
+        [HttpGet("get/partographs/{userId}")]
         public IActionResult GetPartographs([FromRoute] Guid userId)
         {
-            if (userId == Guid.Empty)
-            {
-                return BadRequest(new BaseResponse<UsuarioEntityDto>
-                {
-                    Response = null,
-                    Message = "El ID es requerido",
-                    StatusCode = StatusCodes.Status404NotFound,
-                });
-            }
+            var result = _partographServices.GetPartographs(userId);
 
-            var response = _partographServices.GetPartograph(userId);
-
-            return Ok(response);
+            return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("Get/cervical-dilation/{partographId}")]
+        [HttpGet("get/partograph/{partographId}")]
+        public IActionResult GetPartograph([FromRoute] Guid partographId)
+        {
+            var result = _partographServices.GetPartograph(partographId);
+
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet("get/cervical-dilations/{partographId}")]
         public IActionResult GetCervicalDilationByUserId([FromRoute] Guid partographId)
         {
             if (partographId == Guid.Empty)
@@ -74,7 +61,7 @@ namespace BirthflowService.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("Create/cervical-dilation")]
+        [HttpPost("create/cervical-dilation")]
         public IActionResult CreateCervicalDilationByUserId([FromBody] CervicalDilationDto cervicalDilationDto)
         {
             if (cervicalDilationDto == null)
@@ -92,7 +79,7 @@ namespace BirthflowService.API.Controllers
             return Ok(response);
         }
 
-        [HttpPatch("Update/cervical-dilation")]
+        [HttpPatch("update/cervical-dilation")]
         public IActionResult UpdateCervicalDilation([FromBody] CervicalDilationDto cervicalDilationDto)
         {
             if (cervicalDilationDto == null)
@@ -110,9 +97,8 @@ namespace BirthflowService.API.Controllers
             return Ok(response);
         }
 
-
-        [HttpPost("Delete/cervical-dilation")]
-        public IActionResult DepeteCervicalDilation([FromBody] CervicalDilationDto cervicalDilationDto)
+        [HttpPost("delete/cervical-dilation")]
+        public IActionResult DeleteCervicalDilation([FromBody] CervicalDilationDto cervicalDilationDto)
         {
             if (cervicalDilationDto == null)
             {
@@ -123,10 +109,85 @@ namespace BirthflowService.API.Controllers
                     StatusCode = StatusCodes.Status404NotFound,
                 });
             }
-
-            var response = _partographServices.DeleteCervicalDilation(cervicalDilationDto.Id, cervicalDilationDto.UserId);
+            var response = _partographServices.DeleteCervicalDilation(cervicalDilationDto.Id);
 
             return Ok(response);
+        }
+
+        // PRESENTATION POSITION ---------
+
+        [HttpGet("presentation-position-variety/all")]
+        public IActionResult GetAllPresentationPositionVariety()
+        {
+            return Ok(_partographServices.GetAllPresentationPositionVariety());
+        }
+
+        [HttpGet("presentation-position-variety/{parthographId}")]
+        public IActionResult GetPresentationPositionVarietyByParthographId([FromRoute] Guid parthographId)
+        {
+            return Ok(_partographServices.GetPresentationPositionVarietyByParthographId(parthographId));
+        }
+
+        [HttpPost("create/presentation-position-variety")]
+        public IActionResult CreatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
+        {
+            var result = _partographServices.CreatePresentationPositionVariety(presentationDto);
+
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("update/presentation-position-variety")]
+        public IActionResult UpdatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
+        {
+            var result = _partographServices.UpdatePresentationPositionVariety(presentationDto);
+
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("delete/presentation-position-variety")]
+        public IActionResult DeletePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
+        {
+            var result = _partographServices.DeletePresentationPositionVariety(presentationDto);
+
+            return StatusCode(result.StatusCode, result);
+        }
+
+        // MEDICAL SUREVILANCE ---------
+
+        [HttpGet("medical-surveillance-table/all")]
+        public IActionResult GetAllMedicalSurveillanceTable()
+        {
+            return Ok(_partographServices.GetAllMedicalSurveillanceTable());
+        }
+
+        [HttpGet("medical-surveillance-table/{parthographId}")]
+        public IActionResult GetAllPresentationPositionVarietyByParthograph([FromRoute] Guid parthographId)
+        {
+            return Ok(_partographServices.GetMedicalSurveillanceTableByParthographId(parthographId));
+        }
+
+        [HttpPost("create/medical-surveillance-table")]
+        public IActionResult CreateMedicalSurveillanceTable(MedicalSurveillanceTableDTO presentationDto)
+        {
+            var result = _partographServices.CreateMedicalSurveillanceTable(presentationDto);
+
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("update/medical-surveillance-table")]
+        public IActionResult UpdateMedicalSurveillanceTable(MedicalSurveillanceTableDTO presentationDto)
+        {
+            var result = _partographServices.UpdateMedicalSurveillanceTable(presentationDto);
+
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("delete/medical-surveillance-table")]
+        public IActionResult DeleteMedicalSurveillanceTable(MedicalSurveillanceTableDTO presentationDto)
+        {
+            var result = _partographServices.DeleteMedicalSurveillanceTable(presentationDto);
+
+            return StatusCode(result.StatusCode, result);
         }
     }
 }

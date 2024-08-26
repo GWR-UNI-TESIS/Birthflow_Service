@@ -8,11 +8,10 @@ namespace BirthflowService.Domain.DTOs.Partograph
 {
     public class PresentationPositionVarietyDto
     {
-        public int? Id { get; set; } = null;
+        public int Id { get; set; }
         public Guid PartographId { get; set; }
-        public string HodgePlane { get; set; } = null!;
-        public string Position { get; set; } = null!;
+        public int HodgePlane { get; set; }
+        public int Position { get; set; } 
         public DateTime Time { get; set; }
-        public Guid? UserId { get; set; }
     }
 }

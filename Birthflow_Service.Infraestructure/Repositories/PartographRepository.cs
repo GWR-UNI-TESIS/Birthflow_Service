@@ -4,6 +4,7 @@ using BirthflowService.Domain.DTOs.Partograph;
 using BirthflowService.Domain.Entities;
 using BirthflowService.Domain.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace BirthflowService.Infraestructure.Repositories
 {
@@ -57,7 +58,7 @@ namespace BirthflowService.Infraestructure.Repositories
             }
         }
 
-        public BaseResponse<IEnumerable<PartographEntity>> GetPartograph(Guid userId)
+        public BaseResponse<IEnumerable<PartographEntity>> GetPartographs(Guid userId)
         {
             try
             {
@@ -89,6 +90,40 @@ namespace BirthflowService.Infraestructure.Repositories
             }
         }
 
+        public BaseResponse<PartographEntity> GetPartograph(Guid partographId)
+        {
+            try
+            {
+                var result = _context.Partographs
+                  .Include(p => p.CervicalDilationEntities)
+                  .FirstOrDefault(p => p.PartographId == partographId);
+
+                if (result == null)
+                    return new BaseResponse<PartographEntity>
+                    {
+                        Response = null,
+                        Message = "Partograma no encontrado",
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+
+                return new BaseResponse<PartographEntity>
+                {
+                    Response = result,
+                    Message = "Partograma encontrado",
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<PartographEntity>
+                {
+                    Response = null,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
         public BaseResponse<CervicalDilationEntity> CreateCervicalDilation(CervicalDilationDto cervicalDilationDto)
         {
             try
@@ -107,7 +142,7 @@ namespace BirthflowService.Infraestructure.Repositories
                     DeleteAt = null,
                     DeleteBy = null,
                 };
-                _context.CervicalDilations.Add(cervicalDilationEntity);
+                _context.Add(cervicalDilationEntity);
 
                 _context.SaveChanges();
                 return new BaseResponse<CervicalDilationEntity>
@@ -241,6 +276,238 @@ namespace BirthflowService.Infraestructure.Repositories
                 };
             }
         }
-    }
 
+        //Metodos de variedad de posicion fetal - plano de hodge
+        public BaseResponse<List<PresentationPositionVarietyEntity>> GetAllPresentationPositionVariety()
+        {
+            var result = _context.PresentationPositionVarietyEntities.ToList();
+
+            if (result is null)
+            {
+                return new BaseResponse<List<PresentationPositionVarietyEntity>>
+                {
+                    Message = "Not found",
+                    Response = new List<PresentationPositionVarietyEntity>(),
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
+
+            return new BaseResponse<List<PresentationPositionVarietyEntity>>
+            {
+                Message = "Get All Presentation Positions",
+                Response = result,
+                StatusCode = StatusCodes.Status200OK
+            };
+        }
+
+        public BaseResponse<List<PresentationPositionVarietyEntity>> GetPresentationPositionVarietyByParthographId(Guid parthographId)
+        {
+            var result = _context.PresentationPositionVarietyEntities.Where(ppv => ppv.PartographId == parthographId).ToList();
+
+            if (result is null)
+            {
+                return new BaseResponse<List<PresentationPositionVarietyEntity>>
+                {
+                    Message = "Not found",
+                    Response = null,
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
+
+            return new BaseResponse<List<PresentationPositionVarietyEntity>>
+            {
+                Message = "Get presentation position by parthographId",
+                Response = result,
+                StatusCode = StatusCodes.Status200OK
+            };
+        }
+
+        public BaseResponse<PresentationPositionVarietyEntity> GetPresentationPositionVarietyById(int presentationId)
+        {
+            var result = _context.PresentationPositionVarietyEntities.FirstOrDefault(ppv => ppv.Id == presentationId);
+
+            if (result is null)
+            {
+                return new BaseResponse<PresentationPositionVarietyEntity>
+                {
+                    Message = "Not found",
+                    Response = null,
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
+
+            return new BaseResponse<PresentationPositionVarietyEntity>
+            {
+                Message = "Get presentation position by parthographId",
+                Response = result,
+                StatusCode = StatusCodes.Status200OK
+            };
+        }
+
+        public BaseResponse<PresentationPositionVarietyEntity> CreatePresentationPositionVariety(PresentationPositionVarietyEntity presentation)
+        {
+            try
+            {
+                _context.PresentationPositionVarietyEntities.Add(presentation);
+                _context.SaveChanges();
+
+                return new BaseResponse<PresentationPositionVarietyEntity>
+                {
+                    Message = "Inserted correctly",
+                    Response = presentation,
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<PresentationPositionVarietyEntity>
+                {
+                    Message = $"ERROR: {ex.Message}",
+                    Response = presentation,
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+        }
+
+        public BaseResponse<PresentationPositionVarietyEntity> UpdatePresentationPositionVariety(PresentationPositionVarietyEntity presentation)
+        {
+            try
+            {
+                _context.PresentationPositionVarietyEntities.Update(presentation);
+                _context.SaveChanges();
+
+                return new BaseResponse<PresentationPositionVarietyEntity>
+                {
+                    Message = "Updated correctly",
+                    Response = presentation,
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<PresentationPositionVarietyEntity>
+                {
+                    Message = $"ERROR: {ex.Message}",
+                    Response = presentation,
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+        }
+
+        public BaseResponse<List<MedicalSurveillanceTableEntity>> GetAllMedicalSurveillanceTables()
+        {
+            var result = _context.MedicalSurveillanceTables.ToList();
+
+            if (result is null)
+            {
+                return new BaseResponse<List<MedicalSurveillanceTableEntity>>
+                {
+                    Message = "Get all MedicalSurveillanceTableEntity",
+                    Response = new List<MedicalSurveillanceTableEntity>(),
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+
+            return new BaseResponse<List<MedicalSurveillanceTableEntity>>
+            {
+                Message = "Get all MedicalSurveillanceTableEntity",
+                Response = result,
+                StatusCode = StatusCodes.Status200OK
+            };
+        }
+
+        public BaseResponse<MedicalSurveillanceTableEntity> GetMedicalSurveillanceTablesById(int medicalId)
+        {
+            var result = _context.MedicalSurveillanceTables.FirstOrDefault(mst => mst.Id == medicalId);
+
+            if (result is null)
+            {
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = "Get all MedicalSurveillanceTableEntity",
+                    Response = null,
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+
+            return new BaseResponse<MedicalSurveillanceTableEntity>
+            {
+                Message = "Get all MedicalSurveillanceTableEntity",
+                Response = result,
+                StatusCode = StatusCodes.Status200OK
+            };
+        }
+
+        public BaseResponse<List<MedicalSurveillanceTableEntity>> GetMedicalSurveillanceTablesByParthographId(Guid parthographId)
+        {
+            var result = _context.MedicalSurveillanceTables.Where(mst => mst.PartographId == parthographId).ToList();
+
+            if (result is null)
+            {
+                return new BaseResponse<List<MedicalSurveillanceTableEntity>>
+                {
+                    Message = "Get all MedicalSurveillanceTableEntity",
+                    Response = null,
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+
+            return new BaseResponse<List<MedicalSurveillanceTableEntity>>
+            {
+                Message = "Get all MedicalSurveillanceTableEntity",
+                Response = result,
+                StatusCode = StatusCodes.Status200OK
+            };
+        }
+
+        public BaseResponse<MedicalSurveillanceTableEntity> CreateMedicalSurveillanceTable(MedicalSurveillanceTableEntity medical)
+        {
+            try
+            {
+                _context.MedicalSurveillanceTables.Add(medical);
+                _context.SaveChanges();
+
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = "Inserted correctly",
+                    Response = medical,
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = $"ERROR: {ex.Message}",
+                    Response = medical,
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+        }
+
+        public BaseResponse<MedicalSurveillanceTableEntity> UpdateMedicalSurveillanceTable(MedicalSurveillanceTableEntity medical)
+        {
+            try
+            {
+                _context.MedicalSurveillanceTables.Update(medical);
+                _context.SaveChanges();
+
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = "Update correctly",
+                    Response = medical,
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = $"ERROR: {ex.Message}",
+                    Response = medical,
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+        }
+    }
 }

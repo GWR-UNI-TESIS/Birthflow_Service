@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Birthflow_Application.Services
 {
-    public class AuthServices : IAuthServices
+    public class AuthServices : IAuthRepository
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthServices> _logger;

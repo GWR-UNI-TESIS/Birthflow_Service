@@ -13,8 +13,8 @@ namespace Birthflow_Service.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthServices _authServices;
-        public AuthController(IAuthServices authService)
+        private readonly IAuthRepository _authServices;
+        public AuthController(IAuthRepository authService)
         {
             _authServices = authService;
         }
