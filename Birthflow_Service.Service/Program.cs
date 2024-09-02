@@ -1,6 +1,7 @@
 using Birthflow_Application;
 using Birthflow_Infraestructure;
 using Birthflow_Service.Infraestructure.DbContexts;
+using BirthflowService.Domain.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,6 +33,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<GmailOptions>(
+    builder.Configuration.GetSection(GmailOptions.GmailOptionsKey));
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

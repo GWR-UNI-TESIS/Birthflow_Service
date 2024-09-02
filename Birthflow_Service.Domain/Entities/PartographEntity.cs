@@ -22,13 +22,13 @@ namespace BirthflowService.Domain.Entities
         public required string WorkTime { get; set; }
         public bool IsDelete { get; set; }
         public DateTime CreatedAt { get; set; }
-        [ForeignKey("UsuarioEntity")]
+        [ForeignKey("UserEntity")]
         public Guid? CreatedBy { get; set; }
         public DateTime? UpdateAt { get; set; }
         public Guid? UpdateBy { get; set; }
         public DateTime? DeletedAt { get; set; }
         public Guid? DeletedBy { get; set; }
-        public UsuarioEntity? UsuarioEntity { get; set; }
+        public UserEntity? UserEntity { get; set; }
         public virtual WorkTimeEntity? WorkTimeEntity { get; set; }
         public virtual ChildbirthNoteEntity? BirthNote { get; set; }
         public virtual ICollection<CervicalDilationEntity> CervicalDilationEntities { get; set; } = new List<CervicalDilationEntity>();

@@ -6,23 +6,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BirthflowMicroServices.Domain.Models;
 
-[Table("Usuario", Schema = "Auth")]
-public class UsuarioEntity
+[Table("User", Schema = "Auth")]
+public class UserEntity
 {
     [Key]
     public Guid Id { get; set; }
 
-    public string? Nombres { get; set; }
+    public string? Name { get; set; }
 
-    public string? Apellidos { get; set; }
+    public string? SecondName { get; set; }
 
-    public string? NombreUsuario { get; set; }
+    public string? UserName { get; set; }
 
     public string PasswordHash { get; set; } = string.Empty;
 
     public string? Email { get; set; }
     [Column(TypeName = "decimal(8,0)")]
     public decimal? PhoneNumber { get; set; }
+
+    public bool IsActive { get; set; }
 
     public bool IsDelete { get; set; }
 

@@ -1,5 +1,4 @@
-﻿using Birthflow_Service.Domain.Models;
-using BirthflowMicroServices.Domain.Models;
+﻿using BirthflowMicroServices.Domain.Models;
 using BirthflowService.Domain.Entities;
 using BirthflowService.Infraestructure.Seeds;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Birthflow_Service.Infraestructure.DbContexts
 {
-    public class BirthflowDbContext : IdentityDbContext<ApplicationUser>
+    public class BirthflowDbContext : DbContext
     {
         public BirthflowDbContext(DbContextOptions<BirthflowDbContext> options) : base(options)
         {
@@ -22,7 +21,7 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         }
 
         // AUTH
-        public virtual DbSet<UsuarioEntity> Usuarios { get; set; }
+        public virtual DbSet<UserEntity> Users { get; set; }
         public virtual DbSet<PasswordEntity> Passwords { get; set; }
         //PARTOGRAPH
         public virtual DbSet<PartographEntity> Partographs { get; set; }
@@ -35,6 +34,8 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         public virtual DbSet<PositionEntity> PositionEntities { get; set; }
         public virtual DbSet<HodgePlanesEntity> HodgePlanesEntities { get; set; }
         public virtual DbSet<WorkTimeEntity> WorkTimeEntities { get; set; }
+        public virtual DbSet<RefreshTokenEntity> RefreshTokenEntities { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -43,10 +44,6 @@ namespace Birthflow_Service.Infraestructure.DbContexts
             builder.ApplyConfiguration(new WorkTimeSeed());
 
             base.OnModelCreating(builder);
-
-            builder.Ignore<IdentityRole>();
-            builder.Ignore<IdentityUserRole<string>>();
-            builder.Ignore<IdentityRoleClaim<string>>();
         }
     }
 }

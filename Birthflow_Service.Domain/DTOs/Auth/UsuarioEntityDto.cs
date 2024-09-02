@@ -32,7 +32,8 @@
 
         public class UserLoginDto
         {
-            public string Token { get; set; }
+            public string AccessToken { get; set; }
+            public string RefreshToken { get; set; }
             public UsuarioEntityDto User { get; set; }
         }
     }

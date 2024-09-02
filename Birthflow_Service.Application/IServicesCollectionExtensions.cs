@@ -18,10 +18,11 @@ namespace Birthflow_Application
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IAuthRepository, AuthServices>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IPartographService, PartographService>();
             services.AddTransient<IUserTokenService, UserTokenService>();
-
+            services.AddScoped<IMailService, GmailService>();
             return services;
         }
     }

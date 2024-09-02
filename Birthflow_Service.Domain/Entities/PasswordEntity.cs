@@ -7,7 +7,7 @@ namespace BirthflowMicroServices.Domain.Models;
 public class PasswordEntity
 {
     public int Id { get; set; }
-    [ForeignKey("UsuarioEntity")]
+    [ForeignKey("UserEntity")]
     public int? UsuarioId { get; set; }
 
     public string? PasswordHash { get; set; }
@@ -16,5 +16,5 @@ public class PasswordEntity
 
     public DateTime CreateAt { get; set; }
 
-    public virtual UsuarioEntity Usuario { get; set; }
+    public virtual UserEntity Usuario { get; set; }
 }
