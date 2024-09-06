@@ -1,4 +1,5 @@
 ﻿using Birthflow_Application.DTOs;
+using Birthflow_Application.DTOs.Auth;
 using BirthflowService.Application.Interfaces;
 using BirthflowService.Domain.DTOs.Partograph;
 using BirthflowService.Domain.Entities;
@@ -120,6 +121,15 @@ namespace BirthflowService.Application.Services
         {
             try
             {
+                if (cervicalDilationDto == null)
+                {
+                    return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = null,
+                        Message = "El body es requerido",
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
                 return _partographRepo.CreateCervicalDilation(cervicalDilationDto);
             }
             catch (Exception ex)
@@ -133,13 +143,23 @@ namespace BirthflowService.Application.Services
             }
         }
 
-        public BaseResponse<CervicalDilationEntity> DeleteCervicalDilation(int? id)
+        public BaseResponse<CervicalDilationEntity> DeleteCervicalDilation(CervicalDilationDto cervicalDilationDto)
         {
             try
             {
+                if (cervicalDilationDto == null)
+                {
+                        return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = null,
+                        Message = "El body es requerido",
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
+
                 Guid userId = _tokenServices.GetUserId();
 
-                return _partographRepo.DeleteCervicalDilation(id, userId);
+                return _partographRepo.DeleteCervicalDilation(cervicalDilationDto.Id, userId);
             }
             catch (Exception ex)
             {
@@ -156,6 +176,16 @@ namespace BirthflowService.Application.Services
         {
             try
             {
+                if (partographId == Guid.Empty)
+                {
+                    return new BaseResponse<IEnumerable<CervicalDilationEntity>>
+                    {
+                        Response = null,
+                        Message = "El ID es requerido",
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
+
                 return _partographRepo.GetCervicalDilations(partographId);
             }
             catch (Exception ex)
@@ -173,6 +203,16 @@ namespace BirthflowService.Application.Services
         {
             try
             {
+                if (cervicalDilationDto == null)
+                {
+                    return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = null,
+                        Message = "El body es requerido",
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
+
                 return _partographRepo.UpdateCervicalDilation(cervicalDilationDto);
             }
             catch (Exception ex)

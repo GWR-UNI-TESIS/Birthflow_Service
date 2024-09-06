@@ -18,7 +18,7 @@ namespace BirthflowService.Application.Interfaces
         // Dilatacion Cervical
         BaseResponse<CervicalDilationEntity> CreateCervicalDilation(CervicalDilationDto cervicalDilationDto);
         BaseResponse<CervicalDilationEntity> UpdateCervicalDilation(CervicalDilationDto cervicalDilationDto);
-        BaseResponse<CervicalDilationEntity> DeleteCervicalDilation(int? id);
+        BaseResponse<CervicalDilationEntity> DeleteCervicalDilation(CervicalDilationDto cervicalDilationDto);
         BaseResponse<IEnumerable<CervicalDilationEntity>> GetCervicalDilations(Guid partographId);
 
         // PRESENTATION POSITION
