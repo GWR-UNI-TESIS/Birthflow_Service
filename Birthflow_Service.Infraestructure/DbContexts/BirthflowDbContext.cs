@@ -35,7 +35,7 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         public virtual DbSet<HodgePlanesEntity> HodgePlanesEntities { get; set; }
         public virtual DbSet<WorkTimeEntity> WorkTimeEntities { get; set; }
         public virtual DbSet<RefreshTokenEntity> RefreshTokenEntities { get; set; }
-
+        public virtual DbSet<ActivationTokenEntity> ActivationTokenEntities { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 

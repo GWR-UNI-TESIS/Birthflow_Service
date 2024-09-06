@@ -65,7 +65,7 @@ namespace Birthflow_Infraestructure.Repositories
                     PhoneNumber = user.PhoneNumber,
                     PasswordHash = encrypted,
                     IsDelete = false,
-                    IsActive = false,
+                    IsActive = true,
                     CreatedAt = DateTime.Now,
                     CreatedBy = 1,
                     UpdatedAt = null,

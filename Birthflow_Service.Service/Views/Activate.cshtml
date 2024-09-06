@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Account Activation";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <h1>@ViewBag.Message</h1>
+
+    <script>
+        @if (ViewBag.Success)
+        {
+            <text>
+                    // Si la activación fue exitosa, cierra la ventana después de un breve retraso
+                    setTimeout(function() {
+                        window.close();
+                    }, 3000); // 3 segundos de retraso antes de cerrar la ventana
+            </text>
+        }
+    </script>
+</body>
+</html>

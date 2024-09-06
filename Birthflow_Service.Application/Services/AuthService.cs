@@ -1,30 +1,22 @@
-﻿using Azure.Core;
-using Birthflow_Application.DTOs;
+﻿using Birthflow_Application.DTOs;
 using Birthflow_Application.DTOs.Auth;
-using Birthflow_Application.Utils;
 using Birthflow_Domain.Interface;
-using Birthflow_Infraestructure.Repositories;
 using Birthflow_Service.Application.Models;
-using Birthflow_Service.Infraestructure.DbContexts;
 using BirthflowMicroServices.Domain.Models;
 using BirthflowService.Application.Interfaces;
 using BirthflowService.Application.Models;
-using BirthflowService.Application.Utils.Contracts;
+using BirthflowService.Domain.DTOs.Contracts;
 using BirthflowService.Domain.Entities;
 using BirthflowService.Domain.Interface;
+using BirthflowService.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using static Birthflow_Application.DTOs.Auth.UsuarioEntityDto;
 
 namespace Birthflow_Application.Services
@@ -35,14 +27,17 @@ namespace Birthflow_Application.Services
         private readonly ILogger<AuthService> _logger;
         private readonly IAuthRepository _authRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IMailService _mailService;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IMailAdapter _mailService;
 
-        public AuthService(IConfiguration configuration, IUserRepository userRepository, IAuthRepository authRepository, IMailService mailService)
+        public AuthService(IConfiguration configuration, ILogger<AuthService> logger, IUserRepository userRepository, IAuthRepository authRepository, IMailAdapter mailService, IAccountRepository accountRepository)
         {
             _configuration = configuration;
             _userRepository = userRepository;
             _authRepository = authRepository;
             _mailService = mailService;
+            _logger = logger;
+            _accountRepository = accountRepository;
         }
 
         private string CreateToken(UserEntity user)
@@ -165,7 +160,6 @@ namespace Birthflow_Application.Services
                 PhoneNumber = user.PhoneNumber,
                 Nombres = user.Name,
                 Apellidos = user.SecondName,
-
             };
             return new BaseResponse<UserLoginDto>
             {
@@ -188,7 +182,7 @@ namespace Birthflow_Application.Services
             var username = principal.Identity!.Name;
             var isExistedUserName = _userRepository.GetByUserName(username!);
 
-            if(isExistedUserName == null)
+            if (isExistedUserName == null)
                 return new BaseResponse<UserLoginDto>
                 {
                     Message = "Error no se encontro usuario",
@@ -197,7 +191,6 @@ namespace Birthflow_Application.Services
                 };
 
             var savedRefreshToken = _authRepository.GetRefreshToken(isExistedUserName!.Id, refreshToken);
-
 
             if (savedRefreshToken is null || savedRefreshToken.RefreshTokenValue != refreshToken || savedRefreshToken.Expiration <= DateTime.Now)
             {
@@ -210,11 +203,11 @@ namespace Birthflow_Application.Services
             }
 
             var newAccessToken = CreateToken(isExistedUserName!);
-            var newRefreshToken = GenerateRefreshToken();       
+            var newRefreshToken = GenerateRefreshToken();
 
             RefreshTokenEntity generateTokens = new RefreshTokenEntity
             {
-                RefreshTokenValue = refreshToken,
+                RefreshTokenValue = newRefreshToken,
                 UserId = isExistedUserName!.Id,
                 Expiration = DateTime.Now.AddDays(7),
                 Active = true,
@@ -229,15 +222,14 @@ namespace Birthflow_Application.Services
                 StatusCode = StatusCodes.Status200OK,
                 Response = new UserLoginDto
                 {
-                    AccessToken = accessToken,
-                    RefreshToken = refreshToken,
+                    AccessToken = newAccessToken,
+                    RefreshToken = newRefreshToken,
                 }
             };
         }
 
         public BaseResponse<UsuarioEntityDto> Create(UsuarioEntityDto dto)
         {
-
             if (dto is null)
             {
                 return new BaseResponse<UsuarioEntityDto>
@@ -271,11 +263,141 @@ namespace Birthflow_Application.Services
                 };
             }
             var result = _userRepository.SaveUser(dto);
+           // var body = @"
+            //<!DOCTYPE html>
+            //<html lang='en'>
+            //<head>
+            //    <meta charset='UTF-8'>
+            //    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            //    <title>Email</title>
+            //    <style>
+            //        body {
+            //            font-family: Arial, sans-serif;
+            //            background-color: #f4f4f4;
+            //            margin: 0;
+            //            padding: 0;
+            //        }
+            //        .container {
+            //            width: 100%;
+            //            max-width: 600px;
+            //            margin: 0 auto;
+            //            background-color: #ffffff;
+            //            padding: 20px;
+            //            border-radius: 8px;
+            //            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            //        }
+            //        .header {
+            //            text-align: center;
+            //            padding: 20px 0;
+            //            background-color: #007bff;
+            //            color: white;
+            //            border-radius: 8px 8px 0 0;
+            //        }
+            //        .header h1 {
+            //            margin: 0;
+            //            font-size: 24px;
+            //        }
+            //        .content {
+            //            padding: 20px;
+            //            color: #333333;
+            //        }
+            //        .content h2 {
+            //            color: #007bff;
+            //        }
+            //        .content p {
+            //            line-height: 1.6;
+            //        }
+            //        .button {
+            //            display: inline-block;
+            //            padding: 10px 20px;
+            //            margin: 20px 0;
+            //            font-size: 16px;
+            //            color: white;
+            //            background-color: #007bff;
+            //            text-decoration: none;
+            //            border-radius: 5px;
+            //        }
+            //        .footer {
+            //            text-align: center;
+            //            color: #888888;
+            //            font-size: 14px;
+            //            margin-top: 20px;
+            //        }
+            //        .footer p {
+            //            margin: 5px 0;
+            //        }
+            //        .footer a {
+            //            color: #007bff;
+            //            text-decoration: none;
+            //        }
+            //    </style>
+            //</head>
+            //<body>
+            //    <div class='container'>
+            //        <div class='header'>
+            //            <h1>Welcome to Birthflow</h1>
+            //        </div>
+            //        <div class='content'>
+            //            <h2>Hello, [User's Name]</h2>
+            //            <p>Thank you for registering with us. To complete your registration, please click the button below to activate your account:</p>
+            //            <a href='[Activation Link]' class='button'>Activate Account</a>
+            //            <p>If you did not register for this service, please ignore this email.</p>
+            //        </div>
+            //        <div class='footer'>
+            //            <p>&copy; 2024 Our Company. All rights reserved.</p>
+            //            <p><a href='#'>Unsubscribe</a> | <a href='#'>Privacy Policy</a></p>
+            //        </div>
+            //    </div>
+            //</body>
+            //</html>
+            //";
+          /*  var activateToken = new ActivationTokenEntity
+            {
+                Email = dto.Email!,
+                Value = Guid.NewGuid().ToString(),
+                Expiration = DateTime.UtcNow.AddHours(1),
 
-            SendEmailRequest _sendEmailRequest = new (dto.Email, "Inicio Sesion", " Puebraaaaaaa");
+            };
+
+            _accountRepository.saveActivationToken(activateToken);
+
+            string activationLink = $"https://localhost:7039/api/Account/activate?token?token={activateToken.Value}";
+
+
+            // Replace placeholders with actual values
+            body = body.Replace("[User's Name]", result.Response.NombreUsuario);
+            body = body.Replace("[Activation Link]", activationLink);
+
+            SendEmailRequest _sendEmailRequest = new(dto.Email!, "Activacion Cuenta Sesion", body);
             _mailService.SendEmailAsync(_sendEmailRequest);
-
+          /*/
             return result;
+        }
+
+        public BaseResponse<string> ActivateAccount(string token)
+        {
+            var tokenEntity = _accountRepository.getActivationToken(token);
+
+            if (tokenEntity == null || tokenEntity.Expiration < DateTime.UtcNow)
+            {
+                return new BaseResponse<string>
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Response = "Invalid or expired token. Please request a new activation link.",
+                    Message = "Invalid or expired token. Please request a new activation link."
+                };
+            }
+
+            var user = _userRepository.GetByEmail(tokenEntity.Email);
+
+            user!.IsActive = true;
+
+            return new BaseResponse<string>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Response = "Account activated successfully.",
+                Message = "Account activated successfully."
+            };
         }
     }
 }

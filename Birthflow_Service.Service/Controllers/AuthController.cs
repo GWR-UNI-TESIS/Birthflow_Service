@@ -1,4 +1,5 @@
-﻿using Birthflow_Application.DTOs;
+﻿using Azure.Core;
+using Birthflow_Application.DTOs;
 using Birthflow_Application.DTOs.Auth;
 using Birthflow_Application.Services;
 using Birthflow_Domain.Interface;
@@ -26,6 +27,12 @@ namespace Birthflow_Service.Controllers
         {
             return Ok(_authServices.Create(user));
         }
+        [HttpGet("activate")]
+        public IActionResult ActivateAccount(string token)
+        {
+            return Ok(_authServices.ActivateAccount(token));
+        }
+
 
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginModel request)

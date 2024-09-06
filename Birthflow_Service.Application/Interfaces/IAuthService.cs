@@ -17,5 +17,6 @@ namespace BirthflowService.Application.Interfaces
         BaseResponse<UserLoginDto> Login(LoginModel dto);
         BaseResponse<UsuarioEntityDto> Create(UsuarioEntityDto dto);
         BaseResponse<UserLoginDto> Refresh(Tokens tokens);
+        BaseResponse<string> ActivateAccount(string token);
     }
 }

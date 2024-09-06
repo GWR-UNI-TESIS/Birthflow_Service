@@ -22,7 +22,6 @@ namespace Birthflow_Application
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IPartographService, PartographService>();
             services.AddTransient<IUserTokenService, UserTokenService>();
-            services.AddScoped<IMailService, GmailService>();
             return services;
         }
     }

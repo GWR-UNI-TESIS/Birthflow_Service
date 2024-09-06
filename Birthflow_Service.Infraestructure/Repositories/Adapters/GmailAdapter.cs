@@ -1,22 +1,17 @@
 ﻿using BirthflowService.Domain.Options;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using BirthflowService.Application.Interfaces;
-using BirthflowService.Application.Utils.Contracts;
+using BirthflowService.Domain.Interfaces;
+using BirthflowService.Domain.DTOs.Contracts;
 
-namespace BirthflowService.Application.Services
+namespace BirthflowService.Infraestructure.Repositories.Adapters
 {
-    public class GmailService : IMailService
+    public class GmailAdapter : IMailAdapter
     {
         private readonly GmailOptions _gmailOptions;
 
-        public GmailService(IOptions<GmailOptions> gmailOptions)
+        public GmailAdapter(IOptions<GmailOptions> gmailOptions)
         {
             _gmailOptions = gmailOptions.Value;
         }
@@ -31,6 +26,8 @@ namespace BirthflowService.Application.Services
             };
 
             mailMessage.To.Add(sendEmailRequest.Recipient);
+
+            mailMessage.IsBodyHtml = true;
 
             using var smtpClient = new SmtpClient();
             smtpClient.Host = _gmailOptions.Host;
