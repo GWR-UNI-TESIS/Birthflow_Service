@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Update.Internal;
-using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BirthflowMicroServices.Domain.Models;
+namespace BirthflowService.Domain.Entities;
 
 [Table("User", Schema = "Auth")]
 public class UserEntity
@@ -17,8 +15,6 @@ public class UserEntity
     public string? SecondName { get; set; }
 
     public string? UserName { get; set; }
-
-    public string PasswordHash { get; set; } = string.Empty;
 
     public string? Email { get; set; }
     [Column(TypeName = "decimal(8,0)")]
@@ -41,4 +37,10 @@ public class UserEntity
     public int? DeletedBy { get; set; }
 
     public virtual List<PasswordEntity> Passwords { get; set; } = new List<PasswordEntity>();
+    public virtual ICollection<PartographStateEntity> PartographStateEntity { get; set; } = new List<PartographStateEntity>();
+    public virtual ICollection<UserGroupEntity> UserGroupEntity { get; set; } = new List<UserGroupEntity>();
+    public virtual ICollection<PartographShareEntity> PartographShareEntity { get; set; } = new List<PartographShareEntity>();
+    public virtual ICollection<PartographGroupShareEntity> PartographGroupShares { get; set; } = new List<PartographGroupShareEntity>();
+    public virtual ICollection<UserNotificationEntity> UserNotificationEntity { get; set; } = new List<UserNotificationEntity>();
+
 }

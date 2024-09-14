@@ -4,7 +4,6 @@ using Birthflow_Application.DTOs.Auth;
 using Birthflow_Application.Services;
 using Birthflow_Domain.Interface;
 using Birthflow_Service.Application.Models;
-using BirthflowMicroServices.Domain.Models;
 using BirthflowService.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

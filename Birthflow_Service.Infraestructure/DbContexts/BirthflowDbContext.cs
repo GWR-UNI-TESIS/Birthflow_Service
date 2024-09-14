@@ -1,15 +1,7 @@
-﻿using BirthflowMicroServices.Domain.Models;
-using BirthflowService.Domain.Entities;
+﻿using BirthflowService.Domain.Entities;
 using BirthflowService.Infraestructure.Seeds;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Birthflow_Service.Infraestructure.DbContexts
 {
@@ -31,17 +23,46 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         public virtual DbSet<ChildbirthNoteEntity> ChildbirthNotes { get; set; }
         public virtual DbSet<ContractionFrequencyEntity> ContractionFrequencyEntities { get; set; }
         public virtual DbSet<FetalHeartRateEntity> FetalHeartRateEntities { get; set; }
+        public virtual DbSet<PartographStateEntity> PartographStateEntities { get; set; }
+
+        //Catalogos
         public virtual DbSet<PositionEntity> PositionEntities { get; set; }
         public virtual DbSet<HodgePlanesEntity> HodgePlanesEntities { get; set; }
         public virtual DbSet<WorkTimeEntity> WorkTimeEntities { get; set; }
+        public virtual DbSet<PermissionTypeEntity> PermissionTypeEntities { get; set; }
+
+        //Autenticacion
         public virtual DbSet<RefreshTokenEntity> RefreshTokenEntities { get; set; }
         public virtual DbSet<ActivationTokenEntity> ActivationTokenEntities { get; set; }
+
+        //Notificaciones
+        public virtual DbSet<NotificationTypeEntity> NotificationTypeEntities { get; set; }
+        public virtual DbSet<NotificationEntity> NotificationEntities { get; set; }
+        public virtual DbSet<UserNotificationEntity> UserNotificationEntities { get; set; }
+        public virtual DbSet<PartographNotificationEntity> PartographNotificationEntities { get; set; }
+
+        // Group - Compartir
+        public virtual DbSet<GroupEntity> GroupEntities { get; set; }
+        public virtual DbSet<UserGroupEntity> UserGroupsEntities { get; set; }
+        public virtual DbSet<PartographGroupEntity> PartographGroupEntities { get; set; }
+        public virtual DbSet<PartographGroupItemEntity> PartographGroupItemEntities { get; set; }
+        public virtual DbSet<PartographGroupShareEntity> PartographGroupShareEntities { get; set; }
+        public virtual DbSet<PartographShareEntity> PartographShareEntities { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
             builder.ApplyConfiguration(new HodgePlanesSeed());
             builder.ApplyConfiguration(new PositionsSeed());
             builder.ApplyConfiguration(new WorkTimeSeed());
+            builder.ApplyConfiguration(new PermissionTypeSeed());
+
+
+            builder.Entity<UserGroupEntity>()
+                .HasKey(ug => new { ug.UserId, ug.GroupId }); 
+            builder.Entity<PartographGroupItemEntity>()
+               .HasKey(ug => new { ug.PartographId, ug.PartographGroupId });
 
             base.OnModelCreating(builder);
         }

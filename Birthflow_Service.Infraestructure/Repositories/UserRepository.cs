@@ -2,7 +2,7 @@
 using Birthflow_Application.DTOs.Auth;
 using Birthflow_Domain.Interface;
 using Birthflow_Service.Infraestructure.DbContexts;
-using BirthflowMicroServices.Domain.Models;
+using BirthflowService.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 using static Birthflow_Application.DTOs.Auth.UsuarioEntityDto;
@@ -63,7 +63,6 @@ namespace Birthflow_Infraestructure.Repositories
                     UserName = user.NombreUsuario,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
-                    PasswordHash = encrypted,
                     IsDelete = false,
                     IsActive = true,
                     CreatedAt = DateTime.Now,

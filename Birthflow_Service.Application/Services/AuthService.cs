@@ -2,7 +2,6 @@
 using Birthflow_Application.DTOs.Auth;
 using Birthflow_Domain.Interface;
 using Birthflow_Service.Application.Models;
-using BirthflowMicroServices.Domain.Models;
 using BirthflowService.Application.Interfaces;
 using BirthflowService.Application.Models;
 using BirthflowService.Domain.DTOs.Contracts;
@@ -129,8 +128,8 @@ namespace Birthflow_Application.Services
                     StatusCode = StatusCodes.Status401Unauthorized,
                 };
             }
-
-            if (!VefiryPassword(request.Password, user.PasswordHash))
+            string currentPassword = "";
+            if (!VefiryPassword(request.Password, currentPassword))
             {
                 return new BaseResponse<UserLoginDto>
                 {

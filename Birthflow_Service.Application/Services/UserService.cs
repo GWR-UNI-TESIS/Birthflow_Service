@@ -1,6 +1,5 @@
 ﻿using Birthflow_Application.DTOs;
 using Birthflow_Application.DTOs.Auth;
-using BirthflowMicroServices.Domain.Models;
 using BirthflowService.Application.Interfaces;
 using System;
 using System.Collections.Generic;

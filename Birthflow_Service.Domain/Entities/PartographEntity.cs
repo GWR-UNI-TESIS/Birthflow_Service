@@ -1,11 +1,6 @@
-﻿using BirthflowMicroServices.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BirthflowService.Domain.Entities
 {
@@ -36,5 +31,8 @@ namespace BirthflowService.Domain.Entities
         public virtual ICollection<FetalHeartRateEntity> FetalHeartRateEntities { get; set; } = new List<FetalHeartRateEntity>();
         public virtual ICollection<MedicalSurveillanceTableEntity> MedicalSurveillanceTableEntities { get; set; } = new List<MedicalSurveillanceTableEntity>();
         public virtual ICollection<PresentationPositionVarietyEntity> PresentationPositionVarietyEntities { get; set; } = new List<PresentationPositionVarietyEntity>();
+        public virtual ICollection<PartographStateEntity> PartographStateEntities { get; set; } = new List<PartographStateEntity>();
+        public virtual ICollection<PartographShareEntity> PartographShareEntity { get; set; } = new List<PartographShareEntity>();
+        public virtual ICollection<PartographGroupItemEntity> PartographGroupItems { get; set; } = new List<PartographGroupItemEntity>();
     }
 }

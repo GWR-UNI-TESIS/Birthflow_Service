@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BirthflowMicroServices.Domain.Models;
+namespace BirthflowService.Domain.Entities;
+
 [Table("Password", Schema = "Auth")]
 public class PasswordEntity
 {
-    public int Id { get; set; }
+    [Key]
+    public long Id { get; set; }
     [ForeignKey("UserEntity")]
-    public int? UsuarioId { get; set; }
-
-    public string? PasswordHash { get; set; }
-
+    public Guid UserId { get; set; }
+    public string? PasswordHash { get; set; } = string.Empty;
     public bool? PassActual { get; set; }
-
     public DateTime CreateAt { get; set; }
-
-    public virtual UserEntity Usuario { get; set; }
+    public virtual UserEntity? Usuario { get; set; }
 }
