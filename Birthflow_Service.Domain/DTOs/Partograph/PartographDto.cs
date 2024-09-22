@@ -14,6 +14,5 @@ namespace BirthflowService.Domain.DTOs.Partograph
         public required DateTime Date { get; set; }
         public required string Observation { get; set; }
         public required string WorkTime { get; set; }
-        public Guid? CreatedBy { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace BirthflowService.Domain.Entities
     public class ContractionFrequencyEntity
     {
         [Key, Column(TypeName = "bigint")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [ForeignKey("PartographEntity")]
         public Guid PartographId { get; set; }
         public int Value { get; set; }

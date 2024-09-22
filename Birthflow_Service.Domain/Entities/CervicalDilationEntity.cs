@@ -12,7 +12,7 @@ namespace BirthflowService.Domain.Entities
     public class CervicalDilationEntity
     {
         [Key, Column(TypeName = "bigint")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [ForeignKey("PartographEntity")]
         public Guid PartographId { get; set; }
         [Column(TypeName = "decimal(12,2)")]

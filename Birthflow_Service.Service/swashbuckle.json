@@ -1,0 +1,7 @@
+﻿{
+  "Title": "Birthflow",
+  "Version": "v1",
+  "Description": "Api de birthflow",
+  "RoutePrefix": "swagger",
+  "Endpoint": "/swagger/v1/swagger.json"
+}

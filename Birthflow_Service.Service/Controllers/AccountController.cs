@@ -18,7 +18,7 @@ namespace BirthflowService.API.Controllers
         {
             var result = _authService.ActivateAccount(token);
 
-            if (result.StatusCode == StatusCodes.Status200OK)
+            /*if (result.StatusCode == StatusCodes.Status200OK)
             {
                 ViewBag.Message = "Account activated successfully. This window will close shortly.";
                 ViewBag.Success = true;
@@ -27,7 +27,7 @@ namespace BirthflowService.API.Controllers
             {
                 ViewBag.Message = result.Message;
                 ViewBag.Success = false;
-            }
+            }*/
 
             return View(); // Esto retorna la vista asociada a la activación
         }

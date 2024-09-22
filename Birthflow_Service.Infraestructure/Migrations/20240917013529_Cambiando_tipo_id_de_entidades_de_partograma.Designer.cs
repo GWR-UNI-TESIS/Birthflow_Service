@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240917013529_Cambiando_tipo_id_de_entidades_de_partograma")]
+    partial class Cambiando_tipo_id_de_entidades_de_partograma
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -771,9 +774,12 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("UsuarioId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Password", "Auth");
                 });
@@ -808,25 +814,25 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreateAt = new DateTime(2024, 9, 16, 20, 4, 28, 335, DateTimeKind.Local).AddTicks(7355),
+                            CreateAt = new DateTime(2024, 9, 16, 19, 35, 29, 333, DateTimeKind.Local).AddTicks(3005),
                             Description = "Permisos de lectura",
-                            Identificator = new Guid("fa6c35ce-dffa-44dc-a6f7-d7b16a42e8da"),
+                            Identificator = new Guid("1276946c-fa84-487e-82ea-4ccb8741ba4e"),
                             Name = "Lectura"
                         },
                         new
                         {
                             Id = 2,
-                            CreateAt = new DateTime(2024, 9, 16, 20, 4, 28, 335, DateTimeKind.Local).AddTicks(7372),
+                            CreateAt = new DateTime(2024, 9, 16, 19, 35, 29, 333, DateTimeKind.Local).AddTicks(3017),
                             Description = "Permisos de escritura",
-                            Identificator = new Guid("002aae7b-8666-4058-aefa-5c86da1d9331"),
+                            Identificator = new Guid("188e39c0-a47d-49f3-816d-b60a86d253f7"),
                             Name = "Escritura"
                         },
                         new
                         {
                             Id = 3,
-                            CreateAt = new DateTime(2024, 9, 16, 20, 4, 28, 335, DateTimeKind.Local).AddTicks(7374),
+                            CreateAt = new DateTime(2024, 9, 16, 19, 35, 29, 333, DateTimeKind.Local).AddTicks(3018),
                             Description = "Permisos de lectura y escritura",
-                            Identificator = new Guid("ab33145b-25e5-4635-a68c-bf513b242ea0"),
+                            Identificator = new Guid("5fbe22eb-b2f8-4316-b29b-b5c5551f037d"),
                             Name = "Lectura y Escritura"
                         });
                 });
@@ -1333,13 +1339,11 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
             modelBuilder.Entity("BirthflowService.Domain.Entities.PasswordEntity", b =>
                 {
-                    b.HasOne("BirthflowService.Domain.Entities.UserEntity", "UserEntity")
+                    b.HasOne("BirthflowService.Domain.Entities.UserEntity", "Usuario")
                         .WithMany("Passwords")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UsuarioId");
 
-                    b.Navigation("UserEntity");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("BirthflowService.Domain.Entities.PresentationPositionVarietyEntity", b =>

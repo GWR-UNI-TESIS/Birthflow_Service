@@ -4,8 +4,7 @@ using Birthflow_Domain.Interface;
 using Birthflow_Service.Infraestructure.DbContexts;
 using BirthflowService.Domain.Entities;
 using Microsoft.AspNetCore.Http;
-
-using static Birthflow_Application.DTOs.Auth.UsuarioEntityDto;
+using Microsoft.EntityFrameworkCore;
 
 namespace Birthflow_Infraestructure.Repositories
 {
@@ -15,46 +14,29 @@ namespace Birthflow_Infraestructure.Repositories
 
         public UserRepository(BirthflowDbContext context)
         {
-          _context = context;
+            _context = context;
         }
-
-        public string ChangePassword(UserEntity user, string newPassword)
+ 
+        public async Task<UserEntity?> GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public string EncryptedPassword(UserDto request)
+        public async Task<UserEntity?> GetById(Guid userId)
         {
-            UserEntity user = new UserEntity();
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-            return passwordHash;
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
-        public UserEntity? GetByEmail(string email)
+        public async Task<UserEntity?> GetByUserName(string userName)
         {
-            return _context.Users.FirstOrDefault(u => u.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
         }
 
-        public UserEntity? GetById(Guid userId)
-        {
-            return _context.Users.FirstOrDefault(u => u.Id == userId);
-        }
-
-        public UserEntity? GetByUserName(string userName)
-        {
-            return _context.Users.FirstOrDefault(u => u.UserName == userName);
-        }
-        public BaseResponse<string> RestartPassword(UserEntity user, string newPassword)
-        {
-            throw new NotImplementedException();
-        }
-
-        public BaseResponse<UsuarioEntityDto> SaveUser(UsuarioEntityDto user)
+        public async Task<UserEntity> SaveUser(UsuarioEntityDto user)
         {
             try
             {
-                var encrypted = EncryptedPassword(new UserDto { Email = user.NombreUsuario!, Password = user.PasswordHash! });
+                var encryptedPassword = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
 
                 var newUserEntity = new UserEntity()
                 {
@@ -75,37 +57,18 @@ namespace Birthflow_Infraestructure.Repositories
 
                 _context.Entry(newUserEntity).State = Microsoft.EntityFrameworkCore.EntityState.Added;
 
-                _context.Add<UserEntity>(newUserEntity);
+                await _context.Users.AddAsync(newUserEntity);
+
+                await _context.SaveChangesAsync();
 
                 _context.SaveChanges();
 
-                var dto = new UsuarioEntityDto()
-                {
-                    Id = user.Id,
-                    Nombres = newUserEntity.Name,
-                    Apellidos = newUserEntity.SecondName,
-                    NombreUsuario = newUserEntity.UserName,
-                    Email = newUserEntity.Email,
-                    PhoneNumber = newUserEntity.PhoneNumber,
-                    PasswordHash = null,
-                };
-
-                return new BaseResponse<UsuarioEntityDto>
-                {
-                    Response = dto,
-                    Message = "El usuario a sido creado correctamente",
-                    StatusCode = StatusCodes.Status200OK,
-                };
+                return newUserEntity;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new BaseResponse<UsuarioEntityDto>
-                {
-                    Response = null,
-                    Message = ex.Message,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                };
-            }            
+                throw;
+            }
         }
 
         public BaseResponse<string> UpdateUser(UsuarioEntityDto user, UserEntity currentUser)
@@ -134,7 +97,7 @@ namespace Birthflow_Infraestructure.Repositories
 
                 //user.PasswordHash = encrypted.PasswordHash
 
-                // asignando valores 
+                // asignando valores
                 currentUser.Name = user.Nombres;
                 currentUser.SecondName = user.Apellidos;
                 currentUser.UserName = user.NombreUsuario;
@@ -165,10 +128,6 @@ namespace Birthflow_Infraestructure.Repositories
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
-        }
-        public bool VefiryPassword(string password, string passwordHash)
-        {
-            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
         }
     }
 }

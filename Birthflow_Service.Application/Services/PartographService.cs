@@ -6,6 +6,7 @@ using BirthflowService.Domain.Entities;
 using BirthflowService.Domain.Interface;
 using BirthflowService.Infraestructure.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace BirthflowService.Application.Services
@@ -23,473 +24,620 @@ namespace BirthflowService.Application.Services
             _tokenServices = tokenServices;
         }
 
-        public BaseResponse<PartographEntity> CreatePartograph(PartographDto partographDto)
+        public async Task<BaseResponse<PartographEntity>> CreatePartograph(PartographDto partographDto)
         {
             try
             {
-                if (partographDto is null)
-                {
-                    return new BaseResponse<PartographEntity>
-                    {
-                        Response = null,
-                        Message = "El modelo es requerido",
-                        StatusCode = StatusCodes.Status404NotFound,
-                    };
-                }
-                var result = _partographRepo.CreatePartograph(partographDto);
+                Guid userId = _tokenServices.GetUserId();
 
-                if (result.StatusCode == 400)
-                {
-                    return new BaseResponse<PartographEntity>
-                    {
-                        Message = result.Message,
-                        Response = result.Response,
-                        StatusCode = result.StatusCode,
-                    };
-                }
+                var PartographEntity = new PartographEntity {
+                    PartographId = Guid.NewGuid(),
+                    Name = partographDto.Name,
+                    RecordName = partographDto.RecordName,
+                    Date = partographDto.Date,
+                    Observation = partographDto.Observation,
+                    WorkTime = partographDto.WorkTime,
+                    IsDelete = false,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = userId,
+                };
+
+                var result = await _partographRepo.CreatePartograph(PartographEntity);
+
                 return new BaseResponse<PartographEntity>
                 {
-                    Message = result.Message,
-                    Response = result.Response,
-                    StatusCode = result.StatusCode,
+                    Message = "Ingresado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
                 };
             }
             catch (Exception ex)
             {
                 return new BaseResponse<PartographEntity>
                 {
-                    Response = null,
+                    Response = null!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
         }
 
-        public BaseResponse<IEnumerable<PartographEntity>> GetPartographs(Guid userId)
+        public async Task<BaseResponse<IEnumerable<PartographEntity>>> GetPartographs(Guid userId)
         {
             try
             {
-                if (userId == Guid.Empty)
+                var result = await _partographRepo.GetPartographs(userId);
+
+                return new BaseResponse<IEnumerable<PartographEntity>>
                 {
-                    return new BaseResponse<IEnumerable<PartographEntity>>
-                    {
-                        Response = null,
-                        Message = "El ID es requerido",
-                        StatusCode = StatusCodes.Status404NotFound,
-                    };
-                }
-                return _partographRepo.GetPartographs(userId);
+                    Message = "Ingresado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
             }
             catch (Exception ex)
             {
                 return new BaseResponse<IEnumerable<PartographEntity>>
                 {
-                    Response = null,
+                    Response = null!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
         }
 
-        public BaseResponse<PartographEntity> GetPartograph(Guid partographId)
+        public async Task<BaseResponse<PartographEntity>> GetPartograph(Guid partographId)
         {
             try
             {
-                if (partographId == Guid.Empty)
+                var result =  await _partographRepo.GetPartograph(partographId);
+                return new BaseResponse<PartographEntity>
                 {
-                    return new BaseResponse<PartographEntity>
-                    {
-                        Response = null,
-                        Message = "El ID es requerido",
-                        StatusCode = StatusCodes.Status404NotFound,
-                    };
-                }
-                return _partographRepo.GetPartograph(partographId);
+                    Message = "Ingresado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
             }
             catch (Exception ex)
             {
                 return new BaseResponse<PartographEntity>
                 {
-                    Response = null,
+                    Response = null!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
         }
 
-        public BaseResponse<CervicalDilationEntity> CreateCervicalDilation(CervicalDilationDto cervicalDilationDto)
+        public async Task<BaseResponse<CervicalDilationEntity>> CreateCervicalDilation(CervicalDilationDto cervicalDilationDto)
         {
             try
             {
-                if (cervicalDilationDto == null)
+                var cervicalDilationEntity = new CervicalDilationEntity
                 {
-                    return new BaseResponse<CervicalDilationEntity>
-                    {
-                        Response = null,
-                        Message = "El body es requerido",
-                        StatusCode = StatusCodes.Status404NotFound,
-                    };
-                }
-                return _partographRepo.CreateCervicalDilation(cervicalDilationDto);
+                    PartographId = cervicalDilationDto.PartographId,
+                    Hour = cervicalDilationDto.Hour,
+                    RemOrRam = cervicalDilationDto.RemOrRam,
+                    Value = cervicalDilationDto.Value,
+                    IsDelete = false,
+                    CreateAt = DateTime.Now,
+                    CreatedBy = cervicalDilationDto.UserId,
+                    UpdateAt = null,
+                    UpdateBy = null,
+                    DeleteAt = null,
+                    DeleteBy = null,
+                };
+
+                var result = await _partographRepo.CreateCervicalDilation(cervicalDilationEntity);
+
+                return new BaseResponse<CervicalDilationEntity>
+                {
+                    Response = result,
+                    Message = "La dilatacion cervical ha sido creada correctamente",
+                    StatusCode = StatusCodes.Status200OK,
+                };
             }
             catch (Exception ex)
             {
                 return new BaseResponse<CervicalDilationEntity>
                 {
-                    Response = null,
+                    Response = null!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
         }
 
-        public BaseResponse<CervicalDilationEntity> DeleteCervicalDilation(CervicalDilationDto cervicalDilationDto)
+        public async Task<BaseResponse<CervicalDilationEntity>> DeleteCervicalDilation(CervicalDilationDto cervicalDilationDto)
         {
             try
             {
-                if (cervicalDilationDto == null)
+               Guid userId = _tokenServices.GetUserId();
+
+                var result = await _partographRepo.DeleteCervicalDilation(cervicalDilationDto.Id, userId);
+
+                return new BaseResponse<CervicalDilationEntity>
                 {
-                        return new BaseResponse<CervicalDilationEntity>
-                    {
-                        Response = null,
-                        Message = "El body es requerido",
-                        StatusCode = StatusCodes.Status404NotFound,
-                    };
-                }
-
-                Guid userId = _tokenServices.GetUserId();
-
-                return _partographRepo.DeleteCervicalDilation(cervicalDilationDto.Id, userId);
+                    Response = result,
+                    Message = "La dilatacion cervical ha sido creada eliminada",
+                    StatusCode = StatusCodes.Status200OK,
+                };
             }
             catch (Exception ex)
             {
                 return new BaseResponse<CervicalDilationEntity>
                 {
-                    Response = null,
+                    Response = null!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
         }
 
-        public BaseResponse<IEnumerable<CervicalDilationEntity>> GetCervicalDilations(Guid partographId)
+        public async Task<BaseResponse<IEnumerable<CervicalDilationEntity>>> GetCervicalDilations(Guid partographId)
         {
             try
             {
-                if (partographId == Guid.Empty)
-                {
-                    return new BaseResponse<IEnumerable<CervicalDilationEntity>>
-                    {
-                        Response = null,
-                        Message = "El ID es requerido",
-                        StatusCode = StatusCodes.Status404NotFound,
-                    };
-                }
+                var result = await _partographRepo.GetCervicalDilations(partographId);
 
-                return _partographRepo.GetCervicalDilations(partographId);
+                return new BaseResponse<IEnumerable<CervicalDilationEntity>>
+                {
+                    Response = result,
+                    Message = "La dilatacion cervical ha sido creada correctamente",
+                    StatusCode = StatusCodes.Status200OK,
+                };
             }
             catch (Exception ex)
             {
                 return new BaseResponse<IEnumerable<CervicalDilationEntity>>
                 {
-                    Response = null,
+                    Response = null!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
         }
 
-        public BaseResponse<CervicalDilationEntity> UpdateCervicalDilation(CervicalDilationDto cervicalDilationDto)
+        public async Task<BaseResponse<CervicalDilationEntity>> UpdateCervicalDilation(CervicalDilationDto cervicalDilationDto)
         {
             try
             {
-                if (cervicalDilationDto == null)
+                if(cervicalDilationDto.Id == null)
+                    return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = null!,
+                        Message = "ID no encontrado",
+                        StatusCode = StatusCodes.Status400BadRequest,
+                    };
+
+                var cerivicalDilation = await _partographRepo.GetCervicalDilation((long)cervicalDilationDto.Id!);
+                if (cerivicalDilation == null)
                 {
                     return new BaseResponse<CervicalDilationEntity>
                     {
-                        Response = null,
-                        Message = "El body es requerido",
-                        StatusCode = StatusCodes.Status404NotFound,
+                        Response = null!,
+                        Message = "Dilatacion cervical no fue encontrada",
+                        StatusCode = StatusCodes.Status200OK,
                     };
                 }
+                else
+                {
+                    cerivicalDilation.Hour = cervicalDilationDto.Hour;
+                    cerivicalDilation.Value = cervicalDilationDto.Value;
+                    cerivicalDilation.RemOrRam = cerivicalDilation.RemOrRam;
+                    cerivicalDilation.UpdateBy = cervicalDilationDto.UserId;
+                    cerivicalDilation.UpdateAt = DateTime.Now;
 
-                return _partographRepo.UpdateCervicalDilation(cervicalDilationDto);
+                    var result = await _partographRepo.UpdateCervicalDilation(cerivicalDilation);
+
+                    return new BaseResponse<CervicalDilationEntity>
+                    {
+                        Response = result,
+                        Message = "Dilatacion cervical no fue encontrada",
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+                }
             }
             catch (Exception ex)
             {
                 return new BaseResponse<CervicalDilationEntity>
                 {
-                    Response = null,
+                    Response = null!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
         }
 
-        public BaseResponse<List<PresentationPositionVarietyEntity>> GetAllPresentationPositionVariety()
+        public async Task<BaseResponse<IEnumerable<PresentationPositionVarietyEntity>>> GetAllPresentationPositionVariety()
         {
-            var result = _partographRepo.GetAllPresentationPositionVariety();
-
-            return result;
-        }
-
-        public BaseResponse<List<PresentationPositionVarietyEntity>> GetPresentationPositionVarietyByParthographId(Guid parthographId)
-        {
-            var result = _partographRepo.GetPresentationPositionVarietyByParthographId(parthographId);
-
-            return result;
-        }
-
-        public BaseResponse<PresentationPositionVarietyDto> CreatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
-        {
-            Guid userId = _tokenServices.GetUserId();
-            var entity = presentationDto.ConvertPresentationPositionVarietyDto_Entity();
-            DateTime CreatedAt = DateTime.Now;
-
-            entity.CreateAt = CreatedAt;
-            entity.CreatedBy = userId;
-            entity.Time = CreatedAt;
-            entity.IsDelete = false;
-            entity.UpdateAt = null;
-            entity.DeleteAt = null;
-            entity.UpdateBy = null;
-            entity.DeletedBy = null;
-
-            var result = _partographRepo.CreatePresentationPositionVariety(entity);
-
-            if (result.StatusCode == 400)
+            try
             {
-                return new BaseResponse<PresentationPositionVarietyDto>
+                var result = await _partographRepo.GetAllPresentationPositionVariety();
+
+                return new BaseResponse<IEnumerable<PresentationPositionVarietyEntity>>
                 {
-                    Message = result.Message,
-                    Response = presentationDto,
-                    StatusCode = result.StatusCode,
+                    Response = result,
+                    Message = "Dilatacion cervical no fue encontrada",
+                    StatusCode = StatusCodes.Status200OK,
                 };
             }
-            return new BaseResponse<PresentationPositionVarietyDto>
+            catch(Exception ex)
             {
-                Message = result.Message,
-                Response = presentationDto,
-                StatusCode = result.StatusCode,
-            };
-        }
-
-        public BaseResponse<PresentationPositionVarietyDto> UpdatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
-        {
-            var isExistedPresentatation = _partographRepo.GetPresentationPositionVarietyById(presentationDto.Id);
-
-            if (isExistedPresentatation.Response is null)
-            {
-                return new BaseResponse<PresentationPositionVarietyDto>
+                return new BaseResponse<IEnumerable<PresentationPositionVarietyEntity>>
                 {
-                    Message = "Not found",
-                    Response = presentationDto,
+                    Response = null!,
+                    Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
-
-            Guid userId = _tokenServices.GetUserId();
-
-            isExistedPresentatation.Response.HodgePlane = presentationDto.HodgePlane;
-            isExistedPresentatation.Response.Position = presentationDto.Position;
-            isExistedPresentatation.Response.UpdateAt = DateTime.Now;
-            isExistedPresentatation.Response.UpdateBy = userId;
-
-            var result = _partographRepo.UpdatePresentationPositionVariety(isExistedPresentatation.Response);
-
-            if (result.StatusCode == 400)
-            {
-                return new BaseResponse<PresentationPositionVarietyDto>
-                {
-                    Message = result.Message,
-                    Response = presentationDto,
-                    StatusCode = result.StatusCode,
-                };
-            }
-            return new BaseResponse<PresentationPositionVarietyDto>
-            {
-                Message = result.Message,
-                Response = presentationDto,
-                StatusCode = result.StatusCode,
-            };
         }
 
-        public BaseResponse<PresentationPositionVarietyDto> DeletePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
+        public async Task<BaseResponse<IEnumerable<PresentationPositionVarietyEntity>>> GetPresentationPositionVarietyByParthographId(Guid parthographId)
         {
-            var isExistedPresentatation = _partographRepo.GetPresentationPositionVarietyById(presentationDto.Id);
-
-            if (isExistedPresentatation.Response is null)
+            try
             {
-                return new BaseResponse<PresentationPositionVarietyDto>
+                var result = await _partographRepo.GetPresentationPositionVarietyByParthographId(parthographId);
+
+                return new BaseResponse<IEnumerable<PresentationPositionVarietyEntity>>
                 {
-                    Message = "Not found",
-                    Response = presentationDto,
+                    Response = result,
+                    Message = "Dilatacion cervical no fue encontrada",
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<PresentationPositionVarietyEntity>>
+                {
+                    Response = null!,
+                    Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
-
-            Guid userId = _tokenServices.GetUserId();
-
-            isExistedPresentatation.Response.DeleteAt = DateTime.Now;
-            isExistedPresentatation.Response.DeletedBy = userId;
-
-            var result = _partographRepo.UpdatePresentationPositionVariety(isExistedPresentatation.Response);
-
-            if (result.StatusCode == 400)
-            {
-                return new BaseResponse<PresentationPositionVarietyDto>
-                {
-                    Message = result.Message,
-                    Response = presentationDto,
-                    StatusCode = result.StatusCode,
-                };
-            }
-            return new BaseResponse<PresentationPositionVarietyDto>
-            {
-                Message = result.Message,
-                Response = presentationDto,
-                StatusCode = result.StatusCode,
-            };
         }
 
-        public BaseResponse<List<MedicalSurveillanceTableEntity>> GetAllMedicalSurveillanceTable()
+        public async Task< BaseResponse<PresentationPositionVarietyEntity>> CreatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
         {
-            var result = _partographRepo.GetAllMedicalSurveillanceTables();
-
-            return result;
-        }
-
-        public BaseResponse<MedicalSurveillanceTableEntity> GetMedicalSurveillanceTableById(int medicalId)
-        {
-            var result = _partographRepo.GetMedicalSurveillanceTablesById(medicalId);
-
-            return result;
-        }
-
-        public BaseResponse<List<MedicalSurveillanceTableEntity>> GetMedicalSurveillanceTableByParthographId(Guid medicalId)
-        {
-            var result = _partographRepo.GetMedicalSurveillanceTablesByParthographId(medicalId);
-
-            return result;
-        }
-
-        public BaseResponse<MedicalSurveillanceTableDTO> CreateMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
-        {
-            Guid userId = _tokenServices.GetUserId();
-            var entity = medicalDto.ConvertMedicalSurveillanceTableDto_Entity();
-
-            entity.Time = DateTime.Now;
-            entity.IsDelete = false;
-            entity.CreateAt = DateTime.Now;
-            entity.CreatedBy = userId;
-            entity.UpdateAt = null;
-            entity.UpdateBy = null;
-            entity.DeleteAt = null;
-            entity.DeletedBy = null;
-
-            var result = _partographRepo.CreateMedicalSurveillanceTable(entity);
-
-            if (result.StatusCode == 400)
+            try
             {
-                return new BaseResponse<MedicalSurveillanceTableDTO>
+                Guid userId = _tokenServices.GetUserId();
+                var entity = presentationDto.ConvertPresentationPositionVarietyDto_Entity();
+                DateTime CreatedAt = DateTime.Now;
+
+                entity.CreateAt = CreatedAt;
+                entity.CreatedBy = userId;
+                entity.Time = CreatedAt;
+                entity.IsDelete = false;
+                entity.UpdateAt = null;
+                entity.DeleteAt = null;
+                entity.UpdateBy = null;
+                entity.DeletedBy = null;
+
+                var result = await _partographRepo.CreatePresentationPositionVariety(entity);
+
+                return new BaseResponse<PresentationPositionVarietyEntity>
                 {
-                    Message = result.Message,
-                    Response = medicalDto,
-                    StatusCode = result.StatusCode
+                    Message = "Creacion de variedad de posicion de la presentacion",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
                 };
             }
-
-            return new BaseResponse<MedicalSurveillanceTableDTO>
+            catch (Exception ex)
             {
-                Message = result.Message,
-                Response = medicalDto,
-                StatusCode = result.StatusCode
-            };
+                return new BaseResponse<PresentationPositionVarietyEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+          
         }
 
-        public BaseResponse<MedicalSurveillanceTableDTO> UpdateMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
+        public async Task<BaseResponse<PresentationPositionVarietyEntity>> UpdatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
         {
-            var isExistedMedical = _partographRepo.GetMedicalSurveillanceTablesById(medicalDto.Id);
-
-            if (isExistedMedical.Response is null)
+            try
             {
-                return new BaseResponse<MedicalSurveillanceTableDTO>
+                var isExistedPresentatation = await _partographRepo.GetPresentationPositionVarietyById(presentationDto.Id);
+
+                if (isExistedPresentatation is null)
                 {
-                    Message = "Not found",
-                    Response = medicalDto,
-                    StatusCode = isExistedMedical.StatusCode
+                    return new BaseResponse<PresentationPositionVarietyEntity>
+                    {
+                        Message = "Not found",
+                        Response = { },
+                        StatusCode = StatusCodes.Status400BadRequest,
+                    };
+                }
+
+                Guid userId = _tokenServices.GetUserId();
+
+                isExistedPresentatation.HodgePlane = presentationDto.HodgePlane;
+                isExistedPresentatation.Position = presentationDto.Position;
+                isExistedPresentatation.UpdateAt = DateTime.Now;
+                isExistedPresentatation.UpdateBy = userId;
+
+                var result = await _partographRepo.UpdatePresentationPositionVariety(isExistedPresentatation);
+
+                return new BaseResponse<PresentationPositionVarietyEntity>
+                {
+                    Message = "Modificando de variedad de posicion de la presentacion",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
                 };
             }
-
-            Guid userId = _tokenServices.GetUserId();
-
-            isExistedMedical.Response.Letter = medicalDto.Letter;
-            isExistedMedical.Response.MaternalPosition = medicalDto.MaternalPosition;
-            isExistedMedical.Response.ArterialPressure = medicalDto.ArterialPressure;
-            isExistedMedical.Response.MaternalPulse = medicalDto.MaternalPulse;
-            isExistedMedical.Response.FetalHeartRate = medicalDto.FetalHeartRate;
-            isExistedMedical.Response.ContractionsDuration = medicalDto.ContractionsDuration;
-            isExistedMedical.Response.FrequencyContractions = medicalDto.FrequencyContractions;
-            isExistedMedical.Response.Pain = medicalDto.Pain;
-            isExistedMedical.Response.UpdateAt = DateTime.Now;
-            isExistedMedical.Response.UpdateBy = userId;
-
-            var result = _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical.Response);
-
-            if (result.StatusCode == 400)
+            catch (Exception ex) 
             {
-                return new BaseResponse<MedicalSurveillanceTableDTO>
+                return new BaseResponse<PresentationPositionVarietyEntity>
                 {
-                    Message = result.Message,
-                    Response = medicalDto,
-                    StatusCode = result.StatusCode,
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
-            return new BaseResponse<MedicalSurveillanceTableDTO>
-            {
-                Message = result.Message,
-                Response = medicalDto,
-                StatusCode = result.StatusCode,
-            };
         }
 
-        public BaseResponse<MedicalSurveillanceTableDTO> DeleteMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
+        public async Task<BaseResponse<PresentationPositionVarietyEntity>> DeletePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
         {
-            var isExistedMedical = _partographRepo.GetMedicalSurveillanceTablesById(medicalDto.Id);
-
-            if (isExistedMedical.Response is null)
+            try
             {
-                return new BaseResponse<MedicalSurveillanceTableDTO>
+                var isExistedPresentatation = await _partographRepo.GetPresentationPositionVarietyById(presentationDto.Id);
+
+                if (isExistedPresentatation is null)
                 {
-                    Message = "Not found",
-                    Response = medicalDto,
-                    StatusCode = isExistedMedical.StatusCode
+                    return new BaseResponse<PresentationPositionVarietyEntity>
+                    {
+                        Message = "Not found",
+                        Response = { },
+                        StatusCode = StatusCodes.Status400BadRequest,
+                    };
+                }
+
+                Guid userId = _tokenServices.GetUserId();
+
+                isExistedPresentatation.DeleteAt = DateTime.Now;
+                isExistedPresentatation.DeletedBy = userId;
+
+                var result = await _partographRepo.UpdatePresentationPositionVariety(isExistedPresentatation);
+
+                return new BaseResponse<PresentationPositionVarietyEntity>
+                {
+                    Message = "Modificando de variedad de posicion de la presentacion",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
                 };
             }
-
-            Guid userId = _tokenServices.GetUserId();
-
-            isExistedMedical.Response.IsDelete = true;
-            isExistedMedical.Response.DeleteAt = DateTime.Now;
-            isExistedMedical.Response.DeletedBy = userId;
-
-            var result = _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical.Response);
-
-            if (result.StatusCode == 400)
+            catch (Exception ex)
             {
-                return new BaseResponse<MedicalSurveillanceTableDTO>
+                return new BaseResponse<PresentationPositionVarietyEntity>
                 {
-                    Message = result.Message,
-                    Response = medicalDto,
-                    StatusCode = result.StatusCode,
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
-            return new BaseResponse<MedicalSurveillanceTableDTO>
+           
+        }
+
+
+        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> GetMedicalSurveillanceTableById(int medicalId)
+        {
+            try 
             {
-                Message = result.Message,
-                Response = medicalDto,
-                StatusCode = result.StatusCode,
-            };
+                var result = await _partographRepo.GetMedicalSurveillanceTablesById(medicalId);
+
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = "Modificando de variedad de posicion de la presentacion",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex) 
+            {
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<IEnumerable<MedicalSurveillanceTableEntity>>> GetMedicalSurveillanceTableByParthographId(Guid medicalId)
+        {
+            try
+            {
+                var result = await _partographRepo.GetMedicalSurveillanceTablesByParthographId(medicalId);
+
+                return new BaseResponse<IEnumerable<MedicalSurveillanceTableEntity>>
+                {
+                    Message = "Modificando de variedad de posicion de la presentacion",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<MedicalSurveillanceTableEntity>>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> CreateMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
+        {
+            try
+            {
+                Guid userId = _tokenServices.GetUserId();
+                var entity = medicalDto.ConvertMedicalSurveillanceTableDto_Entity();
+
+                entity.Time = DateTime.Now;
+                entity.IsDelete = false;
+                entity.CreateAt = DateTime.Now;
+                entity.CreatedBy = userId;
+                entity.UpdateAt = null;
+                entity.UpdateBy = null;
+                entity.DeleteAt = null;
+                entity.DeletedBy = null;
+
+                var result = await _partographRepo.CreateMedicalSurveillanceTable(entity);
+
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = "Elemento de la tabla de vigilanca guardado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            } catch (Exception ex)
+            {
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> UpdateMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
+        {
+            try
+            {
+                var isExistedMedical = await _partographRepo.GetMedicalSurveillanceTablesById(medicalDto.Id);
+
+                if (isExistedMedical is null)
+                {
+                    return new BaseResponse<MedicalSurveillanceTableEntity>
+                    {
+                        Message = "Not found",
+                        Response = { },
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+
+                Guid userId = _tokenServices.GetUserId();
+
+                isExistedMedical.Letter = medicalDto.Letter;
+                isExistedMedical.MaternalPosition = medicalDto.MaternalPosition;
+                isExistedMedical.ArterialPressure = medicalDto.ArterialPressure;
+                isExistedMedical.MaternalPulse = medicalDto.MaternalPulse;
+                isExistedMedical.FetalHeartRate = medicalDto.FetalHeartRate;
+                isExistedMedical.ContractionsDuration = medicalDto.ContractionsDuration;
+                isExistedMedical.FrequencyContractions = medicalDto.FrequencyContractions;
+                isExistedMedical.Pain = medicalDto.Pain;
+                isExistedMedical.UpdateAt = DateTime.Now;
+                isExistedMedical.UpdateBy = userId;
+
+                var result =await _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical);
+
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = "Modificado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> DeleteMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
+        {
+            try
+            {
+                var isExistedMedical = await _partographRepo.GetMedicalSurveillanceTablesById(medicalDto.Id);
+
+                if (isExistedMedical is null)
+                {
+                    return new BaseResponse<MedicalSurveillanceTableEntity>
+                    {
+                        Message = "Not found",
+                        Response = { },
+                        StatusCode = StatusCodes.Status400BadRequest,
+                    };
+                }
+
+                Guid userId = _tokenServices.GetUserId();
+
+                isExistedMedical.IsDelete = true;
+                isExistedMedical.DeleteAt = DateTime.Now;
+                isExistedMedical.DeletedBy = userId;
+
+                var result = await _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical);
+
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Message = "Eliminado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+
+            }
+            catch (Exception ex) 
+            {
+                return new BaseResponse<MedicalSurveillanceTableEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<PartographStateEntity>> UpdatePartographState(PartographStateEntity partographStateDto)
+        {
+            try
+            {
+
+                Guid userId = _tokenServices.GetUserId();
+
+                var response = await _partographRepo.GetPartographStateByUser(partographStateDto.PartographId, userId);
+
+                if (response == null)
+                    return new BaseResponse<PartographStateEntity>
+                    {
+                        Response = null!,
+                        Message = "No encontrado",
+                        StatusCode = StatusCodes.Status400BadRequest,
+                    };
+
+                response.IsAchived = partographStateDto.IsAchived;
+                response.Set = partographStateDto.Set;
+                response.Silenced = partographStateDto.Silenced;
+                response.Favorite = partographStateDto.Favorite;
+
+                var result = await _partographRepo.UpdatePartographState(response);
+
+
+                return new BaseResponse<PartographStateEntity>
+                {
+                    Message = "Modificado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<PartographStateEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
         }
     }
 }

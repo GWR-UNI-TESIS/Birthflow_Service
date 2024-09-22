@@ -13,5 +13,5 @@ public class PasswordEntity
     public string? PasswordHash { get; set; } = string.Empty;
     public bool? PassActual { get; set; }
     public DateTime CreateAt { get; set; }
-    public virtual UserEntity? Usuario { get; set; }
+    public virtual UserEntity? UserEntity { get; set; }
 }

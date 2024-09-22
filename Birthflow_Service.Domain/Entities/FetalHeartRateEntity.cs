@@ -12,7 +12,7 @@ namespace BirthflowService.Domain.Entities
     public class FetalHeartRateEntity
     {
         [Key, Column(TypeName = "bigint")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [ForeignKey("PartographEntity")]
         public Guid PartographId { get; set; }
         public string Value { get; set; } = null!;

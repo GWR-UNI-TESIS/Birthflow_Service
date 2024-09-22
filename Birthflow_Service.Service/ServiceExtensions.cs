@@ -1,7 +1,10 @@
 ﻿using Birthflow_Service.Infraestructure.DbContexts;
+using BirthflowService.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 using System.Security.Claims;
 using System.Text;
 
@@ -19,7 +22,7 @@ namespace BirthflowService.API
         {
             var token = config["AppSettings:Token"];
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+                .AddJwtBearer("Bearer",options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -41,7 +44,7 @@ namespace BirthflowService.API
                             var userId = claimsIdentity?.FindFirst("UserId")?.Value;
                             var isDeveloper = claimsIdentity?.FindFirst("IsDeveloper")?.Value;
 
-                            if (!string.IsNullOrEmpty(userName))
+                            if (!string.IsNullOrEmpty(userId))
                             {
                                 context.HttpContext.Items["UserName"] = userName;
                                 context.HttpContext.Items["Email"] = email;
@@ -59,11 +62,56 @@ namespace BirthflowService.API
                         }
                     };
                 });
+            services.AddAuthorization();
         }
 
-        public static void ConfigureSwagger(this IServiceCollection services)
+        public static void ConfigureSwagger(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSwaggerGen();
+            var swaggerOptions = new SwashbuckleSwaggerOptions();
+            configuration.Bind(swaggerOptions);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc(swaggerOptions.Version, new OpenApiInfo
+                {
+                    Title = swaggerOptions.Title,
+                    Version = swaggerOptions.Version,
+                    Description = swaggerOptions.Description
+                });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Por favor ingrese el token JWT con el prefijo 'Bearer '",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
+        }
+
+        public static void ConfigureRouting(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddRouting(options =>
+            {
+                options.LowercaseUrls = true; // Habilitar URLs en minúsculas
+            });
         }
     }
 }

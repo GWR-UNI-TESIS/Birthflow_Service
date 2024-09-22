@@ -7,7 +7,7 @@ namespace BirthflowService.Domain.Entities
     public class PresentationPositionVarietyEntity
     {
         [Key, Column(TypeName = "bigint")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [ForeignKey("PartographEntity")]
         public Guid PartographId { get; set; }
