@@ -1,4 +1,5 @@
-﻿using Birthflow_Application.DTOs;
+﻿using AutoMapper;
+using Birthflow_Application.DTOs;
 using Birthflow_Application.DTOs.Auth;
 using BirthflowService.Application.Interfaces;
 using BirthflowService.Domain.DTOs.Partograph;
@@ -16,12 +17,14 @@ namespace BirthflowService.Application.Services
         private readonly IConfiguration _configuration;
         private readonly IPartographRepository _partographRepo;
         private readonly IUserTokenService _tokenServices;
+        private readonly IMapper _mapper;
 
-        public PartographService(IConfiguration configuration, IPartographRepository partographRepo, IUserTokenService tokenServices)
+        public PartographService(IConfiguration configuration, IPartographRepository partographRepo, IUserTokenService tokenServices, IMapper mapper)
         {
             _configuration = configuration;
             _partographRepo = partographRepo;
             _tokenServices = tokenServices;
+            _mapper = mapper;
         }
 
         public async Task<BaseResponse<PartographEntity>> CreatePartograph(PartographDto partographDto)
@@ -30,19 +33,13 @@ namespace BirthflowService.Application.Services
             {
                 Guid userId = _tokenServices.GetUserId();
 
-                var PartographEntity = new PartographEntity {
-                    PartographId = Guid.NewGuid(),
-                    Name = partographDto.Name,
-                    RecordName = partographDto.RecordName,
-                    Date = partographDto.Date,
-                    Observation = partographDto.Observation,
-                    WorkTime = partographDto.WorkTime,
-                    IsDelete = false,
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = userId,
-                };
+                var partographEntity = _mapper.Map<PartographEntity>(partographDto);
 
-                var result = await _partographRepo.CreatePartograph(PartographEntity);
+                partographEntity.PartographId = Guid.NewGuid();
+                partographEntity.CreatedBy = userId;
+                partographEntity.CreatedAt = DateTime.Now;
+
+                var result = await _partographRepo.CreatePartograph(partographEntity);
 
                 return new BaseResponse<PartographEntity>
                 {
@@ -113,20 +110,12 @@ namespace BirthflowService.Application.Services
         {
             try
             {
-                var cervicalDilationEntity = new CervicalDilationEntity
-                {
-                    PartographId = cervicalDilationDto.PartographId,
-                    Hour = cervicalDilationDto.Hour,
-                    RemOrRam = cervicalDilationDto.RemOrRam,
-                    Value = cervicalDilationDto.Value,
-                    IsDelete = false,
-                    CreateAt = DateTime.Now,
-                    CreatedBy = cervicalDilationDto.UserId,
-                    UpdateAt = null,
-                    UpdateBy = null,
-                    DeleteAt = null,
-                    DeleteBy = null,
-                };
+                Guid userId = _tokenServices.GetUserId();
+
+                var cervicalDilationEntity = _mapper.Map<CervicalDilationEntity>(cervicalDilationDto);
+
+                cervicalDilationEntity.CreatedBy = userId;
+                cervicalDilationEntity.CreateAt = DateTime.Now;
 
                 var result = await _partographRepo.CreateCervicalDilation(cervicalDilationEntity);
 
@@ -222,10 +211,11 @@ namespace BirthflowService.Application.Services
                 }
                 else
                 {
-                    cerivicalDilation.Hour = cervicalDilationDto.Hour;
-                    cerivicalDilation.Value = cervicalDilationDto.Value;
-                    cerivicalDilation.RemOrRam = cerivicalDilation.RemOrRam;
-                    cerivicalDilation.UpdateBy = cervicalDilationDto.UserId;
+                    Guid userId = _tokenServices.GetUserId();
+
+                    _mapper.Map(cervicalDilationDto, cerivicalDilation);
+
+                    cerivicalDilation.UpdateBy = userId;
                     cerivicalDilation.UpdateAt = DateTime.Now;
 
                     var result = await _partographRepo.UpdateCervicalDilation(cerivicalDilation);
@@ -469,7 +459,7 @@ namespace BirthflowService.Application.Services
             }
         }
 
-        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> CreateMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
+        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> CreateMedicalSurveillanceTable(MedicalSurveillanceTableDto medicalDto)
         {
             try
             {
@@ -504,7 +494,7 @@ namespace BirthflowService.Application.Services
             }
         }
 
-        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> UpdateMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
+        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> UpdateMedicalSurveillanceTable(MedicalSurveillanceTableDto medicalDto)
         {
             try
             {
@@ -553,7 +543,7 @@ namespace BirthflowService.Application.Services
             }
         }
 
-        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> DeleteMedicalSurveillanceTable(MedicalSurveillanceTableDTO medicalDto)
+        public async Task<BaseResponse<MedicalSurveillanceTableEntity>> DeleteMedicalSurveillanceTable(MedicalSurveillanceTableDto medicalDto)
         {
             try
             {

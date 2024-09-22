@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BirthflowService.Domain.DTOs.Partograph
 {
-    public class MedicalSurveillanceTableDTO
+    public class MedicalSurveillanceTableDto
     {
         public int Id { get; set; }
         public Guid PartographId { get; set; }
@@ -19,6 +19,5 @@ namespace BirthflowService.Domain.DTOs.Partograph
         public string Pain { get; set; } = null!;
         public char Letter { get; set; }
         public DateTime Time { get; set; }
-        public Guid? UserId { get; set; }
     }
 }

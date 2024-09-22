@@ -120,7 +120,7 @@ namespace BirthflowService.API.Controllers
             }
         }
 
-        [HttpPost("delete/cervical-dilation")]
+        [HttpDelete("delete/cervical-dilation")]
         public async Task<IActionResult> DeleteCervicalDilation([FromBody] CervicalDilationDto cervicalDilationDto)
         {
             try
@@ -191,7 +191,7 @@ namespace BirthflowService.API.Controllers
 
         }
 
-        [HttpPost("update/presentation-position-variety")]
+        [HttpPatch("update/presentation-position-variety")]
         public async Task<IActionResult> UpdatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
         {
             try
@@ -208,7 +208,7 @@ namespace BirthflowService.API.Controllers
             }
         }
 
-        [HttpPost("delete/presentation-position-variety")]
+        [HttpDelete("delete/presentation-position-variety")]
         public async Task<IActionResult> DeletePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
         {
             try
@@ -245,7 +245,7 @@ namespace BirthflowService.API.Controllers
         }
 
         [HttpPost("create/medical-surveillance-table")]
-        public async Task<IActionResult> CreateMedicalSurveillanceTable(MedicalSurveillanceTableDTO presentationDto)
+        public async Task<IActionResult> CreateMedicalSurveillanceTable(MedicalSurveillanceTableDto presentationDto)
         {
             try
             {
@@ -261,8 +261,8 @@ namespace BirthflowService.API.Controllers
             }
         }
 
-        [HttpPost("update/medical-surveillance-table")]
-        public async Task<IActionResult> UpdateMedicalSurveillanceTable(MedicalSurveillanceTableDTO presentationDto)
+        [HttpPatch("update/medical-surveillance-table")]
+        public async Task<IActionResult> UpdateMedicalSurveillanceTable(MedicalSurveillanceTableDto presentationDto)
         {
             try
             {
@@ -278,8 +278,8 @@ namespace BirthflowService.API.Controllers
             }
         }
 
-        [HttpPost("delete/medical-surveillance-table")]
-        public async Task<IActionResult> DeleteMedicalSurveillanceTable(MedicalSurveillanceTableDTO presentationDto)
+        [HttpDelete("delete/medical-surveillance-table")]
+        public async Task<IActionResult> DeleteMedicalSurveillanceTable(MedicalSurveillanceTableDto presentationDto)
         {
             try
             {

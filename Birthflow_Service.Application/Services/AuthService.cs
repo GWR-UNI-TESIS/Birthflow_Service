@@ -1,29 +1,25 @@
-﻿using Birthflow_Application.DTOs;
+﻿using AutoMapper;
+using Birthflow_Application.DTOs;
 using Birthflow_Application.DTOs.Auth;
 using Birthflow_Domain.Interface;
 using Birthflow_Service.Application.Models;
 using BirthflowService.Application.Interfaces;
 using BirthflowService.Application.Models;
-using BirthflowService.Domain.DTOs.Contracts;
+using BirthflowService.Domain.DTOs.Auth;
 using BirthflowService.Domain.Entities;
 using BirthflowService.Domain.Interface;
 using BirthflowService.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using static Birthflow_Application.DTOs.Auth.UsuarioEntityDto;
+
 
 namespace Birthflow_Application.Services
 {
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
         private readonly ILogger<AuthService> _logger;
         private readonly IAuthRepository _authRepository;
         private readonly IUserRepository _userRepository;
@@ -32,8 +28,9 @@ namespace Birthflow_Application.Services
         private readonly ITokenService _tokenService;
         private readonly IMailAdapter _mailService;
 
+
         public AuthService(IConfiguration configuration, ILogger<AuthService> logger, IUserRepository userRepository, IAuthRepository authRepository, 
-            IMailAdapter mailService, IAccountRepository accountRepository, IPasswordRepository passwordRepository, ITokenService tokenService)
+            IMailAdapter mailService, IAccountRepository accountRepository, IPasswordRepository passwordRepository, ITokenService tokenService, IMapper mapper)
         {
             _configuration = configuration;
             _userRepository = userRepository;
@@ -43,8 +40,8 @@ namespace Birthflow_Application.Services
             _accountRepository = accountRepository;
             _passwordRepository = passwordRepository;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
-
      
         public async Task<BaseResponse<UserLoginDto>> Login(LoginModel request)
         {
@@ -104,15 +101,8 @@ namespace Birthflow_Application.Services
 
             _authRepository.AddUserRefreshTokens(tokens);
 
-            UsuarioEntityDto userDto = new UsuarioEntityDto()
-            {
-                Id = user.Id,
-                NombreUsuario = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Nombres = user.Name,
-                Apellidos = user.SecondName,
-            };
+            var userDto =_mapper.Map<UserDto>(user);
+
             return new BaseResponse<UserLoginDto>
             {
                 Response = new UserLoginDto { AccessToken = token, User = userDto },
@@ -173,13 +163,13 @@ namespace Birthflow_Application.Services
                 }
             };
         }
-        public async Task<BaseResponse<UsuarioEntityDto>> Create(UsuarioEntityDto dto)
+        public async Task<BaseResponse<UserDto>> Create(UserDto dto)
         {
             if (dto is null)
             {
-                return new BaseResponse<UsuarioEntityDto>
+                return new BaseResponse<UserDto>
                 {
-                    Response = new UsuarioEntityDto(),
+                    Response = new UserDto(),
                     Message = "El modelo es requerido",
                     StatusCode = StatusCodes.Status404NotFound,
                 };
@@ -189,37 +179,29 @@ namespace Birthflow_Application.Services
 
             if (isExistedEmail is not null)
             {
-                return new BaseResponse<UsuarioEntityDto>
+                return new BaseResponse<UserDto>
                 {
                     Message = "Este correo ya existe",
-                    Response = new UsuarioEntityDto(),
+                    Response = new UserDto(),
                     StatusCode = StatusCodes.Status400BadRequest
                 };
             }
-            var isExistedUserName = await _userRepository.GetByUserName(dto.NombreUsuario!);
+            var isExistedUserName = await _userRepository.GetByUserName(dto.UserName!);
 
             if (isExistedUserName is not null)
             {
-                return new BaseResponse<UsuarioEntityDto>
+                return new BaseResponse<UserDto>
                 {
                     Message = "Este username ya existe",
-                    Response = new UsuarioEntityDto(),
+                    Response = new UserDto(),
                     StatusCode = StatusCodes.Status400BadRequest
                 };
             }
             var result = await _userRepository.SaveUser(dto);
 
-            UsuarioEntityDto userDto = new UsuarioEntityDto()
-            {
-                Id = result.Id,
-                NombreUsuario = result.UserName,
-                Email = result.Email,
-                PhoneNumber = result.PhoneNumber,
-                Nombres = result.Name,
-                Apellidos = result.SecondName,
-            };
+            var userDto = _mapper.Map<UserDto>(result);
 
-            return new BaseResponse<UsuarioEntityDto>
+            return new BaseResponse<UserDto>
             {
                 Response = userDto,
                 Message = "Generate Token.",

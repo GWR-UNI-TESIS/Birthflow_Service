@@ -6,10 +6,10 @@ namespace Birthflow_Domain.Interface
 {
     public interface IUserRepository
     {
-        Task<UserEntity> SaveUser(UsuarioEntityDto user);
+        Task<UserEntity> SaveUser(UserDto user);
         Task<UserEntity?> GetById(Guid userId);
         Task<UserEntity?> GetByUserName(string userName);
         Task<UserEntity?> GetByEmail(string email);
-        BaseResponse<string> UpdateUser(UsuarioEntityDto user, UserEntity currentUser);
+        BaseResponse<string> UpdateUser(UserDto user, UserEntity currentUser);
     }
 }

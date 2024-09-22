@@ -24,6 +24,5 @@ namespace BirthflowService.Domain.DTOs.Partograph
         public string Placenta { get; set; } = null!;
         public string Alumbramiento { get; set; } = null!;
         public string HuellaPlantar { get; set; } = null!;
-        public Guid? UserId { get; set; }
     }
 }

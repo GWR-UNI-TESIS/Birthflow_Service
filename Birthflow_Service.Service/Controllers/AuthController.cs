@@ -10,15 +10,15 @@ namespace Birthflow_Service.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authServices;
-        private readonly Logger<AuthController> _logger;
-        public AuthController(IAuthService authService, Logger<AuthController> logger)
+        private readonly ILogger<AuthController> _logger;
+        public AuthController(IAuthService authService, ILogger<AuthController> logger)
         {
             _authServices = authService;
             _logger = logger;
         }
 
         [HttpPost("create/user")]
-        public async Task<IActionResult> Create([FromBody] UsuarioEntityDto user)
+        public async Task<IActionResult> Create([FromBody] UserDto user)
         {
             try
             {

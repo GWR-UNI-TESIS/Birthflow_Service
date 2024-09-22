@@ -1,12 +1,8 @@
-﻿using Birthflow_Application.DTOs;
-using Birthflow_Service.Infraestructure.DbContexts;
-using BirthflowService.Domain.DTOs.Partograph;
+﻿using Birthflow_Service.Infraestructure.DbContexts;
 using BirthflowService.Domain.Entities;
 using BirthflowService.Domain.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace BirthflowService.Infraestructure.Repositories
 {
@@ -21,7 +17,7 @@ namespace BirthflowService.Infraestructure.Repositories
             _logger = logger;
         }
 
-        public async  Task<PartographEntity> CreatePartograph(PartographEntity partographEntity)
+        public async Task<PartographEntity> CreatePartograph(PartographEntity partographEntity)
         {
             try
             {
@@ -166,7 +162,7 @@ namespace BirthflowService.Infraestructure.Repositories
                 _logger.LogInformation($"Buscando dilatacion cervical con el partograma {id}");
 
                 var result = await _context.CervicalDilations.FindAsync(id);
-               
+
                 return result!;
             }
             catch (Exception ex)
@@ -362,7 +358,7 @@ namespace BirthflowService.Infraestructure.Repositories
             {
                 _logger.LogInformation($"Obteniendo estado de partograma con ID {userId}");
 
-                var result =  await _context.PartographStateEntities.FirstOrDefaultAsync(ps => ps.UserId == userId && ps.PartographId == partographId);
+                var result = await _context.PartographStateEntities.FirstOrDefaultAsync(ps => ps.UserId == userId && ps.PartographId == partographId);
 
                 if (result == null)
                 {

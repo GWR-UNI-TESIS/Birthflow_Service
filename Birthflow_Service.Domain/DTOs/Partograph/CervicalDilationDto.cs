@@ -13,6 +13,5 @@ namespace BirthflowService.Domain.DTOs.Partograph
         public decimal Value { get; set; }
         public DateTime Hour { get; set; }
         public bool RemOrRam { get; set; }
-        public Guid? UserId { get; set; }
     }
 }

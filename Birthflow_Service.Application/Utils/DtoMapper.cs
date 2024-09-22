@@ -24,7 +24,7 @@ namespace BirthflowService.Infraestructure.Utils
             return result;
         }
 
-        public static MedicalSurveillanceTableEntity ConvertMedicalSurveillanceTableDto_Entity(this MedicalSurveillanceTableDTO data)
+        public static MedicalSurveillanceTableEntity ConvertMedicalSurveillanceTableDto_Entity(this MedicalSurveillanceTableDto data)
         {
             var result = new MedicalSurveillanceTableEntity()
             {

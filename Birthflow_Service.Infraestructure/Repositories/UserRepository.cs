@@ -32,7 +32,7 @@ namespace Birthflow_Infraestructure.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
         }
 
-        public async Task<UserEntity> SaveUser(UsuarioEntityDto user)
+        public async Task<UserEntity> SaveUser(UserDto user)
         {
             try
             {
@@ -40,9 +40,9 @@ namespace Birthflow_Infraestructure.Repositories
 
                 var newUserEntity = new UserEntity()
                 {
-                    Name = user.Nombres,
-                    SecondName = user.Apellidos,
-                    UserName = user.NombreUsuario,
+                    Name = user.Name,
+                    SecondName = user.SecondName,
+                    UserName = user.UserName,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                     IsDelete = false,
@@ -71,24 +71,24 @@ namespace Birthflow_Infraestructure.Repositories
             }
         }
 
-        public BaseResponse<string> UpdateUser(UsuarioEntityDto user, UserEntity currentUser)
+        public BaseResponse<string> UpdateUser(UserDto user, UserEntity currentUser)
         {
             try
             {
-                var existEmail = GetByEmail(user.Email);
+                var existEmail = GetByEmail(user.Email!);
                 if (existEmail is not null && user.Email != currentUser.Email)
                     return new BaseResponse<string>
                     {
-                        Response = user.Email,
+                        Response = user.Email!,
                         Message = "Email already exist",
                         StatusCode = StatusCodes.Status400BadRequest,
                     };
 
-                var existUsername = GetByUserName(user.NombreUsuario);
-                if (existUsername is not null && user.NombreUsuario != currentUser.UserName)
+                var existUsername = GetByUserName(user.UserName!);
+                if (existUsername is not null && user.UserName != currentUser.UserName)
                     return new BaseResponse<string>
                     {
-                        Response = user.NombreUsuario,
+                        Response = user.UserName!,
                         Message = "user already exist",
                         StatusCode = StatusCodes.Status400BadRequest,
                     };
@@ -98,9 +98,9 @@ namespace Birthflow_Infraestructure.Repositories
                 //user.PasswordHash = encrypted.PasswordHash
 
                 // asignando valores
-                currentUser.Name = user.Nombres;
-                currentUser.SecondName = user.Apellidos;
-                currentUser.UserName = user.NombreUsuario;
+                currentUser.Name = user.Name;
+                currentUser.SecondName = user.SecondName;
+                currentUser.UserName = user.UserName;
                 currentUser.Email = user.Email;
                 currentUser.PhoneNumber = user.PhoneNumber;
                 currentUser.UpdatedBy = 77;
@@ -123,7 +123,7 @@ namespace Birthflow_Infraestructure.Repositories
             {
                 return new BaseResponse<string>
                 {
-                    Response = default,
+                    Response = null!,
                     Message = ex.Message,
                     StatusCode = StatusCodes.Status400BadRequest,
                 };

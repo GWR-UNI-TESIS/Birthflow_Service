@@ -26,22 +26,30 @@ namespace BirthflowService.Application.Services
         {
             List<Claim> claims = new List<Claim>()
             {
-                new Claim("Nombres", user.Name),
-                new Claim("Apellidos", user.SecondName),
-                new Claim("NombreUsuario", user.UserName),
-                new Claim("Email", user.Email),
+                new Claim("Nombres", user.Name!),
+                new Claim("Apellidos", user.SecondName!),
+                new Claim("NombreUsuario", user.UserName!),
+                new Claim("Email", user.Email !),
                 new Claim("UserId", user.Id.ToString())
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value!));
+
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["SecretKey"];
+            var issuer = jwtSettings["Issuer"];
+            var audience = jwtSettings["Audience"];
+            var expiresInMinutes = Convert.ToInt32(jwtSettings["ExpiresInMinutes"]);
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(2),
-                signingCredentials: creds
+                expires: DateTime.Now.AddHours(expiresInMinutes),
+                signingCredentials: creds,
+                audience: audience,
+                issuer: issuer
                 );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
@@ -64,18 +72,25 @@ namespace BirthflowService.Application.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("AppSettings:Token").Value!));
 
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["SecretKey"];
+            var issuer = jwtSettings["Issuer"];
+            var audience = jwtSettings["Audience"];
+
             var tokenValidationParameters = new TokenValidationParameters
             {
-                ValidateAudience = false,
-                ValidateIssuer = false,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = key,
-                ValidateLifetime = false
+                ValidIssuer = issuer,
+                ValidAudience = audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!)),
+                ClockSkew = TimeSpan.Zero
             };
             var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            JwtSecurityToken? jwtSecurityToken = securityToken as JwtSecurityToken;
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 throw new SecurityTokenException("Invalid token");
             return principal;
