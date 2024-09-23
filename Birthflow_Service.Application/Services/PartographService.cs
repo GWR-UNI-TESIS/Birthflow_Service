@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using Birthflow_Application.DTOs;
-using Birthflow_Application.DTOs.Auth;
 using BirthflowService.Application.Interfaces;
 using BirthflowService.Domain.DTOs.Partograph;
 using BirthflowService.Domain.Entities;
 using BirthflowService.Domain.Interface;
-using BirthflowService.Infraestructure.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace BirthflowService.Application.Services
@@ -87,10 +84,90 @@ namespace BirthflowService.Application.Services
         {
             try
             {
-                var result =  await _partographRepo.GetPartograph(partographId);
+                var result = await _partographRepo.GetPartograph(partographId);
                 return new BaseResponse<PartographEntity>
                 {
                     Message = "Ingresado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<PartographEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<PartographEntity>> UpdatePartograph(PartographDto partographDto)
+        {
+            try
+            {
+                var partographEntity = await _partographRepo.GetPartograph((Guid)partographDto.PartographId!);
+
+                if (partographEntity == null)
+                    return new BaseResponse<PartographEntity>
+                    {
+                        Message = "Not Found",
+                        Response = { },
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+
+                Guid userId = _tokenServices.GetUserId();
+
+                _mapper.Map(partographDto, partographEntity);
+
+                partographEntity.UpdateAt = DateTime.Now;
+                partographEntity.UpdateBy = userId;
+
+                var result = await _partographRepo.UpdatePartograph(partographEntity);
+
+                return new BaseResponse<PartographEntity>
+                {
+                    Message = "Partograma modificado correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<PartographEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+        public async Task<BaseResponse<PartographEntity>> DeletePartograph(Guid partographId)
+        {
+            try
+            {
+                var partographEntity = await _partographRepo.GetPartograph(partographId);
+
+                if (partographEntity == null)
+                    return new BaseResponse<PartographEntity>
+                    {
+                        Message = "Not Found",
+                        Response = { },
+                        StatusCode = StatusCodes.Status200OK,
+                    };
+
+                Guid userId = _tokenServices.GetUserId();
+
+                partographEntity.IsDelete = true;
+                partographEntity.DeletedAt = DateTime.Now;
+                partographEntity.DeletedBy = userId;
+
+                var result = await _partographRepo.UpdatePartograph(partographEntity);
+
+                return new BaseResponse<PartographEntity>
+                {
+                    Message = "Partograma eliminado correctamente",
                     Response = result,
                     StatusCode = StatusCodes.Status200OK,
                 };
@@ -141,7 +218,7 @@ namespace BirthflowService.Application.Services
         {
             try
             {
-               Guid userId = _tokenServices.GetUserId();
+                Guid userId = _tokenServices.GetUserId();
 
                 var result = await _partographRepo.DeleteCervicalDilation(cervicalDilationDto.Id, userId);
 
@@ -191,7 +268,7 @@ namespace BirthflowService.Application.Services
         {
             try
             {
-                if(cervicalDilationDto.Id == null)
+                if (cervicalDilationDto.Id == null)
                     return new BaseResponse<CervicalDilationEntity>
                     {
                         Response = null!,
@@ -252,7 +329,7 @@ namespace BirthflowService.Application.Services
                     StatusCode = StatusCodes.Status200OK,
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new BaseResponse<IEnumerable<PresentationPositionVarietyEntity>>
                 {
@@ -287,22 +364,17 @@ namespace BirthflowService.Application.Services
             }
         }
 
-        public async Task< BaseResponse<PresentationPositionVarietyEntity>> CreatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
+        public async Task<BaseResponse<PresentationPositionVarietyEntity>> CreatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
         {
             try
             {
                 Guid userId = _tokenServices.GetUserId();
-                var entity = presentationDto.ConvertPresentationPositionVarietyDto_Entity();
-                DateTime CreatedAt = DateTime.Now;
 
-                entity.CreateAt = CreatedAt;
+                var entity = _mapper.Map<PresentationPositionVarietyEntity>(presentationDto);
+
+                entity.CreateAt = DateTime.Now;
                 entity.CreatedBy = userId;
-                entity.Time = CreatedAt;
                 entity.IsDelete = false;
-                entity.UpdateAt = null;
-                entity.DeleteAt = null;
-                entity.UpdateBy = null;
-                entity.DeletedBy = null;
 
                 var result = await _partographRepo.CreatePresentationPositionVariety(entity);
 
@@ -322,7 +394,7 @@ namespace BirthflowService.Application.Services
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
-          
+
         }
 
         public async Task<BaseResponse<PresentationPositionVarietyEntity>> UpdatePresentationPositionVariety(PresentationPositionVarietyDto presentationDto)
@@ -343,8 +415,8 @@ namespace BirthflowService.Application.Services
 
                 Guid userId = _tokenServices.GetUserId();
 
-                isExistedPresentatation.HodgePlane = presentationDto.HodgePlane;
-                isExistedPresentatation.Position = presentationDto.Position;
+                _mapper.Map(presentationDto, isExistedPresentatation);
+
                 isExistedPresentatation.UpdateAt = DateTime.Now;
                 isExistedPresentatation.UpdateBy = userId;
 
@@ -357,7 +429,7 @@ namespace BirthflowService.Application.Services
                     StatusCode = StatusCodes.Status200OK,
                 };
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return new BaseResponse<PresentationPositionVarietyEntity>
                 {
@@ -386,6 +458,7 @@ namespace BirthflowService.Application.Services
 
                 Guid userId = _tokenServices.GetUserId();
 
+                isExistedPresentatation.IsDelete = true;
                 isExistedPresentatation.DeleteAt = DateTime.Now;
                 isExistedPresentatation.DeletedBy = userId;
 
@@ -407,13 +480,13 @@ namespace BirthflowService.Application.Services
                     StatusCode = StatusCodes.Status400BadRequest,
                 };
             }
-           
+
         }
 
 
         public async Task<BaseResponse<MedicalSurveillanceTableEntity>> GetMedicalSurveillanceTableById(int medicalId)
         {
-            try 
+            try
             {
                 var result = await _partographRepo.GetMedicalSurveillanceTablesById(medicalId);
 
@@ -424,7 +497,7 @@ namespace BirthflowService.Application.Services
                     StatusCode = StatusCodes.Status200OK,
                 };
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return new BaseResponse<MedicalSurveillanceTableEntity>
                 {
@@ -464,16 +537,10 @@ namespace BirthflowService.Application.Services
             try
             {
                 Guid userId = _tokenServices.GetUserId();
-                var entity = medicalDto.ConvertMedicalSurveillanceTableDto_Entity();
+                var entity = _mapper.Map<MedicalSurveillanceTableEntity>(medicalDto);
 
-                entity.Time = DateTime.Now;
-                entity.IsDelete = false;
                 entity.CreateAt = DateTime.Now;
                 entity.CreatedBy = userId;
-                entity.UpdateAt = null;
-                entity.UpdateBy = null;
-                entity.DeleteAt = null;
-                entity.DeletedBy = null;
 
                 var result = await _partographRepo.CreateMedicalSurveillanceTable(entity);
 
@@ -512,18 +579,12 @@ namespace BirthflowService.Application.Services
 
                 Guid userId = _tokenServices.GetUserId();
 
-                isExistedMedical.Letter = medicalDto.Letter;
-                isExistedMedical.MaternalPosition = medicalDto.MaternalPosition;
-                isExistedMedical.ArterialPressure = medicalDto.ArterialPressure;
-                isExistedMedical.MaternalPulse = medicalDto.MaternalPulse;
-                isExistedMedical.FetalHeartRate = medicalDto.FetalHeartRate;
-                isExistedMedical.ContractionsDuration = medicalDto.ContractionsDuration;
-                isExistedMedical.FrequencyContractions = medicalDto.FrequencyContractions;
-                isExistedMedical.Pain = medicalDto.Pain;
+                _mapper.Map(medicalDto, isExistedMedical);
+
                 isExistedMedical.UpdateAt = DateTime.Now;
                 isExistedMedical.UpdateBy = userId;
 
-                var result =await _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical);
+                var result = await _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical);
 
                 return new BaseResponse<MedicalSurveillanceTableEntity>
                 {
@@ -575,7 +636,7 @@ namespace BirthflowService.Application.Services
                 };
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return new BaseResponse<MedicalSurveillanceTableEntity>
                 {
@@ -603,13 +664,9 @@ namespace BirthflowService.Application.Services
                         StatusCode = StatusCodes.Status400BadRequest,
                     };
 
-                response.IsAchived = partographStateDto.IsAchived;
-                response.Set = partographStateDto.Set;
-                response.Silenced = partographStateDto.Silenced;
-                response.Favorite = partographStateDto.Favorite;
+                _mapper.Map(partographStateDto, response);
 
                 var result = await _partographRepo.UpdatePartographState(response);
-
 
                 return new BaseResponse<PartographStateEntity>
                 {
@@ -629,5 +686,372 @@ namespace BirthflowService.Application.Services
                 };
             }
         }
+
+        public async Task<BaseResponse<FetalHeartRateEntity>> GetFetalHeartRate(long id)
+        {
+            try
+            {
+                var result = await _partographRepo.GetFetalHeartRate(id);
+                if (result == null)
+                {
+                    return new BaseResponse<FetalHeartRateEntity>
+                    {
+                        Message = "Frecuencia cardíaca fetal no encontrada",
+                        Response = null!,
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
+
+                return new BaseResponse<FetalHeartRateEntity>
+                {
+                    Message = "Frecuencia cardíaca fetal recuperada correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<FetalHeartRateEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<IEnumerable<FetalHeartRateEntity>>> GetFetalHeartRateByParthographId(Guid partographId)
+        {
+            try
+            {
+                var result = await _partographRepo.GetFetalHeartRateByParthographId(partographId);
+                return new BaseResponse<IEnumerable<FetalHeartRateEntity>>
+                {
+                    Message = "Frecuencia cardíaca fetal recuperada correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<FetalHeartRateEntity>>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<FetalHeartRateEntity>> CreateFetalHeartRate(FetalHeartRateDto fetalHeartRateDto)
+        {
+            try
+            {
+                Guid userId = _tokenServices.GetUserId();
+                var fetalHeartRateEntity = _mapper.Map<FetalHeartRateEntity>(fetalHeartRateDto);
+                fetalHeartRateEntity.CreatedBy = userId;
+                fetalHeartRateEntity.CreateAt = DateTime.Now;
+
+                var result = await _partographRepo.CreateFetalHeartRate(fetalHeartRateEntity);
+
+                return new BaseResponse<FetalHeartRateEntity>
+                {
+                    Message = "Frecuencia cardíaca fetal creada correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<FetalHeartRateEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<FetalHeartRateEntity>> UpdateFetalHeartRateTable(FetalHeartRateDto fetalHeartRateDto)
+        {
+            try
+            {
+                var isExistedFetalHeartRate = await _partographRepo.GetFetalHeartRate((long)fetalHeartRateDto.Id!);
+
+                if (isExistedFetalHeartRate == null)
+                {
+                    return new BaseResponse<FetalHeartRateEntity>
+                    {
+                        Message = "No encontrado",
+                        Response = null!,
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
+
+                Guid userId = _tokenServices.GetUserId();
+                _mapper.Map(fetalHeartRateDto, isExistedFetalHeartRate);
+                isExistedFetalHeartRate.UpdateBy = userId;
+                isExistedFetalHeartRate.UpdateAt = DateTime.Now;
+
+                var result = await _partographRepo.UpdateFetalHeartRateTable(isExistedFetalHeartRate);
+                return new BaseResponse<FetalHeartRateEntity>
+                {
+                    Message = "Frecuencia cardíaca fetal actualizada correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<FetalHeartRateEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<ContractionFrequencyEntity>> GetContractionFrequency(long id)
+        {
+            try
+            {
+                var result = await _partographRepo.GetContractionFrequency(id);
+                return new BaseResponse<ContractionFrequencyEntity>
+                {
+                    Message = "Frecuencia de contracción obtenida correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<ContractionFrequencyEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<IEnumerable<ContractionFrequencyEntity>>> GetContractionFrequencyByParthographId(Guid partographId)
+        {
+            try
+            {
+                var result = await _partographRepo.GetContractionFrequencyByParthographId(partographId);
+                return new BaseResponse<IEnumerable<ContractionFrequencyEntity>>
+                {
+                    Message = "Frecuencia de contracciones obtenida correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<ContractionFrequencyEntity>>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<ContractionFrequencyEntity>> CreateContractionFrequency(ContractionFrequencyDto contractionFrequencyDto)
+        {
+            try
+            {
+                Guid userId = _tokenServices.GetUserId();
+
+                var contractionFrequencyEntity = _mapper.Map<ContractionFrequencyEntity>(contractionFrequencyDto);
+                contractionFrequencyEntity.CreatedBy = userId;
+                contractionFrequencyEntity.CreateAt = DateTime.Now;
+
+                var result = await _partographRepo.CreateContractionFrequency(contractionFrequencyEntity);
+                return new BaseResponse<ContractionFrequencyEntity>
+                {
+                    Message = "Frecuencia de contracciones creada correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<ContractionFrequencyEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<ContractionFrequencyEntity>> UpdateContractionFrequency(ContractionFrequencyDto contractionFrequencyDto)
+        {
+            try
+            {
+                var isExistedContractionFrequency = await _partographRepo.GetContractionFrequency((long)contractionFrequencyDto.Id!);
+
+                if (isExistedContractionFrequency == null)
+                {
+                    return new BaseResponse<ContractionFrequencyEntity>
+                    {
+                        Message = "No encontrado",
+                        Response = null!,
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
+
+                Guid userId = _tokenServices.GetUserId();
+                _mapper.Map(contractionFrequencyDto, isExistedContractionFrequency);
+                isExistedContractionFrequency.UpdateBy = userId;
+                isExistedContractionFrequency.UpdateAt = DateTime.Now;
+
+                var result = await _partographRepo.UpdateContractionFrequency(isExistedContractionFrequency);
+                return new BaseResponse<ContractionFrequencyEntity>
+                {
+                    Message = "Frecuencia de contracciones actualizada correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<ContractionFrequencyEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<ChildbirthNoteEntity>> GetChildBirthNoteByParthographId(Guid partographId)
+        {
+            try
+            {
+                var result = await _partographRepo.GetChildBirthNoteByParthographId(partographId);
+                return new BaseResponse<ChildbirthNoteEntity>
+                {
+                    Message = "Nota de parto obtenida correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<ChildbirthNoteEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<ChildbirthNoteEntity>> CreateChildBirthNote(ChildbirthNoteDto childbirthNoteDto)
+        {
+            try
+            {
+                Guid userId = _tokenServices.GetUserId();
+
+                var childbirthNote = _mapper.Map<ChildbirthNoteEntity>(childbirthNoteDto);
+                childbirthNote.CreatedBy = userId;
+                childbirthNote.CreateAt = DateTime.Now;
+
+                var result = await _partographRepo.CreateChildBirthNote(childbirthNote);
+                return new BaseResponse<ChildbirthNoteEntity>
+                {
+                    Message = "Nota de parto creada correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<ChildbirthNoteEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<ChildbirthNoteEntity>> UpdateChildBirthNote(ChildbirthNoteDto childbirthNoteDto)
+        {
+            try
+            {
+                var isExistedChildbirthNote = await _partographRepo.GetChildBirthNoteByParthographId((Guid)childbirthNoteDto.PartographId!);
+
+                if (isExistedChildbirthNote == null)
+                {
+                    return new BaseResponse<ChildbirthNoteEntity>
+                    {
+                        Message = "No encontrado",
+                        Response = null!,
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
+
+                Guid userId = _tokenServices.GetUserId();
+                _mapper.Map(childbirthNoteDto, isExistedChildbirthNote);
+                isExistedChildbirthNote.UpdateBy = userId;
+                isExistedChildbirthNote.UpdateAt = DateTime.Now;
+
+                var result = await _partographRepo.UpdateChildBirthNote(isExistedChildbirthNote);
+                return new BaseResponse<ChildbirthNoteEntity>
+                {
+                    Message = "Nota de parto actualizada correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<ChildbirthNoteEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+        }
+
+        public async Task<BaseResponse<PartographStateEntity>> GetPartographStateByUser(Guid partographId, Guid userId)
+        {
+            try
+            {
+                var result = await _partographRepo.GetPartographStateByUser(partographId, userId);
+
+                if (result == null)
+                {
+                    return new BaseResponse<PartographStateEntity>
+                    {
+                        Response = null!,
+                        Message = "Estado del partograma no encontrado",
+                        StatusCode = StatusCodes.Status404NotFound,
+                    };
+                }
+
+                return new BaseResponse<PartographStateEntity>
+                {
+                    Message = "Estado del partograma obtenido correctamente",
+                    Response = result,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<PartographStateEntity>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+
+                };
+            }
+        } 
     }
 }

@@ -19,7 +19,6 @@ namespace BirthflowService.Domain.Entities
         public bool Silenced { get; set; }
         public bool Favorite { get; set; }
 
-        public ICollection<PartographStateEntity> PartographStateEntities { get; set; } = new List<PartographStateEntity>();
         public virtual PartographEntity? PartographEntity { get; set; }
         public virtual UserEntity? UserEntity { get; set; }
     }

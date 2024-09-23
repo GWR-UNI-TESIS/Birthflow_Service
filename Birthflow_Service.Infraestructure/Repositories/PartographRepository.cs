@@ -45,6 +45,24 @@ namespace BirthflowService.Infraestructure.Repositories
             }
         }
 
+        public async Task<PartographEntity> UpdatePartograph(PartographEntity partographEntity)
+        {
+            try
+            {
+                _logger.LogInformation($"Actualizando partograma con ID {partographEntity.PartographId}");
+                _context.Partographs.Update(partographEntity);
+
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Partograma modificado correctamente");
+                return partographEntity;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al modificar el partograma");
+                throw;
+            }
+        }
         public async Task<IEnumerable<PartographEntity>> GetPartographs(Guid userId)
         {
             try
@@ -388,6 +406,198 @@ namespace BirthflowService.Infraestructure.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error al actualizar la tabla de estados del partograma con ID {partographState.Id}");
+                throw;
+            }
+        }
+
+        public async Task<FetalHeartRateEntity> GetFetalHeartRate(long id)
+        {
+            try
+            {
+                _logger.LogInformation($"Buscando Frecuencia cardíaca fetal con el Id: {id}");
+
+                var result = await _context.FetalHeartRateEntities.FindAsync(id);
+
+                return result!;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener las Frecuencia cardíaca fetal");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<FetalHeartRateEntity>> GetFetalHeartRateByParthographId(Guid partographId)
+        {
+            try
+            {
+                _logger.LogInformation($"Buscando las Frecuencia cardíaca fetal con el partograma: {partographId}");
+
+                var result = await _context.FetalHeartRateEntities.Where(e => e.PartographId == partographId && !e.IsDelete)
+                    .ToListAsync();
+
+                return result!;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener las Frecuencia cardíaca fetal");
+                throw;
+            }
+        }
+
+        public async Task<FetalHeartRateEntity> CreateFetalHeartRate(FetalHeartRateEntity fetalHeartRateEntity)
+        {
+            try
+            {
+                _logger.LogInformation("Creando Frecuencia cardíaca fetal");
+                await _context.FetalHeartRateEntities.AddAsync(fetalHeartRateEntity);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Frecuencia cardíaca fetal creada correctamente");
+                return fetalHeartRateEntity;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear la Frecuencia cardíaca fetal");
+                throw;
+            }
+        }
+
+        public async Task<FetalHeartRateEntity> UpdateFetalHeartRateTable(FetalHeartRateEntity fetalHeartRateEntity)
+        {
+            try
+            {
+                _logger.LogInformation("Modificando Frecuencia cardíaca fetal");
+                _context.FetalHeartRateEntities.Update(fetalHeartRateEntity);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Frecuencia cardíaca fetal modificada correctamente");
+                return fetalHeartRateEntity;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al modificar la Frecuencia cardíaca fetal");
+                throw;
+            }
+        }
+
+        public async Task<ContractionFrequencyEntity> GetContractionFrequency(long id)
+        {
+            try
+            {
+                _logger.LogInformation($"Buscando Frecuencia de contracciones con el Id: {id}");
+
+                var result = await _context.ContractionFrequencyEntities.FindAsync(id);
+
+                return result!;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener las Frecuencia de contracciones");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ContractionFrequencyEntity>> GetContractionFrequencyByParthographId(Guid partographId)
+        {
+            try
+            {
+                _logger.LogInformation("Buscando las Frecuencia de contracciones");
+                var result = await _context.ContractionFrequencyEntities.Where(e => e.PartographId == partographId && !e.IsDelete)
+                    .ToListAsync(); 
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al buscar las Frecuencia de contracciones");
+                throw;
+            }
+        }
+
+        public async Task<ContractionFrequencyEntity> CreateContractionFrequency(ContractionFrequencyEntity contractionFrequency)
+        {
+            try
+            {
+                _logger.LogInformation("Creando Frecuencia de contracciones");
+                await _context.ContractionFrequencyEntities.AddAsync(contractionFrequency);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation(" Frecuencia de contracciones creada correctamente");
+                return contractionFrequency;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear la  Frecuencia de contracciones");
+                throw;
+            }
+        }
+
+        public async Task<ContractionFrequencyEntity> UpdateContractionFrequency(ContractionFrequencyEntity contractionFrequency)
+        {
+            try
+            {
+                _logger.LogInformation("Modificando Frecuencia de contracciones");
+                _context.ContractionFrequencyEntities.Update(contractionFrequency);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Frecuencia de contracciones modificada correctamente");
+                return contractionFrequency;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al modificar la Frecuencia contracciones");
+                throw;
+            }
+        }
+
+        public async Task<ChildbirthNoteEntity> GetChildBirthNoteByParthographId(Guid partographId)
+        {
+            try
+            {
+                _logger.LogInformation("Buscando Nota de parto");
+                var result = await _context.ChildbirthNotes.FirstAsync(e => e.PartographId == partographId);
+
+                return result!;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al buscar la Nota de parto");
+                throw;
+            }
+        }
+
+        public async Task<ChildbirthNoteEntity> CreateChildBirthNote(ChildbirthNoteEntity childbirthNote)
+        {
+            try
+            {
+                _logger.LogInformation("Creando Nota de parto");
+                await _context.ChildbirthNotes.AddAsync(childbirthNote);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Nota de parto creada correctamente");
+                return childbirthNote;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear la Nota de parto");
+                throw;
+            }
+        }
+
+        public async Task<ChildbirthNoteEntity> UpdateChildBirthNote(ChildbirthNoteEntity childbirthNote)
+        {
+            try
+            {
+                _logger.LogInformation("Modificando Nota de parto");
+                _context.ChildbirthNotes.Update(childbirthNote);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Nota de parto modificada correctamente");
+                return childbirthNote;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al modificar la Nota de parto");
                 throw;
             }
         }
