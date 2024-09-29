@@ -34,7 +34,7 @@ namespace BirthflowService.Application.Interfaces
         Task<BaseResponse<MedicalSurveillanceTableEntity>> UpdateMedicalSurveillanceTable(MedicalSurveillanceTableDto medicalDto);
         Task<BaseResponse<MedicalSurveillanceTableEntity>> DeleteMedicalSurveillanceTable(MedicalSurveillanceTableDto medicalDto);
 
-
+        // Frecuencia Cardiaca Fetal
         Task<BaseResponse<FetalHeartRateEntity>> GetFetalHeartRate(long id);
         Task<BaseResponse<IEnumerable<FetalHeartRateEntity>>> GetFetalHeartRateByParthographId(Guid partographId);
         Task<BaseResponse<FetalHeartRateEntity>> CreateFetalHeartRate(FetalHeartRateDto fetalHeartRateDto);

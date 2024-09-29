@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240928235055_Modificando_Sharegroup_entidad")]
+    partial class Modificando_Sharegroup_entidad
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -615,6 +618,9 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<int?>("AccessPermissionId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -632,11 +638,11 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccessPermissionId");
+
                     b.HasIndex("GroupId");
 
                     b.HasIndex("PartographGroupId");
-
-                    b.HasIndex("PermissionTypeId");
 
                     b.HasIndex("UserId");
 
@@ -677,13 +683,19 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<int?>("AccessPermissionId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<long?>("GroupId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("PartographId")
+                    b.Property<Guid?>("PartographEntityPartographId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PartographGroupId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("PermissionTypeId")
@@ -694,11 +706,11 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccessPermissionId");
+
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("PartographId");
-
-                    b.HasIndex("PermissionTypeId");
+                    b.HasIndex("PartographEntityPartographId");
 
                     b.HasIndex("UserId");
 
@@ -797,25 +809,25 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreateAt = new DateTime(2024, 9, 28, 18, 45, 53, 479, DateTimeKind.Local).AddTicks(3322),
+                            CreateAt = new DateTime(2024, 9, 28, 17, 50, 55, 61, DateTimeKind.Local).AddTicks(662),
                             Description = "Permisos de lectura",
-                            Identificator = new Guid("9fd1cdec-d951-4255-b4a6-0037a5543549"),
+                            Identificator = new Guid("cae70f95-9e0c-4416-8f18-b2b9fe86f35d"),
                             Name = "Lectura"
                         },
                         new
                         {
                             Id = 2,
-                            CreateAt = new DateTime(2024, 9, 28, 18, 45, 53, 479, DateTimeKind.Local).AddTicks(3334),
+                            CreateAt = new DateTime(2024, 9, 28, 17, 50, 55, 61, DateTimeKind.Local).AddTicks(674),
                             Description = "Permisos de escritura",
-                            Identificator = new Guid("40f9feb0-b509-4534-b531-395224d27e7c"),
+                            Identificator = new Guid("a68d153d-d0e7-486b-86ba-14bcf44450e7"),
                             Name = "Escritura"
                         },
                         new
                         {
                             Id = 3,
-                            CreateAt = new DateTime(2024, 9, 28, 18, 45, 53, 479, DateTimeKind.Local).AddTicks(3336),
+                            CreateAt = new DateTime(2024, 9, 28, 17, 50, 55, 61, DateTimeKind.Local).AddTicks(676),
                             Description = "Permisos de lectura y escritura",
-                            Identificator = new Guid("0908ebfe-ed00-42da-8986-16289fbde81d"),
+                            Identificator = new Guid("6b153ea3-fdd0-46a7-9817-c2355d7f3994"),
                             Name = "Lectura y Escritura"
                         });
                 });
@@ -1226,6 +1238,10 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
             modelBuilder.Entity("BirthflowService.Domain.Entities.PartographGroupShareEntity", b =>
                 {
+                    b.HasOne("BirthflowService.Domain.Entities.PermissionTypeEntity", "AccessPermission")
+                        .WithMany()
+                        .HasForeignKey("AccessPermissionId");
+
                     b.HasOne("BirthflowService.Domain.Entities.GroupEntity", "GroupEntity")
                         .WithMany("PartographGroupShares")
                         .HasForeignKey("GroupId");
@@ -1236,19 +1252,15 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BirthflowService.Domain.Entities.PermissionTypeEntity", "PermissionTypeEntity")
-                        .WithMany()
-                        .HasForeignKey("PermissionTypeId");
-
                     b.HasOne("BirthflowService.Domain.Entities.UserEntity", "UserEntity")
                         .WithMany("PartographGroupShares")
                         .HasForeignKey("UserId");
 
+                    b.Navigation("AccessPermission");
+
                     b.Navigation("GroupEntity");
 
                     b.Navigation("PartographGroupEntity");
-
-                    b.Navigation("PermissionTypeEntity");
 
                     b.Navigation("UserEntity");
                 });
@@ -1274,29 +1286,27 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
             modelBuilder.Entity("BirthflowService.Domain.Entities.PartographShareEntity", b =>
                 {
+                    b.HasOne("BirthflowService.Domain.Entities.PermissionTypeEntity", "AccessPermission")
+                        .WithMany()
+                        .HasForeignKey("AccessPermissionId");
+
                     b.HasOne("BirthflowService.Domain.Entities.GroupEntity", "GroupEntity")
                         .WithMany("PartographShares")
                         .HasForeignKey("GroupId");
 
                     b.HasOne("BirthflowService.Domain.Entities.PartographEntity", "PartographEntity")
                         .WithMany("PartographShareEntity")
-                        .HasForeignKey("PartographId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BirthflowService.Domain.Entities.PermissionTypeEntity", "PermissionTypeEntity")
-                        .WithMany()
-                        .HasForeignKey("PermissionTypeId");
+                        .HasForeignKey("PartographEntityPartographId");
 
                     b.HasOne("BirthflowService.Domain.Entities.UserEntity", "User")
                         .WithMany("PartographShareEntity")
                         .HasForeignKey("UserId");
 
+                    b.Navigation("AccessPermission");
+
                     b.Navigation("GroupEntity");
 
                     b.Navigation("PartographEntity");
-
-                    b.Navigation("PermissionTypeEntity");
 
                     b.Navigation("User");
                 });

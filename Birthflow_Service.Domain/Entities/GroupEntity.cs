@@ -9,8 +9,11 @@ namespace BirthflowService.Domain.Entities
         [Key]
         public long Id { get; set; }
         public required string GroupName { get; set; }
+        public bool IsDeleted { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime DeletedAt { get; set; }
+
         public virtual ICollection<UserGroupEntity> UserGroups { get; set; } = new List<UserGroupEntity>();
 
         // Relación uno a muchos con PartographShare

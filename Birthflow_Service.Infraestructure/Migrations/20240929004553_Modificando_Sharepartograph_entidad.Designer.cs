@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240929004553_Modificando_Sharepartograph_entidad")]
+    partial class Modificando_Sharepartograph_entidad
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

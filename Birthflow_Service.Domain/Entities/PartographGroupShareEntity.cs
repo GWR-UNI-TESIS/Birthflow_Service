@@ -8,8 +8,8 @@ namespace BirthflowService.Domain.Entities
     {
         [Key]
         public long Id { get; set; }
-        [ForeignKey("PartographGroup")]
-        public Guid PartographGroupId { get; set; }
+        [ForeignKey("PartographGroupEntity")]
+        public long PartographGroupId { get; set; }
         [ForeignKey("UserEntity")]
         public Guid? UserId { get; set; }
         [ForeignKey("GroupEntity")]
@@ -22,6 +22,6 @@ namespace BirthflowService.Domain.Entities
         public UserEntity? UserEntity { get; set; }
         public PartographGroupEntity? PartographGroupEntity { get; set; }
         public GroupEntity? GroupEntity { get; set; }
-        public PermissionTypeEntity? AccessPermission { get; set; }
+        public PermissionTypeEntity? PermissionTypeEntity { get; set; }
     }
 }

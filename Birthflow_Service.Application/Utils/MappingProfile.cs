@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Birthflow_Application.DTOs.Auth;
 using BirthflowService.Domain.DTOs.Partograph;
+using BirthflowService.Domain.DTOs.Share;
 using BirthflowService.Domain.Entities;
 
 namespace BirthflowService.Application.Utils
@@ -32,26 +33,38 @@ namespace BirthflowService.Application.Utils
 
             CreateMap<PartographDto, PartographEntity>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-            
             CreateMap<PartographEntity, PartographDto>();
 
             CreateMap<CervicalDilationDto, CervicalDilationEntity>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-
             CreateMap<CervicalDilationEntity, CervicalDilationDto>();
 
             CreateMap<MedicalSurveillanceTableDto, MedicalSurveillanceTableEntity>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-            
             CreateMap<MedicalSurveillanceTableEntity, MedicalSurveillanceTableDto>();
             
             CreateMap<PresentationPositionVarietyDto, PresentationPositionVarietyEntity>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-
             CreateMap<PresentationPositionVarietyEntity, PresentationPositionVarietyDto>();
 
-            CreateMap<FetalHeartRateDto, FetalHeartRateEntity>();
+            CreateMap<FetalHeartRateDto, FetalHeartRateEntity>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<FetalHeartRateEntity, FetalHeartRateDto>();
+
+            CreateMap<ContractionFrequencyDto, ContractionFrequencyEntity>()
+               .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<ContractionFrequencyEntity, ContractionFrequencyDto>();
+
+            CreateMap<ChildbirthNoteDto, ChildbirthNoteEntity>()
+               .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<ChildbirthNoteEntity, ChildbirthNoteDto>();
+
+
+            //SHARE Metodos
+
+            CreateMap<GroupDto, GroupEntity>()
+               .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<GroupEntity, GroupDto>();
         }
     }
 }
