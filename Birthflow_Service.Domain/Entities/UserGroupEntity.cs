@@ -7,10 +7,10 @@ namespace BirthflowService.Domain.Entities
     {
         [ForeignKey("UserEntity")]
         public Guid UserId { get; set; }
-        public required UserEntity User { get; set; }
+        public required UserEntity UserEntity { get; set; }
 
         [ForeignKey("GroupEntity")]
-        public int GroupId { get; set; }
-        public required GroupEntity Group { get; set; }
+        public long GroupId { get; set; }
+        public required GroupEntity GroupEntity { get; set; }
     }
 }
