@@ -42,5 +42,7 @@ public class UserEntity
     public virtual ICollection<PartographShareEntity> PartographShareEntity { get; set; } = new List<PartographShareEntity>();
     public virtual ICollection<PartographGroupShareEntity> PartographGroupShares { get; set; } = new List<PartographGroupShareEntity>();
     public virtual ICollection<UserNotificationEntity> UserNotificationEntity { get; set; } = new List<UserNotificationEntity>();
+    public virtual ICollection<UserLoginAttemptEntity>? LoginAttempts { get; set; } // Relación con intentos de inicio de sesión
+    public virtual ICollection<UserSessionHistoryEntity>? SessionHistories { get; set; } // Relación con el historial de sesiones
 
 }

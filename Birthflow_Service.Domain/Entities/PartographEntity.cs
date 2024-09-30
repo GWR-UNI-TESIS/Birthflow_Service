@@ -34,5 +34,6 @@ namespace BirthflowService.Domain.Entities
         public virtual ICollection<PartographStateEntity> PartographStateEntities { get; set; } = new List<PartographStateEntity>();
         public virtual ICollection<PartographShareEntity> PartographShareEntity { get; set; } = new List<PartographShareEntity>();
         public virtual ICollection<PartographGroupItemEntity> PartographGroupItems { get; set; } = new List<PartographGroupItemEntity>();
+        public virtual ICollection<PartographVersionEntity> PartographVersionEntities { get; set; } = new List<PartographVersionEntity>();
     }
 }

@@ -11,7 +11,8 @@ public class PasswordEntity
     [ForeignKey("UserEntity")]
     public Guid UserId { get; set; }
     public string? PasswordHash { get; set; } = string.Empty;
-    public bool? PassActual { get; set; }
+    public bool? IsCurrent { get; set; }
     public DateTime CreateAt { get; set; }
     public virtual UserEntity? UserEntity { get; set; }
+    public virtual ICollection<PasswordHistoryEntity>? PasswordHistoryEntity { get; set; }
 }

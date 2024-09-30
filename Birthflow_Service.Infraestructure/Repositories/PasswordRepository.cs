@@ -18,7 +18,7 @@ namespace BirthflowService.Infraestructure.Repositories
         {
             try
             {
-                return await _context.Passwords.FirstOrDefaultAsync(u => u.UserId == userId && u.PassActual == true);
+                return await _context.Passwords.FirstOrDefaultAsync(u => u.UserId == userId && u.IsCurrent == true);
             }
             catch (Exception)
             {

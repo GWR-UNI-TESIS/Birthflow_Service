@@ -12,9 +12,15 @@ namespace Birthflow_Service.Infraestructure.DbContexts
 
         }
 
-        // AUTH
+        //Autenticacion
         public virtual DbSet<UserEntity> Users { get; set; }
         public virtual DbSet<PasswordEntity> Passwords { get; set; }
+        public virtual DbSet<PasswordHistoryEntity> PasswordHistoryEntities { get; set; }
+        public virtual DbSet<UserLoginAttemptEntity> UserLoginAttemptEntities { get; set; }
+        public virtual DbSet<UserSessionHistoryEntity> UserSessionHistoryEntities { get; set; }
+        public virtual DbSet<RefreshTokenEntity> RefreshTokenEntities { get; set; }
+        public virtual DbSet<ActivationTokenEntity> ActivationTokenEntities { get; set; }
+
         //PARTOGRAPH
         public virtual DbSet<PartographEntity> Partographs { get; set; }
         public virtual DbSet<CervicalDilationEntity> CervicalDilations { get; set; }
@@ -24,16 +30,14 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         public virtual DbSet<ContractionFrequencyEntity> ContractionFrequencyEntities { get; set; }
         public virtual DbSet<FetalHeartRateEntity> FetalHeartRateEntities { get; set; }
         public virtual DbSet<PartographStateEntity> PartographStateEntities { get; set; }
+        public virtual DbSet<PartographAuditLogEntity> PartographAuditLogs { get; set; }
+        public virtual DbSet<PartographVersionEntity> PartographVersions { get; set; }
 
         //Catalogos
         public virtual DbSet<PositionEntity> PositionEntities { get; set; }
         public virtual DbSet<HodgePlanesEntity> HodgePlanesEntities { get; set; }
         public virtual DbSet<WorkTimeEntity> WorkTimeEntities { get; set; }
         public virtual DbSet<PermissionTypeEntity> PermissionTypeEntities { get; set; }
-
-        //Autenticacion
-        public virtual DbSet<RefreshTokenEntity> RefreshTokenEntities { get; set; }
-        public virtual DbSet<ActivationTokenEntity> ActivationTokenEntities { get; set; }
 
         //Notificaciones
         public virtual DbSet<NotificationTypeEntity> NotificationTypeEntities { get; set; }
