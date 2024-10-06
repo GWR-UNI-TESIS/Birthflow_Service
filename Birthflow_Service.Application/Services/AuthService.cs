@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Birthflow_Application.DTOs;
 using Birthflow_Application.DTOs.Auth;
 using Birthflow_Domain.Interface;
@@ -198,6 +199,18 @@ namespace Birthflow_Application.Services
                 };
             }
             var result = await _userRepository.SaveUser(dto);
+
+            var password = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash);
+
+            var passwordEntity = new PasswordEntity
+            {
+                UserId = result.Id,
+                PasswordHash = password,
+                IsCurrent = true,
+                CreateAt = DateTime.UtcNow,
+            };
+
+            await _passwordRepository.CreatePassword(passwordEntity);
 
             var userDto = _mapper.Map<UserDto>(result);
 

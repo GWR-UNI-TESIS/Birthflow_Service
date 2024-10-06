@@ -17,6 +17,7 @@ namespace Birthflow_Infraestructure
             services.AddTransient<IPartographRepository, PartographRepository>();
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IPasswordRepository, PasswordRepository>();
+            services.AddTransient<IPartographLogRepository, PartographLogRepository>();
             services.AddScoped<IMailAdapter, GmailAdapter>();
             return services;
         }

@@ -11,7 +11,7 @@ namespace Birthflow_Service.Infraestructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+           /* migrationBuilder.DropTable(
                 name: "AspNetUserClaims");
 
             migrationBuilder.DropTable(
@@ -22,7 +22,7 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
+           /*/
             migrationBuilder.CreateTable(
                 name: "RefreshToken",
                 schema: "Auth",

@@ -3,6 +3,7 @@ using Birthflow_Application.DTOs.Auth;
 using BirthflowService.Domain.DTOs.Partograph;
 using BirthflowService.Domain.DTOs.Share;
 using BirthflowService.Domain.Entities;
+using BirthflowService.Domain.Models.Log;
 
 namespace BirthflowService.Application.Utils
 {
@@ -65,6 +66,44 @@ namespace BirthflowService.Application.Utils
             CreateMap<GroupDto, GroupEntity>()
                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<GroupEntity, GroupDto>();
+
+
+            //Compare Logs
+            CreateMap<CervicalDilationDto, CervicalDilationLog >()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<CervicalDilationEntity, CervicalDilationLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<ChildbirthNoteDto, ChildbirthNoteLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<ChildbirthNoteEntity, ChildbirthNoteLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<ContractionFrequencyDto, ContractionFrequencyLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<ContractionFrequencyLog, ContractionFrequencyLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<FetalHeartRateDto, FetalHeartRateLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<FetalHeartRateEntity, FetalHeartRateLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<MedicalSurveillanceTableDto, MedicalSurveillanceTableLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<MedicalSurveillanceTableEntity, MedicalSurveillanceTableLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<PartographDto, PartographLog> ()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<PartographEntity, PartographLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<PresentationPositionVarietyDto, PresentationPositionVarietyLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<PresentationPositionVarietyEntity, PresentationPositionVarietyLog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
+ 
     }
 }
