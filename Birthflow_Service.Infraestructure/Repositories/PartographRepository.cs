@@ -91,7 +91,7 @@ namespace BirthflowService.Infraestructure.Repositories
                 _logger.LogInformation($"Obteniendo partograma con ID {partographId}");
 
                 var result = await _context.Partographs
-                  .Include(p => p.CervicalDilationEntities)
+                  .Include(p => p.CervicalDilationEntities.OrderBy(cd => cd.CreateAt))
                   .FirstOrDefaultAsync(p => p.PartographId == partographId && p.IsDelete != true);
 
                 if (result == null)
@@ -598,6 +598,18 @@ namespace BirthflowService.Infraestructure.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al modificar la Nota de parto");
+                throw;
+            }
+        }
+
+        public List<WorkTimeItemEntity> GetWorkTimeItems(string worktime)
+        {
+            try
+            {
+                return _context.WorkTimeItemEntities.Where(wti => wti.WorkTimeId == worktime).ToList();
+            }
+            catch (Exception) 
+            {
                 throw;
             }
         }

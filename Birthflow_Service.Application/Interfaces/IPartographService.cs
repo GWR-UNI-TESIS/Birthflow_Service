@@ -1,6 +1,7 @@
 ﻿using Birthflow_Application.DTOs;
 using BirthflowService.Domain.DTOs.Partograph;
 using BirthflowService.Domain.Entities;
+using BirthflowService.Domain.Models;
 
 namespace BirthflowService.Application.Interfaces
 {
@@ -55,5 +56,7 @@ namespace BirthflowService.Application.Interfaces
 
         Task<BaseResponse<PartographStateEntity>> GetPartographStateByUser(Guid partographId, Guid userId);
         Task<BaseResponse<PartographStateEntity>> UpdatePartographState(PartographStateEntity partographStateEntity);
+
+        Task<BaseResponse<Curves>> GetAlertCurves(Guid partographId);
     }
 }

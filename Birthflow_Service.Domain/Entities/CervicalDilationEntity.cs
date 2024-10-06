@@ -15,8 +15,7 @@ namespace BirthflowService.Domain.Entities
         public long Id { get; set; }
         [ForeignKey("PartographEntity")]
         public Guid PartographId { get; set; }
-        [Column(TypeName = "decimal(12,2)")]
-        public decimal Value { get; set; }
+        public double Value { get; set; }
         public DateTime Hour { get; set; }
         public bool RemOrRam { get; set; }
         public bool IsDelete { get; set; }

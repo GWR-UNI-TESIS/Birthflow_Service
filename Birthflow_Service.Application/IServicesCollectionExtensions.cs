@@ -3,13 +3,8 @@ using Birthflow_Domain.Interface;
 using Birthflow_Infraestructure.Repositories;
 using BirthflowService.Application.Interfaces;
 using BirthflowService.Application.Services;
-using BirthflowService.Domain.Interface;
+using BirthflowService.Application.Utils;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Birthflow_Application
 {
@@ -23,6 +18,8 @@ namespace Birthflow_Application
             services.AddTransient<IPartographService, PartographService>();
             services.AddTransient<IUserTokenService, UserTokenService>();
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IPartographLogService, PartographLogService>();
+            services.AddTransient<ICurvesGenerator, CurvesGenerator>();
             return services;
         }
     }

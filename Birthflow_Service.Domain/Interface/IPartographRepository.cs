@@ -52,6 +52,8 @@ namespace BirthflowService.Domain.Interface
 
         Task<PartographStateEntity> GetPartographStateByUser(Guid partographId, Guid userId);
         Task<PartographStateEntity> UpdatePartographState(PartographStateEntity partographState);
+
+        List<WorkTimeItemEntity> GetWorkTimeItems(string worktime);
     }
 }
 

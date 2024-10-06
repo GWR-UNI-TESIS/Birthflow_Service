@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BirthflowService.Domain.Entities
 {
@@ -16,5 +11,6 @@ namespace BirthflowService.Domain.Entities
         public required string Paridad { get; set; }
         public required string Posicion { get; set; }
         public required string Membrana { get; set; }
+        public virtual ICollection<WorkTimeItemEntity> WorkTimeItems { get; set; } = new List<WorkTimeItemEntity>();
     }
 }

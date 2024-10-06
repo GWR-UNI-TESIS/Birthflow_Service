@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241006034827_Agregando_seed_catalogo_de_tiempos_construccion_curva")]
+    partial class Agregando_seed_catalogo_de_tiempos_construccion_curva
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,8 +87,8 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.Property<Guid?>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(12,2)");
 
                     b.HasKey("Id");
 
@@ -897,25 +900,25 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreateAt = new DateTime(2024, 10, 5, 22, 25, 39, 461, DateTimeKind.Local).AddTicks(2490),
+                            CreateAt = new DateTime(2024, 10, 5, 21, 48, 26, 846, DateTimeKind.Local).AddTicks(4286),
                             Description = "Permisos de lectura",
-                            Identificator = new Guid("110e6cf2-11c0-40ff-875c-163db0771537"),
+                            Identificator = new Guid("7f55c9bb-3a30-4338-a4e6-11003147fb9e"),
                             Name = "Lectura"
                         },
                         new
                         {
                             Id = 2,
-                            CreateAt = new DateTime(2024, 10, 5, 22, 25, 39, 461, DateTimeKind.Local).AddTicks(2504),
+                            CreateAt = new DateTime(2024, 10, 5, 21, 48, 26, 846, DateTimeKind.Local).AddTicks(4297),
                             Description = "Permisos de escritura",
-                            Identificator = new Guid("7c4efa24-88db-4125-aaf0-5c0713aebd55"),
+                            Identificator = new Guid("cb0ab5e5-4ecb-4555-8bb5-ebf441944d4c"),
                             Name = "Escritura"
                         },
                         new
                         {
                             Id = 3,
-                            CreateAt = new DateTime(2024, 10, 5, 22, 25, 39, 461, DateTimeKind.Local).AddTicks(2506),
+                            CreateAt = new DateTime(2024, 10, 5, 21, 48, 26, 846, DateTimeKind.Local).AddTicks(4299),
                             Description = "Permisos de lectura y escritura",
-                            Identificator = new Guid("8fd5e6cd-bbb5-4ebe-b51b-ec3668f4cab6"),
+                            Identificator = new Guid("aefaaf9e-f89e-41a1-9d8a-b53f1a197a34"),
                             Name = "Lectura y Escritura"
                         });
                 });

@@ -5,9 +5,11 @@ using BirthflowService.Application.Utils;
 using BirthflowService.Domain.DTOs.Partograph;
 using BirthflowService.Domain.Entities;
 using BirthflowService.Domain.Interface;
+using BirthflowService.Domain.Models;
 using BirthflowService.Domain.Models.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System.Security.AccessControl;
 
 namespace BirthflowService.Application.Services
@@ -17,17 +19,19 @@ namespace BirthflowService.Application.Services
         private readonly IConfiguration _configuration;
         private readonly IPartographRepository _partographRepo;
         private readonly IUserTokenService _tokenServices;
-        private readonly IPartographLogRepository _logRepository;
         private readonly IMapper _mapper;
-        private readonly PartographAuditLogGenerator logGenerator;
-        public PartographService(IConfiguration configuration, IPartographRepository partographRepo, IUserTokenService tokenServices, IPartographLogRepository partographLog, IMapper mapper)
+        private readonly IPartographLogService _partographLogService;
+        private readonly ICurvesGenerator _curvesGenerator;
+
+        public PartographService(IConfiguration configuration, IPartographRepository partographRepo, IUserTokenService tokenServices, 
+            IMapper mapper, IPartographLogService partographLogService, ICurvesGenerator curvesGenerator)
         {
             _configuration = configuration;
             _partographRepo = partographRepo;
             _tokenServices = tokenServices;
             _mapper = mapper;
-            _logRepository = partographLog;
-            logGenerator = new PartographAuditLogGenerator();
+            _partographLogService = partographLogService;
+            _curvesGenerator = curvesGenerator;
         }
 
         public async Task<BaseResponse<PartographEntity>> CreatePartograph(PartographDto partographDto)
@@ -44,25 +48,8 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.CreatePartograph(partographEntity);
 
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = partographEntity.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = ""
-                };
-
-                var resultPartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
                 var currentEntity = _mapper.Map<PartographLog>(result);
-
-                var auditLogs = logGenerator.LogNewEntity(currentEntity, result.PartographId, userId, resultPartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                await _partographLogService.SaveLog(currentEntity, result, userId);
 
                 return new BaseResponse<PartographEntity>
                 {
@@ -155,28 +142,7 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.UpdatePartograph(partographEntity);
 
-
-                //Guardar el cambio de informacion en historico
-
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = partographEntity.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = " "
-                };
-
-                var savePartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
-
-
-                var auditLogs = logGenerator.CompareEntities(currentEntity, newEntity, partographEntity.PartographId, userId, savePartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                await _partographLogService.SaveLog(currentEntity, newEntity, result, userId);
 
                 return new BaseResponse<PartographEntity>
                 {
@@ -249,26 +215,15 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.CreateCervicalDilation(cervicalDilationEntity);
 
-                //Guardar log
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = cervicalDilationEntity.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = ""
-                };
-
-                var resultPartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
                 var currentEntity = _mapper.Map<CervicalDilationLog>(result);
 
-                var auditLogs = logGenerator.LogNewEntity(currentEntity, result.PartographId, userId, resultPartographVersion.Id);
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
 
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                partographEntity.CervicalDilationEntities = partographEntity.CervicalDilationEntities
+                    .OrderBy(cd => cd.CreateAt) // Usa el campo adecuado que indique el orden cronológico
+                    .ToList();
+
+                await _partographLogService.SaveLog(currentEntity, partographEntity, userId);
 
                 return new BaseResponse<CervicalDilationEntity>
                 {
@@ -373,24 +328,8 @@ namespace BirthflowService.Application.Services
 
                     var result = await _partographRepo.UpdateCervicalDilation(cervicalDilation);
 
-                    //Guardar el cambio de informacion en historico
-                    var partographVersion = new PartographVersionEntity
-                    {
-                        PartographId = cervicalDilation.PartographId,
-                        ChangedAt = DateTime.Now,
-                        ChangedBy = userId,
-                        PartographDataJson = " "
-                    };
-
-                    var savePartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
-                    var auditLogs = logGenerator.CompareEntities(currentEntity, newEntity, cervicalDilation.PartographId, userId, savePartographVersion.Id);
-
-                    // Guardar los logs de auditoría si hay cambios
-                    if (auditLogs.Any())
-                    {
-                        await _logRepository.CreateAuditLogs(auditLogs);
-                    }
+                    var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                    await _partographLogService.SaveLog(currentEntity, newEntity, partographEntity, userId);
 
                     return new BaseResponse<CervicalDilationEntity>
                     {
@@ -472,27 +411,10 @@ namespace BirthflowService.Application.Services
                 entity.IsDelete = false;
 
                 var result = await _partographRepo.CreatePresentationPositionVariety(entity);
-                
-                //Guardar log
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = result.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = ""
-                };
-
-                var resultPartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
 
                 var currentEntity = _mapper.Map<PresentationPositionVarietyLog>(result);
-
-                var auditLogs = logGenerator.LogNewEntity(currentEntity, result.PartographId, userId, resultPartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, partographEntity, userId);
 
                 return new BaseResponse<PresentationPositionVarietyEntity>
                 {
@@ -534,35 +456,15 @@ namespace BirthflowService.Application.Services
 
                 Guid userId = _tokenServices.GetUserId();
 
-                //Guardar el cambio de informacion en historico
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = isExistedPresentatation.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = " "
-                };
-
                 _mapper.Map(presentationDto, isExistedPresentatation);
-
                 isExistedPresentatation.UpdateAt = DateTime.Now;
                 isExistedPresentatation.UpdateBy = userId;
 
                 var result = await _partographRepo.UpdatePresentationPositionVariety(isExistedPresentatation);
 
-
-                var savePartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
-
-
-                var auditLogs = logGenerator.CompareEntities(currentEntity, newEntity, isExistedPresentatation.PartographId, userId, savePartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
-
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, newEntity, partographEntity, userId);
+       
                 return new BaseResponse<PresentationPositionVarietyEntity>
                 {
                     Message = "Modificando de variedad de posicion de la presentacion",
@@ -684,26 +586,9 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.CreateMedicalSurveillanceTable(entity);
 
-                //Guardar log
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = result.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = ""
-                };
-
-                var resultPartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
                 var currentEntity = _mapper.Map<MedicalSurveillanceTableLog>(result);
-
-                var auditLogs = logGenerator.LogNewEntity(currentEntity, result.PartographId, userId, resultPartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, partographEntity, userId);
 
                 return new BaseResponse<MedicalSurveillanceTableEntity>
                 {
@@ -749,25 +634,8 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical);
 
-                //Guardar el cambio de informacion en historico
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = isExistedMedical.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = " "
-                };
-
-                var savePartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
-
-                var auditLogs = logGenerator.CompareEntities(currentEntity, newEntity, isExistedMedical.PartographId, userId, savePartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, newEntity, partographEntity, userId);
 
                 return new BaseResponse<MedicalSurveillanceTableEntity>
                 {
@@ -937,28 +805,10 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.CreateFetalHeartRate(fetalHeartRateEntity);
 
-                //Guardar log
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = result.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = ""
-                };
-
-                var resultPartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
                 var currentEntity = _mapper.Map<FetalHeartRateLog>(result);
-
-                var auditLogs = logGenerator.LogNewEntity(currentEntity, result.PartographId, userId, resultPartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
-
-
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, partographEntity, userId);
+ 
                 return new BaseResponse<FetalHeartRateEntity>
                 {
                     Message = "Frecuencia cardíaca fetal creada correctamente",
@@ -1004,24 +854,8 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.UpdateFetalHeartRateTable(isExistedFetalHeartRate);
 
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = isExistedFetalHeartRate.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = " "
-                };
-
-                var savePartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
-
-                var auditLogs = logGenerator.CompareEntities(currentEntity, newEntity, isExistedFetalHeartRate.PartographId, userId, savePartographVersion.Id);
-                
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, newEntity, partographEntity, userId);
 
                 return new BaseResponse<FetalHeartRateEntity>
                 {
@@ -1099,26 +933,9 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.CreateContractionFrequency(contractionFrequencyEntity);
 
-                //Guardar log
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = result.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = ""
-                };
-
-                var resultPartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
                 var currentEntity = _mapper.Map<ContractionFrequencyLog>(result);
-
-                var auditLogs = logGenerator.LogNewEntity(currentEntity, result.PartographId, userId, resultPartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, partographEntity, userId);
 
                 return new BaseResponse<ContractionFrequencyEntity>
                 {
@@ -1164,24 +981,8 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.UpdateContractionFrequency(isExistedContractionFrequency);
 
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = isExistedContractionFrequency.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = " "
-                };
-
-                var savePartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
-
-                var auditLogs = logGenerator.CompareEntities(currentEntity, newEntity, isExistedContractionFrequency.PartographId, userId, savePartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, newEntity, partographEntity, userId);
 
                 return new BaseResponse<ContractionFrequencyEntity>
                 {
@@ -1236,27 +1037,9 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.CreateChildBirthNote(childbirthNote);
 
-                //Guardar log
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = result.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = ""
-                };
-
-                var resultPartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
                 var currentEntity = _mapper.Map<ChildbirthNoteLog>(result);
-
-                var auditLogs = logGenerator.LogNewEntity(currentEntity, result.PartographId, userId, resultPartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
-
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, partographEntity, userId);
 
                 return new BaseResponse<ChildbirthNoteEntity>
                 {
@@ -1294,7 +1077,7 @@ namespace BirthflowService.Application.Services
 
                 Guid userId = _tokenServices.GetUserId();
                 var currentEntity = _mapper.Map<ChildbirthNoteLog>(isExistedChildbirthNote);
-                var newEntity = _mapper.Map<ChildbirthNoteLog>(isExistedChildbirthNote);
+                var newEntity = _mapper.Map<ChildbirthNoteLog>(childbirthNoteDto);
 
                 _mapper.Map(childbirthNoteDto, isExistedChildbirthNote);
                 isExistedChildbirthNote.UpdateBy = userId;
@@ -1302,23 +1085,8 @@ namespace BirthflowService.Application.Services
 
                 var result = await _partographRepo.UpdateChildBirthNote(isExistedChildbirthNote);
 
-                var partographVersion = new PartographVersionEntity
-                {
-                    PartographId = isExistedChildbirthNote.PartographId,
-                    ChangedAt = DateTime.Now,
-                    ChangedBy = userId,
-                    PartographDataJson = " "
-                };
-
-                var savePartographVersion = await _logRepository.CreatePartographVersion(partographVersion);
-
-                var auditLogs = logGenerator.CompareEntities(currentEntity, newEntity, isExistedChildbirthNote.PartographId, userId, savePartographVersion.Id);
-
-                // Guardar los logs de auditoría si hay cambios
-                if (auditLogs.Any())
-                {
-                    await _logRepository.CreateAuditLogs(auditLogs);
-                }
+                var partographEntity = await _partographRepo.GetPartograph(result.PartographId);
+                await _partographLogService.SaveLog(currentEntity, newEntity, partographEntity, userId);
 
                 return new BaseResponse<ChildbirthNoteEntity>
                 {
@@ -1371,6 +1139,33 @@ namespace BirthflowService.Application.Services
 
                 };
             }
-        } 
+        }
+
+        public async Task<BaseResponse<Curves>> GetAlertCurves(Guid partographId)
+        {
+            try
+            {
+                var result = await _partographRepo.GetPartograph(partographId);
+
+                var curves = _curvesGenerator.GenerateCurves(result);
+
+                return new BaseResponse<Curves>
+                {
+                    Message = "Ingresado correctamente",
+                    Response = curves,
+                    StatusCode = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<Curves>
+                {
+                    Response = null!,
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status400BadRequest,
+
+                };
+            }
+        }
     }
 }

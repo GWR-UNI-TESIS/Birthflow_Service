@@ -1,7 +1,6 @@
 ﻿using BirthflowService.Domain.Entities;
 using BirthflowService.Infraestructure.Seeds;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace Birthflow_Service.Infraestructure.DbContexts
 {
@@ -37,6 +36,7 @@ namespace Birthflow_Service.Infraestructure.DbContexts
         public virtual DbSet<PositionEntity> PositionEntities { get; set; }
         public virtual DbSet<HodgePlanesEntity> HodgePlanesEntities { get; set; }
         public virtual DbSet<WorkTimeEntity> WorkTimeEntities { get; set; }
+        public virtual DbSet<WorkTimeItemEntity> WorkTimeItemEntities { get; set; }
         public virtual DbSet<PermissionTypeEntity> PermissionTypeEntities { get; set; }
 
         //Notificaciones
@@ -61,7 +61,7 @@ namespace Birthflow_Service.Infraestructure.DbContexts
             builder.ApplyConfiguration(new PositionsSeed());
             builder.ApplyConfiguration(new WorkTimeSeed());
             builder.ApplyConfiguration(new PermissionTypeSeed());
-
+            builder.ApplyConfiguration(new WorkTimeItemSeed());
 
             builder.Entity<UserGroupEntity>()
                 .HasKey(ug => new { ug.UserId, ug.GroupId }); 

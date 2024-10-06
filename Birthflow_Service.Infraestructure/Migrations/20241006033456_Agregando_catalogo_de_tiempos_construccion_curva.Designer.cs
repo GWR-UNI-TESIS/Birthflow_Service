@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241006033456_Agregando_catalogo_de_tiempos_construccion_curva")]
+    partial class Agregando_catalogo_de_tiempos_construccion_curva
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,8 +87,8 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.Property<Guid?>("UpdateBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(12,2)");
 
                     b.HasKey("Id");
 
@@ -897,25 +900,25 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreateAt = new DateTime(2024, 10, 5, 22, 25, 39, 461, DateTimeKind.Local).AddTicks(2490),
+                            CreateAt = new DateTime(2024, 10, 5, 21, 34, 56, 641, DateTimeKind.Local).AddTicks(7742),
                             Description = "Permisos de lectura",
-                            Identificator = new Guid("110e6cf2-11c0-40ff-875c-163db0771537"),
+                            Identificator = new Guid("13a5017e-2215-42c5-b07a-7bfaff9cb599"),
                             Name = "Lectura"
                         },
                         new
                         {
                             Id = 2,
-                            CreateAt = new DateTime(2024, 10, 5, 22, 25, 39, 461, DateTimeKind.Local).AddTicks(2504),
+                            CreateAt = new DateTime(2024, 10, 5, 21, 34, 56, 641, DateTimeKind.Local).AddTicks(7758),
                             Description = "Permisos de escritura",
-                            Identificator = new Guid("7c4efa24-88db-4125-aaf0-5c0713aebd55"),
+                            Identificator = new Guid("80caf073-2ce7-4291-8699-4f6933ce378f"),
                             Name = "Escritura"
                         },
                         new
                         {
                             Id = 3,
-                            CreateAt = new DateTime(2024, 10, 5, 22, 25, 39, 461, DateTimeKind.Local).AddTicks(2506),
+                            CreateAt = new DateTime(2024, 10, 5, 21, 34, 56, 641, DateTimeKind.Local).AddTicks(7760),
                             Description = "Permisos de lectura y escritura",
-                            Identificator = new Guid("8fd5e6cd-bbb5-4ebe-b51b-ec3668f4cab6"),
+                            Identificator = new Guid("17402002-377e-468c-ba3c-51d223226499"),
                             Name = "Lectura y Escritura"
                         });
                 });
@@ -1315,218 +1318,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
                     b.HasIndex("WorkTimeId");
 
                     b.ToTable("WorkTimeItem", "Partograph");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CervicalDilation = 6.0,
-                            Time = new TimeSpan(0, 2, 10, 0, 0),
-                            WorkTimeId = "VTI"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CervicalDilation = 7.0,
-                            Time = new TimeSpan(0, 1, 15, 0, 0),
-                            WorkTimeId = "VTI"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CervicalDilation = 8.0,
-                            Time = new TimeSpan(0, 1, 0, 0, 0),
-                            WorkTimeId = "VTI"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CervicalDilation = 9.0,
-                            Time = new TimeSpan(0, 0, 35, 0, 0),
-                            WorkTimeId = "VTI"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CervicalDilation = 10.0,
-                            Time = new TimeSpan(0, 0, 25, 0, 0),
-                            WorkTimeId = "VTI"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CervicalDilation = 11.0,
-                            Time = new TimeSpan(0, 0, 15, 0, 0),
-                            WorkTimeId = "VTI"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CervicalDilation = 6.0,
-                            Time = new TimeSpan(0, 2, 30, 0, 0),
-                            WorkTimeId = "HMI"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CervicalDilation = 7.0,
-                            Time = new TimeSpan(0, 1, 25, 0, 0),
-                            WorkTimeId = "HMI"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CervicalDilation = 8.0,
-                            Time = new TimeSpan(0, 0, 55, 0, 0),
-                            WorkTimeId = "HMI"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CervicalDilation = 9.0,
-                            Time = new TimeSpan(0, 0, 40, 0, 0),
-                            WorkTimeId = "HMI"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CervicalDilation = 10.0,
-                            Time = new TimeSpan(0, 0, 25, 0, 0),
-                            WorkTimeId = "HMI"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CervicalDilation = 11.0,
-                            Time = new TimeSpan(0, 0, 15, 0, 0),
-                            WorkTimeId = "HMI"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CervicalDilation = 6.0,
-                            Time = new TimeSpan(0, 2, 30, 0, 0),
-                            WorkTimeId = "HMR"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CervicalDilation = 7.0,
-                            Time = new TimeSpan(0, 1, 5, 0, 0),
-                            WorkTimeId = "HMR"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CervicalDilation = 8.0,
-                            Time = new TimeSpan(0, 0, 35, 0, 0),
-                            WorkTimeId = "HMR"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CervicalDilation = 9.0,
-                            Time = new TimeSpan(0, 0, 25, 0, 0),
-                            WorkTimeId = "HMR"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CervicalDilation = 10.0,
-                            Time = new TimeSpan(0, 0, 10, 0, 0),
-                            WorkTimeId = "HMR"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CervicalDilation = 11.0,
-                            Time = new TimeSpan(0, 0, 5, 0, 0),
-                            WorkTimeId = "HMR"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CervicalDilation = 6.0,
-                            Time = new TimeSpan(0, 3, 15, 0, 0),
-                            WorkTimeId = "HNI"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            CervicalDilation = 7.0,
-                            Time = new TimeSpan(0, 1, 30, 0, 0),
-                            WorkTimeId = "HNI"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CervicalDilation = 8.0,
-                            Time = new TimeSpan(0, 1, 0, 0, 0),
-                            WorkTimeId = "HNI"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            CervicalDilation = 9.0,
-                            Time = new TimeSpan(0, 0, 40, 0, 0),
-                            WorkTimeId = "HNI"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            CervicalDilation = 10.0,
-                            Time = new TimeSpan(0, 0, 35, 0, 0),
-                            WorkTimeId = "HNI"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            CervicalDilation = 11.0,
-                            Time = new TimeSpan(0, 0, 30, 0, 0),
-                            WorkTimeId = "HNI"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            CervicalDilation = 6.0,
-                            Time = new TimeSpan(0, 2, 30, 0, 0),
-                            WorkTimeId = "HNR"
-                        },
-                        new
-                        {
-                            Id = 26,
-                            CervicalDilation = 7.0,
-                            Time = new TimeSpan(0, 1, 25, 0, 0),
-                            WorkTimeId = "HNR"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            CervicalDilation = 8.0,
-                            Time = new TimeSpan(0, 1, 5, 0, 0),
-                            WorkTimeId = "HNR"
-                        },
-                        new
-                        {
-                            Id = 28,
-                            CervicalDilation = 9.0,
-                            Time = new TimeSpan(0, 0, 50, 0, 0),
-                            WorkTimeId = "HNR"
-                        },
-                        new
-                        {
-                            Id = 29,
-                            CervicalDilation = 10.0,
-                            Time = new TimeSpan(0, 0, 35, 0, 0),
-                            WorkTimeId = "HNR"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            CervicalDilation = 11.0,
-                            Time = new TimeSpan(0, 0, 20, 0, 0),
-                            WorkTimeId = "HNR"
-                        });
                 });
 
             modelBuilder.Entity("BirthflowService.Domain.Entities.CervicalDilationEntity", b =>

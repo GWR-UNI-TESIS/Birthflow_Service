@@ -528,5 +528,22 @@ namespace BirthflowService.API.Controllers
                 return StatusCode(500, "Ocurrió un error interno.");
             }
         }
+
+        [HttpGet("get/partograph/curve/{partographId}")]
+        public async Task<IActionResult> GetCurves([FromRoute] Guid partographId)
+        {
+            try
+            {
+                _logger.LogInformation("Obteniendo curvas del partograma con ID: {PartographId}", partographId);
+                var result = await _partographServices.GetAlertCurves(partographId);
+                _logger.LogInformation("Curvas obtenida exitosamente con código de estado: {StatusCode}", result.StatusCode);
+                return StatusCode(result.StatusCode, result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ocurrió un error al obtener la curva del partograma con ID: {PartographId}", partographId);
+                return StatusCode(500, "Ocurrió un error interno.");
+            }
+        }
     }
 }

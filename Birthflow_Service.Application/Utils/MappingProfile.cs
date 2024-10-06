@@ -103,7 +103,15 @@ namespace BirthflowService.Application.Utils
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<PresentationPositionVarietyEntity, PresentationPositionVarietyLog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<PartographEntity, GlobalPartographLog>()
+            .ForMember(dest => dest.partographLog, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.cervicalDilationLog, opt => opt.MapFrom(src => src.CervicalDilationEntities))
+            .ForMember(dest => dest.contractionFrequencyLog, opt => opt.MapFrom(src => src.ContractionFrequencyEntities))
+            .ForMember(dest => dest.fetalHeartRateLog, opt => opt.MapFrom(src => src.FetalHeartRateEntities))
+            .ForMember(dest => dest.medicalSurveillanceTableLog, opt => opt.MapFrom(src => src.MedicalSurveillanceTableEntities))
+            .ForMember(dest => dest.presentationPositionVarietyLog, opt => opt.MapFrom(src => src.PresentationPositionVarietyEntities))
+            .ForMember(dest => dest.childbirthNoteLog, opt => opt.MapFrom(src => src.BirthNote));
         }
- 
     }
 }
