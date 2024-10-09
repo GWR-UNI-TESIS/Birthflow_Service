@@ -1,6 +1,5 @@
 ﻿using BirthflowService.Domain.Entities;
 
-
 namespace BirthflowService.Domain.Interface
 {
     public interface IPartographRepository

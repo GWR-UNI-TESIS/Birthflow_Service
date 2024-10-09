@@ -1,5 +1,4 @@
-﻿
-namespace BirthflowService.Domain.Models.Log
+﻿namespace BirthflowService.Domain.Models.Log
 {
     public class PartographLog
     {
