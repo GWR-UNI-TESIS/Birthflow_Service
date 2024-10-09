@@ -8,7 +8,7 @@ namespace BirthflowService.Application.Interfaces
     public interface IPartographService
     {
         Task<BaseResponse<IEnumerable<PartographEntity>>> GetPartographs(Guid userId);
-        Task<BaseResponse<PartographEntity>> GetPartograph(Guid partographId);
+        Task<BaseResponse<PartographResponseDto>> GetPartograph(Guid partographId);
         Task<BaseResponse<PartographEntity>> CreatePartograph(PartographDto partographDto);
         Task<BaseResponse<PartographEntity>> UpdatePartograph(PartographDto partographDto);
         Task<BaseResponse<PartographEntity>> DeletePartograph(Guid partographId);

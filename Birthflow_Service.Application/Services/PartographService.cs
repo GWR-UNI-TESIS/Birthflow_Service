@@ -93,21 +93,23 @@ namespace BirthflowService.Application.Services
             }
         }
 
-        public async Task<BaseResponse<PartographEntity>> GetPartograph(Guid partographId)
+        public async Task<BaseResponse<PartographResponseDto>> GetPartograph(Guid partographId)
         {
             try
             {
                 var result = await _partographRepo.GetPartograph(partographId);
-                return new BaseResponse<PartographEntity>
+                
+                var response = _mapper.Map<PartographResponseDto>(result);
+                return new BaseResponse<PartographResponseDto>
                 {
                     Message = "Ingresado correctamente",
-                    Response = result,
+                    Response = response,
                     StatusCode = StatusCodes.Status200OK,
                 };
             }
             catch (Exception ex)
             {
-                return new BaseResponse<PartographEntity>
+                return new BaseResponse<PartographResponseDto>
                 {
                     Response = null!,
                     Message = ex.Message,

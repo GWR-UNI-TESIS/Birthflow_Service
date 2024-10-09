@@ -29,7 +29,6 @@ namespace BirthflowService.Application.Utils
 
             // Mapeo inverso de UserEntity a UserDto
             CreateMap<UserEntity, UserDto>()
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
             CreateMap<PartographDto, PartographEntity>()
@@ -53,12 +52,20 @@ namespace BirthflowService.Application.Utils
             CreateMap<FetalHeartRateEntity, FetalHeartRateDto>();
 
             CreateMap<ContractionFrequencyDto, ContractionFrequencyEntity>()
-               .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<ContractionFrequencyEntity, ContractionFrequencyDto>();
 
             CreateMap<ChildbirthNoteDto, ChildbirthNoteEntity>()
-               .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<ChildbirthNoteEntity, ChildbirthNoteDto>();
+
+            CreateMap<PartographEntity, PartographResponseDto>()
+                .ForMember(dest => dest.partographState, opt => opt.MapFrom(src => src.PartographStateEntities.FirstOrDefault()))
+                .ForMember(dest => dest.CervicalDilations, opt => opt.MapFrom(src => src.CervicalDilationEntities))
+                .ForMember(dest => dest.contractionFrequencies, opt => opt.MapFrom(src => src.ContractionFrequencyEntities))
+                .ForMember(dest => dest.FetalHeartRates, opt => opt.MapFrom(src => src.FetalHeartRateEntities))
+                .ForMember(dest => dest.MedicalSurveillanceTable, opt => opt.MapFrom(src => src.MedicalSurveillanceTableEntities))
+                .ForMember(dest => dest.PresentationPositionVarieties, opt => opt.MapFrom(src => src.PresentationPositionVarietyEntities));
 
 
             //SHARE Metodos

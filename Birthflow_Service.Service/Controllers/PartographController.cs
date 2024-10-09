@@ -36,7 +36,7 @@ namespace BirthflowService.API.Controllers
             }
         }
 
-        [HttpGet("get/partographs/{userId}")]
+        [HttpGet("partographs/{userId}")]
         public async Task<IActionResult> GetPartographs([FromRoute] Guid userId)
         {
             try
@@ -99,7 +99,7 @@ namespace BirthflowService.API.Controllers
         }
 
 
-        [HttpGet("get/partograph/{partographId}")]
+        [HttpGet("partograph/{partographId}")]
         public async Task<IActionResult> GetPartograph([FromRoute] Guid partographId)
         {
             try
@@ -116,7 +116,7 @@ namespace BirthflowService.API.Controllers
             }
         }
 
-        [HttpGet("get/cervical-dilations/{partographId}")]
+        [HttpGet("cervical-dilation/partograph/{partographId}")]
         public async Task<IActionResult> GetCervicalDilationByUserId([FromRoute] Guid partographId)
         {
             try
@@ -186,24 +186,7 @@ namespace BirthflowService.API.Controllers
 
         // PRESENTATION POSITION ---------
 
-        [HttpGet("presentation-position-variety/all")]
-        public async Task<IActionResult> GetAllPresentationPositionVariety()
-        {
-            try
-            {
-                _logger.LogInformation("Obteniendo todas las variedades de posición de presentación.");
-                var result = await _partographServices.GetAllPresentationPositionVariety();
-                _logger.LogInformation("Variedades de posición de presentación obtenidas exitosamente.");
-                return StatusCode(result.StatusCode, result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ocurrió un error al obtener todas las variedades de posición de presentación.");
-                return StatusCode(500, "Ocurrió un error interno.");
-            }
-        }
-
-        [HttpGet("presentation-position-variety/{parthographId}")]
+        [HttpGet("presentation-position-variety/partograph/{parthographId}")]
         public async Task<IActionResult> GetPresentationPositionVarietyByParthographId([FromRoute] Guid parthographId)
         {
             try
@@ -274,7 +257,7 @@ namespace BirthflowService.API.Controllers
 
         // MEDICAL SURVEILLANCE ---------
 
-        [HttpGet("medical-surveillance-table/{parthographId}")]
+        [HttpGet("medical-surveillance-table/partograph/{parthographId}")]
         public async Task<IActionResult> GetMedicalSurveillanceTableByParthograph([FromRoute] Guid parthographId)
         {
             try
@@ -360,7 +343,7 @@ namespace BirthflowService.API.Controllers
         }
 
         // Obtener todas las frecuencias cardíacas fetales por partograma
-        [HttpGet("fetal-heart-rate/by-partograph/{partographId}")]
+        [HttpGet("fetal-heart-rate/partograph/{partographId}")]
         public async Task<IActionResult> GetFetalHeartRateByParthographId([FromRoute] Guid partographId)
         {
             try
@@ -428,7 +411,7 @@ namespace BirthflowService.API.Controllers
         }
 
         // Obtener todas las frecuencias de contracciones por partograma
-        [HttpGet("contraction-frequency/by-partograph/{partographId}")]
+        [HttpGet("contraction-frequency/partograph/{partographId}")]
         public async Task<IActionResult> GetContractionFrequencyByParthographId([FromRoute] Guid partographId)
         {
             try
@@ -479,7 +462,7 @@ namespace BirthflowService.API.Controllers
         }
 
         // Obtener nota de parto por ID de partograma
-        [HttpGet("childbirth-note/by-partograph/{partographId}")]
+        [HttpGet("childbirth-note/partograph/{partographId}")]
         public async Task<IActionResult> GetChildBirthNoteByParthographId([FromRoute] Guid partographId)
         {
             try
@@ -529,7 +512,7 @@ namespace BirthflowService.API.Controllers
             }
         }
 
-        [HttpGet("get/partograph/curve/{partographId}")]
+        [HttpGet("partograph/curve/{partographId}")]
         public async Task<IActionResult> GetCurves([FromRoute] Guid partographId)
         {
             try
