@@ -39,5 +39,19 @@ namespace BirthflowService.Infraestructure.Repositories
         {
             return _context.RefreshTokenEntities.FirstOrDefault(x => x.UserId == username && x.RefreshTokenValue == RefreshToken && x.Active)!;
         }
+
+        public async Task AddLoginAttempt(UserLoginAttemptEntity entity)
+        {
+            try
+            {
+                await _context.UserLoginAttemptEntities.AddAsync(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

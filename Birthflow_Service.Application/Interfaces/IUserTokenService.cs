@@ -31,5 +31,11 @@ namespace BirthflowService.Application.Interfaces
         /// </summary>
         /// <returns>Email: string</returns>
         string GetUserEmail();
+
+        /// <summary>
+        /// Obtiene la  IP del usuario logueado por medio del token.
+        /// </summary>
+        /// <returns>IP: string</returns>
+        string GetIpAddress();
     }
 }

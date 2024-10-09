@@ -28,10 +28,11 @@ namespace Birthflow_Application.Services
         private readonly IPasswordRepository _passwordRepository;
         private readonly ITokenService _tokenService;
         private readonly IMailAdapter _mailService;
+        private readonly IUserTokenService _userTokenService;
 
 
         public AuthService(IConfiguration configuration, ILogger<AuthService> logger, IUserRepository userRepository, IAuthRepository authRepository, 
-            IMailAdapter mailService, IAccountRepository accountRepository, IPasswordRepository passwordRepository, ITokenService tokenService, IMapper mapper)
+            IMailAdapter mailService, IAccountRepository accountRepository, IPasswordRepository passwordRepository, ITokenService tokenService, IMapper mapper, IUserTokenService userTokenService)
         {
             _configuration = configuration;
             _userRepository = userRepository;
@@ -42,34 +43,69 @@ namespace Birthflow_Application.Services
             _passwordRepository = passwordRepository;
             _tokenService = tokenService;
             _mapper = mapper;
+            _userTokenService = userTokenService;
         }
      
         public async Task<BaseResponse<UserLoginDto>> Login(LoginModel request)
         {
             UserEntity? user;
 
+            var ipAddress = _userTokenService.GetIpAddress();
+
+
             user = await _userRepository.GetByUserName(request.Email);
             if (user is null)
                 user = await _userRepository.GetByEmail(request.Email);
 
             if (user is null)
+            {
+                await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
+                {
+                    UserId = null, // Usuario no encontrado
+                    AttemptTimestamp = DateTime.Now,
+                    IPAddress = ipAddress, // Asegúrate de que la IP se pase en la solicitud
+                    Success = false,
+                    FailureReason = "User not found."
+                });
+
                 return new BaseResponse<UserLoginDto>
                 {
                     Response = new UserLoginDto(),
                     Message = "User not found.",
                     StatusCode = StatusCodes.Status401Unauthorized,
                 };
+            }
 
             if (user.IsDelete)
+            {
+                await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
+                {
+                    UserId = user.Id, // Usuario no encontrado
+                    AttemptTimestamp = DateTime.Now,
+                    IPAddress = ipAddress, // Asegúrate de que la IP se pase en la solicitud
+                    Success = false,
+                    FailureReason = "User not valid."
+                });
+
                 return new BaseResponse<UserLoginDto>
                 {
                     Response = new UserLoginDto(),
                     Message = "User not valid.",
                     StatusCode = StatusCodes.Status401Unauthorized,
                 };
+            }
 
             if (user.UserName != request.Email && user.Email != request.Email)
             {
+                await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
+                {
+                    UserId = user.Id, // Usuario no encontrado
+                    AttemptTimestamp = DateTime.Now,
+                    IPAddress = ipAddress, // Asegúrate de que la IP se pase en la solicitud
+                    Success = false,
+                    FailureReason = "User not found."
+                });
+
                 return new BaseResponse<UserLoginDto>
                 {
                     Response = new UserLoginDto(),
@@ -82,6 +118,15 @@ namespace Birthflow_Application.Services
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, currentPassword!.PasswordHash!))
             {
+                await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
+                {
+                    UserId = user.Id, // Usuario no encontrado
+                    AttemptTimestamp = DateTime.UtcNow,
+                    IPAddress = ipAddress, // Asegúrate de que la IP se pase en la solicitud
+                    Success = false,
+                    FailureReason = "nvalid Credential."
+                });
+
                 return new BaseResponse<UserLoginDto>
                 {
                     Response = new UserLoginDto(),
@@ -89,6 +134,14 @@ namespace Birthflow_Application.Services
                     StatusCode = StatusCodes.Status401Unauthorized,
                 };
             }
+
+            await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
+            {
+                UserId = user.Id,
+                AttemptTimestamp = DateTime.Now,
+                IPAddress = ipAddress,
+                Success = true,
+            });
 
             string token = _tokenService.CreateToken(user);
             string refreshToken = _tokenService.GenerateRefreshToken();

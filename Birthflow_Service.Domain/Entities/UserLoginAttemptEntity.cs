@@ -9,7 +9,7 @@ namespace BirthflowService.Domain.Entities
         [Key]
         public long Id { get; set; }
         [ForeignKey("UserEntity")]
-        public Guid UserId { get; set; } // Relación con el usuario
+        public Guid? UserId { get; set; } = null;// Relación con el usuario
         public DateTime AttemptTimestamp { get; set; } // Fecha y hora del intento de inicio de sesión
         public string IPAddress { get; set; } = string.Empty; // Dirección IP desde la cual se intentó iniciar sesión
         public bool Success { get; set; } // Indica si el intento de inicio de sesión fue exitoso o fallido

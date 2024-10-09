@@ -15,5 +15,7 @@ namespace BirthflowService.Domain.Interface
 
         public RefreshTokenEntity AddUserRefreshTokens(RefreshTokenEntity user);
 
+        public Task AddLoginAttempt(UserLoginAttemptEntity entity);
+
     }
 }

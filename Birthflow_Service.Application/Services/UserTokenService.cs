@@ -61,5 +61,12 @@ namespace BirthflowService.Application.Services
 
             return email ?? "Email not found";
         }
+
+        public string GetIpAddress()
+        {
+            var ip = _contextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            return ip ?? "IP not found";
+        }
     }
 }
