@@ -9,9 +9,9 @@ namespace BirthflowService.Infraestructure.Seeds
         public void Configure(EntityTypeBuilder<PermissionTypeEntity> builder)
         {
             builder.HasData(
-                new PermissionTypeEntity { Id = 1, Identificator= Guid.NewGuid(), Name = "Lectura", Description = "Permisos de lectura", CreateAt = DateTime.Now},
-                new PermissionTypeEntity { Id = 2, Identificator = Guid.NewGuid(), Name = "Escritura", Description = "Permisos de escritura", CreateAt = DateTime.Now },
-                new PermissionTypeEntity { Id = 3, Identificator = Guid.NewGuid(), Name = "Lectura y Escritura", Description = "Permisos de lectura y escritura", CreateAt = DateTime.Now }
+                new PermissionTypeEntity { Id = 1, Identificator= Guid.NewGuid(), Name = "Lectura", Description = "Permisos de lectura", CreateAt = DateTime.UtcNow},
+                new PermissionTypeEntity { Id = 2, Identificator = Guid.NewGuid(), Name = "Escritura", Description = "Permisos de escritura", CreateAt = DateTime.UtcNow },
+                new PermissionTypeEntity { Id = 3, Identificator = Guid.NewGuid(), Name = "Lectura y Escritura", Description = "Permisos de lectura y escritura", CreateAt = DateTime.UtcNow }
             );
         }
     }

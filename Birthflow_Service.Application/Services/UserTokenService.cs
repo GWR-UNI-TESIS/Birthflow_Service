@@ -68,5 +68,12 @@ namespace BirthflowService.Application.Services
 
             return ip ?? "IP not found";
         }
+
+        public string GetDevice()
+        {
+            var device = _contextAccessor.HttpContext.Items["DeviceInfo"]?.ToString();
+
+            return device ?? "Device not found";
+        }
     }
 }

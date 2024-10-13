@@ -26,10 +26,10 @@ namespace BirthflowService.Application.Services
         {
             List<Claim> claims = new List<Claim>()
             {
-                new Claim("Nombres", user.Name!),
-                new Claim("Apellidos", user.SecondName!),
-                new Claim("NombreUsuario", user.UserName!),
-                new Claim("Email", user.Email !),
+                new Claim(ClaimTypes.Name, user.Name!),
+                new Claim("SecondName", user.SecondName!),
+                new Claim("UserName", user.UserName!),
+                new Claim(ClaimTypes.Email, user.Email !),
                 new Claim("UserId", user.Id.ToString())
             };
 
@@ -42,11 +42,11 @@ namespace BirthflowService.Application.Services
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(expiresInMinutes),
+                expires: DateTime.UtcNow.AddHours(expiresInMinutes),
                 signingCredentials: creds,
                 audience: audience,
                 issuer: issuer
@@ -69,8 +69,8 @@ namespace BirthflowService.Application.Services
 
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value!));
+           // var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+           //     _configuration.GetSection("AppSettings:Token").Value!));
 
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["SecretKey"];

@@ -1,16 +1,8 @@
 using Birthflow_Application;
 using Birthflow_Infraestructure;
-using Birthflow_Service.Infraestructure.DbContexts;
 using BirthflowService.API;
 using BirthflowService.Application.Utils;
 using BirthflowService.Domain.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +26,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddServices();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddRepositories(); builder.Services.AddRepositories();
+builder.Services.AddRepositories();
 
 // Configuración de GmailOptions
 builder.Services.Configure<GmailOptions>(

@@ -51,6 +51,17 @@ namespace Birthflow_Application.Services
             UserEntity? user;
 
             var ipAddress = _userTokenService.GetIpAddress();
+            var deviceInfo = _userTokenService.GetDevice();
+
+            if (string.IsNullOrEmpty(deviceInfo))
+            {
+                return new BaseResponse<UserLoginDto>
+                {
+                    Response = { },
+                    Message = "Device ID is required.",
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
 
 
             user = await _userRepository.GetByUserName(request.Email);
@@ -62,7 +73,7 @@ namespace Birthflow_Application.Services
                 await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
                 {
                     UserId = null, // Usuario no encontrado
-                    AttemptTimestamp = DateTime.Now,
+                    AttemptTimestamp = DateTime.UtcNow,
                     IPAddress = ipAddress, // Asegúrate de que la IP se pase en la solicitud
                     Success = false,
                     FailureReason = "User not found."
@@ -70,7 +81,7 @@ namespace Birthflow_Application.Services
 
                 return new BaseResponse<UserLoginDto>
                 {
-                    Response = new UserLoginDto(),
+                    Response = { },
                     Message = "User not found.",
                     StatusCode = StatusCodes.Status401Unauthorized,
                 };
@@ -81,7 +92,7 @@ namespace Birthflow_Application.Services
                 await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
                 {
                     UserId = user.Id, // Usuario no encontrado
-                    AttemptTimestamp = DateTime.Now,
+                    AttemptTimestamp = DateTime.UtcNow,
                     IPAddress = ipAddress, // Asegúrate de que la IP se pase en la solicitud
                     Success = false,
                     FailureReason = "User not valid."
@@ -89,7 +100,7 @@ namespace Birthflow_Application.Services
 
                 return new BaseResponse<UserLoginDto>
                 {
-                    Response = new UserLoginDto(),
+                    Response = {},
                     Message = "User not valid.",
                     StatusCode = StatusCodes.Status401Unauthorized,
                 };
@@ -100,7 +111,7 @@ namespace Birthflow_Application.Services
                 await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
                 {
                     UserId = user.Id, // Usuario no encontrado
-                    AttemptTimestamp = DateTime.Now,
+                    AttemptTimestamp = DateTime.UtcNow,
                     IPAddress = ipAddress, // Asegúrate de que la IP se pase en la solicitud
                     Success = false,
                     FailureReason = "User not found."
@@ -108,7 +119,7 @@ namespace Birthflow_Application.Services
 
                 return new BaseResponse<UserLoginDto>
                 {
-                    Response = new UserLoginDto(),
+                    Response = { },
                     Message = "User not found.",
                     StatusCode = StatusCodes.Status401Unauthorized,
                 };
@@ -129,7 +140,7 @@ namespace Birthflow_Application.Services
 
                 return new BaseResponse<UserLoginDto>
                 {
-                    Response = new UserLoginDto(),
+                    Response = { },
                     Message = "Invalid Credential.",
                     StatusCode = StatusCodes.Status401Unauthorized,
                 };
@@ -138,10 +149,19 @@ namespace Birthflow_Application.Services
             await _authRepository.AddLoginAttempt(new UserLoginAttemptEntity
             {
                 UserId = user.Id,
-                AttemptTimestamp = DateTime.Now,
+                AttemptTimestamp = DateTime.UtcNow,
                 IPAddress = ipAddress,
                 Success = true,
             });
+
+            // Verificar si ya existe un refresh token para este dispositivo
+            var existingToken = await _authRepository.GetRefreshTokenByUserIdAndDeviceId(user.Id, deviceInfo);
+            if (existingToken != null)
+            {
+                // Invalida el token existente si ya existe uno activo para el dispositivo
+                existingToken.Active = false;
+                await _authRepository.UpdateUserRefreshTokens(existingToken);
+            }
 
             string token = _tokenService.CreateToken(user);
             string refreshToken = _tokenService.GenerateRefreshToken();
@@ -150,16 +170,39 @@ namespace Birthflow_Application.Services
             {
                 RefreshTokenValue = refreshToken,
                 UserId = user.Id,
-                Expiration = DateTime.Now.AddDays(7)
+                Device = deviceInfo,
+                Active = true,
+                Expiration = DateTime.UtcNow.AddDays(7)
             };
 
             _authRepository.AddUserRefreshTokens(tokens);
+
+            var session = await _authRepository.GetActiveSessionByUserIdAndDeviceId(user.Id, deviceInfo);
+            if (session == null)
+            {
+                session = new UserSessionHistoryEntity
+                {
+                    UserId = user.Id,
+                    SessionStartTime = DateTime.UtcNow,
+                    LastActivity = DateTime.UtcNow, // Nueva actividad registrada
+                    IPAddress = ipAddress,  // Asegúrate de pasar la IP en la solicitud
+                    Device = deviceInfo,
+                    SessionToken = refreshToken,
+                    IsActive = true
+                };
+                await _authRepository.AddUserSession(session);
+            }
+            else
+            {
+                session.LastActivity = DateTime.UtcNow;  // Actualizar la última actividad
+                await _authRepository.UpdateUserSession(session);
+            }
 
             var userDto =_mapper.Map<UserDto>(user);
 
             return new BaseResponse<UserLoginDto>
             {
-                Response = new UserLoginDto { AccessToken = token, User = userDto },
+                Response = new UserLoginDto { RefreshToken = refreshToken, AccessToken = token, User = userDto },
                 Message = "Generate Token.",
                 StatusCode = StatusCodes.Status200OK,
             };
@@ -171,23 +214,53 @@ namespace Birthflow_Application.Services
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
             var username = principal.Identity!.Name;
             var isExistedUserName = await _userRepository.GetByUserName(username!);
+            var deviceInfo = _userTokenService.GetDevice();
+
+            if (string.IsNullOrEmpty(deviceInfo))
+            {
+                return new BaseResponse<UserLoginDto>
+                {
+                    Response = { },
+                    Message = "Device ID is required.",
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+
 
             if (isExistedUserName == null)
                 return new BaseResponse<UserLoginDto>
                 {
                     Message = "Error no se encontro usuario",
-                    Response = new UserLoginDto(),
+                    Response = { },
                     StatusCode = StatusCodes.Status400BadRequest
                 };
 
-            var savedRefreshToken =  _authRepository.GetRefreshToken(isExistedUserName!.Id, refreshToken);
+            var savedRefreshToken =  await _authRepository.GetRefreshToken(isExistedUserName!.Id, refreshToken);
 
-            if (savedRefreshToken is null || savedRefreshToken.RefreshTokenValue != refreshToken || savedRefreshToken.Expiration <= DateTime.Now)
+            if (savedRefreshToken is null || savedRefreshToken.RefreshTokenValue != refreshToken)
             {
                 return new BaseResponse<UserLoginDto>
                 {
                     Message = "Unauthorized",
-                    Response = new UserLoginDto(),
+                    Response = { },
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
+            }
+
+            if ( savedRefreshToken.Expiration <= DateTime.UtcNow)
+            {
+                var currentSession = await _authRepository.GetActiveSessionByUserIdAndDeviceId(isExistedUserName!.Id, refreshToken);
+
+                if (currentSession != null && currentSession.IsActive)
+                {
+                    currentSession.IsActive = false; // Marcar la sesión como inactiva
+                    currentSession.SessionEndTime = DateTime.UtcNow; // Registrar la hora de finalización de la sesión
+                    await _authRepository.UpdateUserSession(currentSession);
+                }
+                return new BaseResponse<UserLoginDto>
+                {
+                    Message = "Unauthorized",
+                    Response = { },
                     StatusCode = StatusCodes.Status401Unauthorized
                 };
             }
@@ -199,12 +272,22 @@ namespace Birthflow_Application.Services
             {
                 RefreshTokenValue = newRefreshToken,
                 UserId = isExistedUserName!.Id,
-                Expiration = DateTime.Now.AddDays(7),
+                Device = deviceInfo,
+                Expiration = DateTime.UtcNow.AddDays(7),
                 Active = true,
             };
 
             _authRepository.DeleteUserRefreshTokens(isExistedUserName!.Id, refreshToken);
             _authRepository.AddUserRefreshTokens(generateTokens);
+
+            // Actualizar la actividad de la sesión
+            var session = await _authRepository.GetActiveSessionByUserIdAndDeviceId(isExistedUserName.Id, deviceInfo);
+            if (session != null && session.IsActive)
+            {
+                session.LastActivity = DateTime.UtcNow;  // Actualizar la última actividad
+                session.SessionToken = newRefreshToken;   // Actualizar el token de sesión si es necesario
+                await _authRepository.UpdateUserSession(session);
+            }
 
             return new BaseResponse<UserLoginDto>
             {
@@ -298,6 +381,45 @@ namespace Birthflow_Application.Services
                 StatusCode = StatusCodes.Status200OK,
                 Response = "Account activated successfully.",
                 Message = "Account activated successfully."
+            };
+        }
+
+        public async Task<BaseResponse<string>> Logout(Tokens tokens)
+        {
+            var principal = _tokenService.GetPrincipalFromExpiredToken(tokens.AccessToken);
+            var userId = principal.FindFirst("UserId").Value;
+
+            // Obtener el refresh token desde la base de datos
+            var tokenEntity = await _authRepository.GetRefreshToken(Guid.Parse(userId), tokens.RefreshToken);
+
+            if (tokenEntity == null || !tokenEntity.Active)
+            {
+                return new BaseResponse<string>
+                {
+                    Response = "Token not found or already inactive.",
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+
+            // Invalidar el refresh token
+            tokenEntity.Active = false;
+            tokenEntity.Expiration = DateTime.UtcNow; // Opcional: si quieres establecer la fecha de expiración a la fecha actual
+            await _authRepository.UpdateUserRefreshTokens(tokenEntity);
+
+            // Buscar la sesión activa asociada al usuario y refresh token
+            var session = await _authRepository.GetSessionByRefreshToken(tokens.RefreshToken);
+            if (session != null && session.IsActive)
+            {
+                // Marcar la sesión como cerrada
+                session.IsActive = false;
+                session.SessionEndTime = DateTime.UtcNow; // Establecer la hora de finalización de la sesión
+                await _authRepository.UpdateUserSession(session);
+            }
+
+            return new BaseResponse<string>
+            {
+                Response = "Logout successful.",
+                StatusCode = StatusCodes.Status200OK
             };
         }
     }

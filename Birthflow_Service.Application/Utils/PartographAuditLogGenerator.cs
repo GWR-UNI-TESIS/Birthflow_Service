@@ -33,7 +33,7 @@ namespace BirthflowService.Application.Utils
                         FieldName = prop.Name,        // Nombre del campo
                         OldValue = oldValue,          // Valor antiguo
                         NewValue = newValue,          // Nuevo valor
-                        ChangedAt = DateTime.Now,
+                        ChangedAt = DateTime.UtcNow,
                         ChangedBy = userId,
                         PartographVersionId = partographVersionId,
                     });
@@ -58,7 +58,7 @@ namespace BirthflowService.Application.Utils
                     FieldName = property.Name,  // El nombre del campo que fue creado
                     OldValue = "N/A",  // No había valor anterior
                     NewValue = newValue ?? "N/A",  // Valor recién creado
-                    ChangedAt = DateTime.Now,
+                    ChangedAt = DateTime.UtcNow,
                     ChangedBy = userId,
                     PartographVersionId = partographVersionId
                 };

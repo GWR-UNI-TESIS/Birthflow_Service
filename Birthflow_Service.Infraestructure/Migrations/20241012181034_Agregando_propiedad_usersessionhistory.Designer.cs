@@ -4,6 +4,7 @@ using Birthflow_Service.Infraestructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Birthflow_Service.Infraestructure.Migrations
 {
     [DbContext(typeof(BirthflowDbContext))]
-    partial class BirthflowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241012181034_Agregando_propiedad_usersessionhistory")]
+    partial class Agregando_propiedad_usersessionhistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -897,25 +900,25 @@ namespace Birthflow_Service.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreateAt = new DateTime(2024, 10, 13, 3, 5, 16, 961, DateTimeKind.Utc).AddTicks(3040),
+                            CreateAt = new DateTime(2024, 10, 12, 12, 10, 34, 542, DateTimeKind.Local).AddTicks(5928),
                             Description = "Permisos de lectura",
-                            Identificator = new Guid("d904dafe-5e4d-42a7-84c9-9854ab15c5d3"),
+                            Identificator = new Guid("4986b47b-63e9-4ec9-9c78-800311d59694"),
                             Name = "Lectura"
                         },
                         new
                         {
                             Id = 2,
-                            CreateAt = new DateTime(2024, 10, 13, 3, 5, 16, 961, DateTimeKind.Utc).AddTicks(3043),
+                            CreateAt = new DateTime(2024, 10, 12, 12, 10, 34, 542, DateTimeKind.Local).AddTicks(5941),
                             Description = "Permisos de escritura",
-                            Identificator = new Guid("380a24c4-e63d-4710-b7e4-418851db4971"),
+                            Identificator = new Guid("a8e74118-f3e8-4dbc-ba00-ccb0d1e765c9"),
                             Name = "Escritura"
                         },
                         new
                         {
                             Id = 3,
-                            CreateAt = new DateTime(2024, 10, 13, 3, 5, 16, 961, DateTimeKind.Utc).AddTicks(3045),
+                            CreateAt = new DateTime(2024, 10, 12, 12, 10, 34, 542, DateTimeKind.Local).AddTicks(5942),
                             Description = "Permisos de lectura y escritura",
-                            Identificator = new Guid("19c4e9ba-f57f-4b90-98ef-b281839cabeb"),
+                            Identificator = new Guid("5fd502ec-6303-4ff7-b315-ad050f5568fe"),
                             Name = "Lectura y Escritura"
                         });
                 });
@@ -1029,10 +1032,6 @@ namespace Birthflow_Service.Infraestructure.Migrations
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Device")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Expiration")
                         .HasColumnType("datetime2");

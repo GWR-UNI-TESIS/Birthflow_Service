@@ -1,6 +1,7 @@
 ﻿using Birthflow_Application.DTOs.Auth;
 using Birthflow_Service.Application.Models;
 using BirthflowService.Application.Interfaces;
+using BirthflowService.Application.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Birthflow_Service.Controllers
@@ -65,6 +66,40 @@ namespace Birthflow_Service.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ocurrió un error al iniciar sesion a la cuenta.");
+                return StatusCode(500, "Ocurrió un error interno.");
+            }
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody]Tokens request)
+        {
+            try
+            {
+                _logger.LogInformation("Intentando refrescar la sesion.");
+                var result = await _authServices.Refresh(request);
+                _logger.LogInformation("Usuario ha ingresado sesion exitosamente con código de estado: {StatusCode}", result.StatusCode);
+                return StatusCode(result.StatusCode, result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ocurrió un error al refrescar la sesion de la cuenta.");
+                return StatusCode(500, "Ocurrió un error interno.");
+            }
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] Tokens request)
+        {
+            try
+            {
+                _logger.LogInformation("Intentando cerrar la sesion.");
+                var result = await _authServices.Logout(request);
+                _logger.LogInformation("Usuario ha salido de la sesion exitosamente con código de estado: {StatusCode}", result.StatusCode);
+                return StatusCode(result.StatusCode, result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ocurrió un error al cerrar la sesion de la cuenta.");
                 return StatusCode(500, "Ocurrió un error interno.");
             }
         }

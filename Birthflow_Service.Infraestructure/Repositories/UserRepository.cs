@@ -47,7 +47,7 @@ namespace Birthflow_Infraestructure.Repositories
                     PhoneNumber = user.PhoneNumber,
                     IsDelete = false,
                     IsActive = true,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     CreatedBy = 1,
                     UpdatedAt = null,
                     UpdatedBy = null,
@@ -104,7 +104,7 @@ namespace Birthflow_Infraestructure.Repositories
                 currentUser.Email = user.Email;
                 currentUser.PhoneNumber = user.PhoneNumber;
                 currentUser.UpdatedBy = 77;
-                currentUser.UpdatedAt = DateTime.Now;
+                currentUser.UpdatedAt = DateTime.UtcNow;
 
                 _context.Entry(currentUser).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 

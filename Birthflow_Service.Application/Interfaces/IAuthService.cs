@@ -12,5 +12,7 @@ namespace BirthflowService.Application.Interfaces
         Task<BaseResponse<UserDto>> Create(UserDto dto);
         Task<BaseResponse<UserLoginDto>> Refresh(Tokens tokens);
         Task<BaseResponse<string>> ActivateAccount(string token);
+        Task<BaseResponse<string>> Logout(Tokens tokens);
+
     }
 }

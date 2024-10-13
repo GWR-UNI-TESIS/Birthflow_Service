@@ -1,4 +1,5 @@
-﻿using BirthflowService.API.Models;
+﻿using BirthflowService.API.Middlewares;
+using BirthflowService.API.Models;
 using Microsoft.AspNetCore.SignalR;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -22,11 +23,13 @@ namespace BirthflowService.API
                     c.RoutePrefix = swaggerOptions.RoutePrefix;
                 });
             }
-
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<DeviceInfoMiddleware>();
+
             app.MapControllers();
         }
     }

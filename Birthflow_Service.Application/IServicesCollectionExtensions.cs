@@ -13,6 +13,7 @@ namespace Birthflow_Application
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+            services.AddScoped<MiddlewareService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IPartographService, PartographService>();

@@ -1,17 +1,10 @@
 ﻿using AutoMapper;
 using Birthflow_Application.DTOs;
 using BirthflowService.Application.Interfaces;
-using BirthflowService.Domain.DTOs.Partograph;
 using BirthflowService.Domain.DTOs.Share;
 using BirthflowService.Domain.Entities;
 using BirthflowService.Domain.Interface;
-using BirthflowService.Infraestructure.Repositories;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BirthflowService.Application.Services
 {
@@ -59,7 +52,7 @@ namespace BirthflowService.Application.Services
 
                 var groupEntity = _mapper.Map<GroupEntity>(dto);
 
-                groupEntity.CreatedAt = DateTime.Now;
+                groupEntity.CreatedAt = DateTime.UtcNow;
                 groupEntity.CreatedBy = userId;
 
                 var result = await _shareRepository.CreateGroup(groupEntity);
@@ -186,7 +179,7 @@ namespace BirthflowService.Application.Services
             {
                 var groupEntity = _mapper.Map<PartographGroupItemEntity>(dto);
 
-                groupEntity.CreatedAt = DateTime.Now;
+                groupEntity.CreatedAt = DateTime.UtcNow;
 
                 var result = await _shareRepository.CreatePartographGroupItem(groupEntity);
 
@@ -248,7 +241,7 @@ namespace BirthflowService.Application.Services
             {
                 var groupEntity = _mapper.Map<PartographShareEntity>(dto);
 
-                groupEntity.CreatedAt = DateTime.Now;
+                groupEntity.CreatedAt = DateTime.UtcNow;
 
                 var result = await _shareRepository.CreatePartographShare(groupEntity);
 
@@ -348,7 +341,7 @@ namespace BirthflowService.Application.Services
             {
                 var groupEntity = _mapper.Map<PartographGroupShareEntity>(dto);
 
-                groupEntity.CreatedAt = DateTime.Now;
+                groupEntity.CreatedAt = DateTime.UtcNow;
 
                 var result = await _shareRepository.CreatePartographGroupShare(groupEntity);
 

@@ -140,7 +140,7 @@ namespace BirthflowService.Infraestructure.Repositories
 
                 cervicalDilation.IsDelete = true;
                 cervicalDilation.DeleteBy = userId;
-                cervicalDilation.DeleteAt = DateTime.Now;
+                cervicalDilation.DeleteAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
 

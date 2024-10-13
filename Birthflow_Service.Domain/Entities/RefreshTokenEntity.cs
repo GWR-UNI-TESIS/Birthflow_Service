@@ -11,6 +11,7 @@ namespace BirthflowService.Domain.Entities
         public string RefreshTokenValue { get; set; }
         public bool Active { get; set; }
         public DateTime Expiration { get; set; }
+        public string Device { get; set; } = string.Empty;
         public bool Used { get; set; }
         [Required, ForeignKey("UserEntity")]
         public Guid UserId { get; set; }

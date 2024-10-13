@@ -32,7 +32,7 @@ namespace BirthflowService.Application.Services
             var partographVersion = new PartographVersionEntity
             {
                 PartographId = partographEntity.PartographId,
-                ChangedAt = DateTime.Now,
+                ChangedAt = DateTime.UtcNow,
                 ChangedBy = userId,
                 PartographDataJson = JsonConvert.SerializeObject(globalPartographLog)
             };
@@ -59,7 +59,7 @@ namespace BirthflowService.Application.Services
             var partographVersion = new PartographVersionEntity
             {
                 PartographId = partographEntity.PartographId,
-                ChangedAt = DateTime.Now,
+                ChangedAt = DateTime.UtcNow,
                 ChangedBy = userId,
                 PartographDataJson = JsonConvert.SerializeObject(globalPartographLog)
             };

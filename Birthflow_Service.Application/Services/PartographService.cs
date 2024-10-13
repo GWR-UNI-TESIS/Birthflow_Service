@@ -44,7 +44,7 @@ namespace BirthflowService.Application.Services
 
                 partographEntity.PartographId = Guid.NewGuid();
                 partographEntity.CreatedBy = userId;
-                partographEntity.CreatedAt = DateTime.Now;
+                partographEntity.CreatedAt = DateTime.UtcNow;
 
                 var result = await _partographRepo.CreatePartograph(partographEntity);
 
@@ -100,6 +100,11 @@ namespace BirthflowService.Application.Services
                 var result = await _partographRepo.GetPartograph(partographId);
                 
                 var response = _mapper.Map<PartographResponseDto>(result);
+
+                var curves = _curvesGenerator.GenerateCurves(result);
+
+                response.Curves = curves;
+
                 return new BaseResponse<PartographResponseDto>
                 {
                     Message = "Ingresado correctamente",
@@ -139,7 +144,7 @@ namespace BirthflowService.Application.Services
                 //Fase de guardar la info nueva
                 _mapper.Map(partographDto, partographEntity);
 
-                partographEntity.UpdateAt = DateTime.Now;
+                partographEntity.UpdateAt = DateTime.UtcNow;
                 partographEntity.UpdateBy = userId;
 
                 var result = await _partographRepo.UpdatePartograph(partographEntity);
@@ -181,7 +186,7 @@ namespace BirthflowService.Application.Services
                 Guid userId = _tokenServices.GetUserId();
 
                 partographEntity.IsDelete = true;
-                partographEntity.DeletedAt = DateTime.Now;
+                partographEntity.DeletedAt = DateTime.UtcNow;
                 partographEntity.DeletedBy = userId;
 
                 var result = await _partographRepo.UpdatePartograph(partographEntity);
@@ -213,7 +218,7 @@ namespace BirthflowService.Application.Services
                 var cervicalDilationEntity = _mapper.Map<CervicalDilationEntity>(cervicalDilationDto);
 
                 cervicalDilationEntity.CreatedBy = userId;
-                cervicalDilationEntity.CreateAt = DateTime.Now;
+                cervicalDilationEntity.CreateAt = DateTime.UtcNow;
 
                 var result = await _partographRepo.CreateCervicalDilation(cervicalDilationEntity);
 
@@ -326,7 +331,7 @@ namespace BirthflowService.Application.Services
                     _mapper.Map(cervicalDilationDto, cervicalDilation);
 
                     cervicalDilation.UpdateBy = userId;
-                    cervicalDilation.UpdateAt = DateTime.Now;
+                    cervicalDilation.UpdateAt = DateTime.UtcNow;
 
                     var result = await _partographRepo.UpdateCervicalDilation(cervicalDilation);
 
@@ -408,7 +413,7 @@ namespace BirthflowService.Application.Services
 
                 var entity = _mapper.Map<PresentationPositionVarietyEntity>(presentationDto);
 
-                entity.CreateAt = DateTime.Now;
+                entity.CreateAt = DateTime.UtcNow;
                 entity.CreatedBy = userId;
                 entity.IsDelete = false;
 
@@ -459,7 +464,7 @@ namespace BirthflowService.Application.Services
                 Guid userId = _tokenServices.GetUserId();
 
                 _mapper.Map(presentationDto, isExistedPresentatation);
-                isExistedPresentatation.UpdateAt = DateTime.Now;
+                isExistedPresentatation.UpdateAt = DateTime.UtcNow;
                 isExistedPresentatation.UpdateBy = userId;
 
                 var result = await _partographRepo.UpdatePresentationPositionVariety(isExistedPresentatation);
@@ -504,7 +509,7 @@ namespace BirthflowService.Application.Services
                 Guid userId = _tokenServices.GetUserId();
 
                 isExistedPresentatation.IsDelete = true;
-                isExistedPresentatation.DeleteAt = DateTime.Now;
+                isExistedPresentatation.DeleteAt = DateTime.UtcNow;
                 isExistedPresentatation.DeletedBy = userId;
 
                 var result = await _partographRepo.UpdatePresentationPositionVariety(isExistedPresentatation);
@@ -583,7 +588,7 @@ namespace BirthflowService.Application.Services
                 Guid userId = _tokenServices.GetUserId();
                 var entity = _mapper.Map<MedicalSurveillanceTableEntity>(medicalDto);
 
-                entity.CreateAt = DateTime.Now;
+                entity.CreateAt = DateTime.UtcNow;
                 entity.CreatedBy = userId;
 
                 var result = await _partographRepo.CreateMedicalSurveillanceTable(entity);
@@ -631,7 +636,7 @@ namespace BirthflowService.Application.Services
 
                 _mapper.Map(medicalDto, isExistedMedical);
 
-                isExistedMedical.UpdateAt = DateTime.Now;
+                isExistedMedical.UpdateAt = DateTime.UtcNow;
                 isExistedMedical.UpdateBy = userId;
 
                 var result = await _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical);
@@ -676,7 +681,7 @@ namespace BirthflowService.Application.Services
                 Guid userId = _tokenServices.GetUserId();
 
                 isExistedMedical.IsDelete = true;
-                isExistedMedical.DeleteAt = DateTime.Now;
+                isExistedMedical.DeleteAt = DateTime.UtcNow;
                 isExistedMedical.DeletedBy = userId;
 
                 var result = await _partographRepo.UpdateMedicalSurveillanceTable(isExistedMedical);
@@ -803,7 +808,7 @@ namespace BirthflowService.Application.Services
                 Guid userId = _tokenServices.GetUserId();
                 var fetalHeartRateEntity = _mapper.Map<FetalHeartRateEntity>(fetalHeartRateDto);
                 fetalHeartRateEntity.CreatedBy = userId;
-                fetalHeartRateEntity.CreateAt = DateTime.Now;
+                fetalHeartRateEntity.CreateAt = DateTime.UtcNow;
 
                 var result = await _partographRepo.CreateFetalHeartRate(fetalHeartRateEntity);
 
@@ -852,7 +857,7 @@ namespace BirthflowService.Application.Services
 
                 _mapper.Map(fetalHeartRateDto, isExistedFetalHeartRate);
                 isExistedFetalHeartRate.UpdateBy = userId;
-                isExistedFetalHeartRate.UpdateAt = DateTime.Now;
+                isExistedFetalHeartRate.UpdateAt = DateTime.UtcNow;
 
                 var result = await _partographRepo.UpdateFetalHeartRateTable(isExistedFetalHeartRate);
 
@@ -931,7 +936,7 @@ namespace BirthflowService.Application.Services
 
                 var contractionFrequencyEntity = _mapper.Map<ContractionFrequencyEntity>(contractionFrequencyDto);
                 contractionFrequencyEntity.CreatedBy = userId;
-                contractionFrequencyEntity.CreateAt = DateTime.Now;
+                contractionFrequencyEntity.CreateAt = DateTime.UtcNow;
 
                 var result = await _partographRepo.CreateContractionFrequency(contractionFrequencyEntity);
 
@@ -979,7 +984,7 @@ namespace BirthflowService.Application.Services
 
                 _mapper.Map(contractionFrequencyDto, isExistedContractionFrequency);
                 isExistedContractionFrequency.UpdateBy = userId;
-                isExistedContractionFrequency.UpdateAt = DateTime.Now;
+                isExistedContractionFrequency.UpdateAt = DateTime.UtcNow;
 
                 var result = await _partographRepo.UpdateContractionFrequency(isExistedContractionFrequency);
 
@@ -1035,7 +1040,7 @@ namespace BirthflowService.Application.Services
 
                 var childbirthNote = _mapper.Map<ChildbirthNoteEntity>(childbirthNoteDto);
                 childbirthNote.CreatedBy = userId;
-                childbirthNote.CreateAt = DateTime.Now;
+                childbirthNote.CreateAt = DateTime.UtcNow;
 
                 var result = await _partographRepo.CreateChildBirthNote(childbirthNote);
 
@@ -1083,7 +1088,7 @@ namespace BirthflowService.Application.Services
 
                 _mapper.Map(childbirthNoteDto, isExistedChildbirthNote);
                 isExistedChildbirthNote.UpdateBy = userId;
-                isExistedChildbirthNote.UpdateAt = DateTime.Now;
+                isExistedChildbirthNote.UpdateAt = DateTime.UtcNow;
 
                 var result = await _partographRepo.UpdateChildBirthNote(isExistedChildbirthNote);
 

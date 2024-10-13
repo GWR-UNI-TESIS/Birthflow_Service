@@ -44,7 +44,7 @@ namespace BirthflowService.Application.Utils
 
             var defaultValue = _partographRepository.GetWorkTimeItems(workTime);
             var newDefaultValue = _partographRepository.GetWorkTimeItems(newWorkTime);
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var firstItem = cervicalDilations.FirstOrDefault();
 
             if (firstItem!.Value >= 4.5)
@@ -97,7 +97,7 @@ namespace BirthflowService.Application.Utils
         private List<AlertCurve> GenerateAlertCurve(string workTime, List<CervicalDilationEntity> cervicalDilations)
         {
             var defaultValue = _partographRepository.GetWorkTimeItems(workTime);
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var firstItem = cervicalDilations.FirstOrDefault();
 
             if (firstItem!.Value >= 4.5)

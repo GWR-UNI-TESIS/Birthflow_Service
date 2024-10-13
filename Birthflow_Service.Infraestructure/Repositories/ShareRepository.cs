@@ -86,7 +86,7 @@ namespace BirthflowService.Infraestructure.Repositories
         {
             try
             {
-                entity.DeletedAt = DateTime.Now;
+                entity.DeletedAt = DateTime.UtcNow;
                 entity.IsDeleted = true;
                 _context.GroupEntities.Update(entity);
                 await _context.SaveChangesAsync();
@@ -115,7 +115,7 @@ namespace BirthflowService.Infraestructure.Repositories
                     {
                         PartographId = p.PartographId,
                         PartographGroupId = groupId,
-                        CreatedAt = DateTime.Now, // Ajustar según el modelo de datos
+                        CreatedAt = DateTime.UtcNow, // Ajustar según el modelo de datos
                         Partograph = p,
                         PartographGroup = null // Ajustar si es necesario cargar los datos del grupo
                     })

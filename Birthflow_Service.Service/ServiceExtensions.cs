@@ -1,4 +1,5 @@
 ﻿using Birthflow_Service.Infraestructure.DbContexts;
+using BirthflowService.API.Helpers;
 using BirthflowService.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -103,6 +104,8 @@ namespace BirthflowService.API
                     BearerFormat = "JWT",
                     Scheme = "Bearer"
                 });
+
+                c.OperationFilter<AddDeviceInfoHeader>();
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {

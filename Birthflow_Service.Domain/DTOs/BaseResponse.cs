@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Birthflow_Application.DTOs
 {
@@ -14,14 +9,14 @@ namespace Birthflow_Application.DTOs
         public T Response { get; set; }
         public BaseResponse() { }
 
-        public BaseResponse(int statusCode, string message, T data = default)
+        public BaseResponse(int statusCode, string message, T data = default!)
         {
             StatusCode = statusCode;
             Message = message;
             Response = data;
         }
 
-        public static BaseResponse<T> Succes(string message, T data = default)
+        public static BaseResponse<T> Succes(string message, T data = default!)
         {
             return new BaseResponse<T>(StatusCodes.Status200OK, message, data);
         }
